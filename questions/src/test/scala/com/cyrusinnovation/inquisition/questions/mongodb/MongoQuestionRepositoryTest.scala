@@ -4,6 +4,7 @@ import org.scalatest.FunSuite
 import org.scalatest.matchers.{ShouldMatchers, MustMatchers}
 import com.cyrusinnovation.inquisition.questions.Question
 import com.mongodb.casbah.MongoConnection
+import org.joda.time.DateTime
 
 
 class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers {
@@ -24,6 +25,17 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers {
 
   test("should return none if nothing has that id") {
     val result = repository.findById("dead6bb0744e9d3695a7f810")
-    result should be (None)
+    result should be(None)
+  }
+
+  test("should find recent questions") {
+    val questions = List(Question(None, "How do I use MongoDB?", "tester"),
+      Question(None, "Why isn't IntelliJ working?", "tester"))
+
+    val savedQuestions = questions.map(repository.save(_))
+
+    val results = repository.findRecent(new DateTime)
+
+    savedQuestions.foreach(results.contains(_) should be (true))
   }
 }
