@@ -3,33 +3,18 @@ package com.trailmagic.jumper.web
 import org.springframework.web.servlet.ModelAndView
 import util.SecurityHelper
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.{RequestParam, RequestMapping}
-import com.trailmagic.jumper.core.signup.SignupRequest
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.beans.factory.annotation.Autowired
-import com.trailmagic.jumper.core.signup.SignupRepository
 import com.trailmagic.jumper.core.TimeSource
+import scala.collection.JavaConverters._
+import com.cyrusinnovation.inquisition.questions.QuestionRepository
 
 @Controller
-class HomePageController @Autowired()(signupRepository: SignupRepository, timeSource: TimeSource){
+class HomePageController @Autowired()(questionRepository: QuestionRepository, timeSource: TimeSource) {
   @RequestMapping(Array("/"))
   def showIndex() = {
-    new ModelAndView("index", "currentUser", SecurityHelper.getAuthenticatedUser)
-  }
-  def plausibleEmail(email: String): Boolean = {
-    email != null && email.matches(".+@.+\\..+")
-  }
-
-  @RequestMapping(Array("/signup"))
-  def signup(@RequestParam("emailAddress") email: String): ModelAndView = {
-    if (plausibleEmail(email)) {
-      signupRepository.save(SignupRequest(email, timeSource.now, None))
-      new ModelAndView("redirect:/signup-thankyou")
-    }
-    else new ModelAndView("redirect:/", "failure", "true")
-  }
-
-  @RequestMapping(Array("/signup-thankyou"))
-  def signupThanks(): String = {
-    "signup-thankyou"
+    val model = Map("currentUser" -> SecurityHelper.getAuthenticatedUser,
+      "questions" -> questionRepository.findRecent(timeSource.now))
+    new ModelAndView("index", model.asJava)
   }
 }

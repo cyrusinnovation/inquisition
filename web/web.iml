@@ -16,9 +16,6 @@
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
-        <sourceRoots>
-          <root url="file://$MODULE_DIR$/src/main/scala" />
-        </sourceRoots>
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
@@ -65,6 +62,7 @@
     <orderEntry type="library" name="Maven: org.aspectj:aspectjrt:1.6.8" level="project" />
     <orderEntry type="library" name="Maven: org.aspectj:aspectjweaver:1.6.8" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.4" level="project" />
+    <orderEntry type="module" module-name="questions" />
     <orderEntry type="library" name="Maven: org.springframework:spring-webmvc:3.0.5.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context-support:3.0.5.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />
