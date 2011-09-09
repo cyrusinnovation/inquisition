@@ -8,7 +8,7 @@ import com.mongodb.casbah.MongoConnection
 
 class MongoUserRepositoryTest {
   val con = MongoConnection()
-  val TestDbName = "test_jumper"
+  val TestDbName = "test_inquisition"
 
   val db = con(TestDbName)
   val users = db("users")

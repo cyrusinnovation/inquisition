@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>jumper</artifactId>
-    <groupId>com.trailmagic.jumper</groupId>
+    <artifactId>inquisition</artifactId>
+    <groupId>com.cyrusinnovation.inquisition</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -13,13 +13,13 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.trailmagic.jumper</groupId>
+      <groupId>com.cyrusinnovation.inquisition</groupId>
       <artifactId>web</artifactId>
       <version>1.0-SNAPSHOT</version>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>com.trailmagic.jumper</groupId>
+      <groupId>com.cyrusinnovation.inquisition</groupId>
       <artifactId>core</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
@@ -114,7 +114,7 @@
               <installDir>${java.io.tmpdir}/cargoinstalls</installDir>
             </zipUrlInstaller>
             <systemProperties>
-              <jumper.configDir>${project.basedir}/conf</jumper.configDir>
+              <inquisition.configDir>${project.basedir}/conf</inquisition.configDir>
             </systemProperties>
           </container>
           <configuration>
@@ -126,7 +126,7 @@
             </properties>
             <deployables>
               <deployable>
-                <groupId>com.trailmagic.jumper</groupId>
+                <groupId>com.cyrusinnovation.inquisition</groupId>
                 <artifactId>web</artifactId>
                 <type>war</type>
                 <properties>

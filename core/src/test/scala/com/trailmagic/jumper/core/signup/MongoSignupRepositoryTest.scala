@@ -7,7 +7,7 @@ import org.joda.time.DateTime
 
 class MongoSignupRepositoryTest {
   val con = MongoConnection()
-  val TestDbName = "test_jumper"
+  val TestDbName = "test_inquisition"
   val db = con(TestDbName)
   val repository = new MongoSignupRepository(db)
   val signups = db("signups")

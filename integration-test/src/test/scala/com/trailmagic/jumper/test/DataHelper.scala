@@ -10,7 +10,7 @@ object DataHelper {
 
   def prepareTestData() {
     val con = MongoConnection()
-    val db = con("test_jumper")
+    val db = con("test_inquisition")
 
     db("users").drop()
     db("places").drop()

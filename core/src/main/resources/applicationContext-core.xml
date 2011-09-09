@@ -10,7 +10,7 @@
   <context:component-scan base-package="com.trailmagic.jumper.core"/>
 
   <!--suppress SpringPlaceholdersInspection -->
-  <context:property-placeholder location="file:${jumper.configDir}/jumper.properties"/>
+  <context:property-placeholder location="file:${inquisition.configDir}/inquisition.properties"/>
 
   <security:authentication-manager>
     <security:authentication-provider user-service-ref="userService">
