@@ -12,6 +12,7 @@
         <modules>
           <module name="core" />
           <module name="integration-test" />
+          <module name="questions" />
           <module name="web" />
         </modules>
       </facet-type>
