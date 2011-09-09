@@ -17,4 +17,13 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
 
     question.copy(id = Some(dbObj("_id").toString))
   }
+
+  def findById(id: String): Option[Question] = {
+    val result: Option[DBObject] = questions.findOne(MongoDBObject("_id" -> new ObjectId(id)))
+    result.map {
+      dbObj =>
+        val question = grater[Question].asObject(dbObj)
+        question.copy(id = Some(dbObj("_id").toString))
+    }
+  }
 }
