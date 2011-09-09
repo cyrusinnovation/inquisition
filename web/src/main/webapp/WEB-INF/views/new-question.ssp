@@ -1,0 +1,19 @@
+#import (com.cyrusinnovation.inquisition.questions.Question)
+<% attributes("title") = "Jumper" %>
+
+<div class="content">
+    <form method="post" action="${contextPath}/questions">
+        <div class="clearfix">
+            <label for="title">Title</label>
+
+            <div class="input">
+                <input type="text" size="100" name="title" id="title"/>
+            </div>
+        </div>
+
+        <div class="actions">
+            <input type="submit" value="Create Question" class="btn primary">&nbsp;
+            <!--<button class="btn" type="reset">Cancel</button>-->
+        </div>
+    </form>
+</div>
