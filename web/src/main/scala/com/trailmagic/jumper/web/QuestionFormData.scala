@@ -6,8 +6,9 @@ import com.cyrusinnovation.inquisition.questions.Question
 
 class QuestionFormData {
   @BeanProperty var title = ""
+  @BeanProperty var body = ""
 
   def toQuestion: Question = {
-    Question(None, title, "tester")
+    Question(None, title, "tester", body)
   }
 }

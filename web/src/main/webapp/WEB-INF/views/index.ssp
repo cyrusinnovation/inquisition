@@ -9,7 +9,7 @@
 
     <ul>
         #for (q <- questions)
-            <li>${q.title}</li>
+            <li>${q.title} : ${q.body.take(10)}...</li>
         #end
     </ul>
 </div>

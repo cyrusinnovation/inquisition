@@ -1,20 +1,28 @@
 package com.cyrusinnovation.inquisition.questions.mongodb
 
-import org.scalatest.FunSuite
 import org.scalatest.matchers.{ShouldMatchers, MustMatchers}
 import com.cyrusinnovation.inquisition.questions.Question
 import com.mongodb.casbah.MongoConnection
 import org.joda.time.DateTime
+import org.scalatest.{BeforeAndAfterEach, FunSuite}
 
 
-class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers {
+class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   val con = MongoConnection()
   val TestDbName = "test_inquisition"
   val db = con(TestDbName)
   val repository = new MongoQuestionRepository(db)
 
+  override def beforeEach() {
+    db.dropDatabase()
+  }
+
+  def uniqueQuestion(title:String = "How do I use MongoDB?"): Question = {
+    Question(id = None, title = title + " " + System.nanoTime(), creatorUsername = "tester", body = "The question body.")
+  }
+
   test("should be able to save a question and get it back") {
-    val q = Question(None, "How do I use MongoDB?", "tester")
+    val q = uniqueQuestion()
 
     val savedQuestion = repository.save(q)
     savedQuestion.id should be('defined)
@@ -29,8 +37,7 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers {
   }
 
   test("should find recent questions") {
-    val questions = List(Question(None, "How do I use MongoDB?", "tester"),
-      Question(None, "Why isn't IntelliJ working?", "tester"))
+    val questions = List(uniqueQuestion(), uniqueQuestion("Why isn't IntelliJ working?"))
 
     val savedQuestions = questions.map(repository.save(_))
 
