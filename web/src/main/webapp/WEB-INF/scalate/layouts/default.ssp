@@ -20,7 +20,7 @@
     <div class="topbar">
       <div class="topbar-inner">
         <div class="container">
-          <h3><a href="${contextPath}/">Jumper</a></h3>
+          <h3><a href="${contextPath}/">Inquisition</a></h3>
           <ul class="nav">
             <li class="active"><a href="${contextPath}/">Home</a></li>
           </ul>
