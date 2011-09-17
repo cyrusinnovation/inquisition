@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import com.trailmagic.jumper.core.TimeSource
 import scala.collection.JavaConverters._
 import com.cyrusinnovation.inquisition.questions.QuestionRepository
-import org.springframework.web.servlet.tags.Param
+import org.springframework.web.bind.annotation._
 import org.springframework.web.servlet.ModelAndView
-import org.springframework.web.bind.annotation.{ModelAttribute, RequestParam, RequestMethod, RequestMapping}
 
 @Controller
 class HomePageController @Autowired()(questionRepository: QuestionRepository, timeSource: TimeSource) {
@@ -28,5 +27,14 @@ class HomePageController @Autowired()(questionRepository: QuestionRepository, ti
   def addQuestion(@ModelAttribute question: QuestionFormData) = {
     questionRepository.save(question.toQuestion)
     "redirect:/"
+  }
+
+  @RequestMapping(value = Array("/questions/{questionId}"), method = Array(RequestMethod.GET))
+  def showQuestion(@PathVariable questionId: String) = {
+    questionRepository.findById(questionId) match {
+      case Some(question) => { val model = Map("question" -> question)
+                        new ModelAndView("question", model.asJava) }
+      case None => throw new ResourceNotFoundException
+    }
   }
 }
