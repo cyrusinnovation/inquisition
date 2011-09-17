@@ -1,0 +1,9 @@
+#import (com.cyrusinnovation.inquisition.questions.Question)
+<% attributes("title") = "View Question" %>
+<%@ val question: Question %>
+
+<div class="content">
+    <h2>${question.title}</h2>
+    <h3>Asked by ${question.creatorUsername}</h3>
+    ${question.body}
+</div>
