@@ -19,3 +19,14 @@ Add the following to conf/server.xml with the keystoreFile modified for your env
                  keystoreFile="/Users/oliver/devel/jumper/integration-test/src/main/resources/server.keystore"
                  clientAuth="false" sslProtocol="TLS" />
 
+For tomcat version 7 the line (At the top of the default server.xml)
+
+      <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+
+Must be commented or tomcat throws an exception during startup.
+
+# Generate keystoreFile
+The command to generate a keystore file is
+
+      %JAVA_HOME%\bin\keytool -genkey -alias tomcat -keyalg RSA \ -keystore /path/to/my/keystore (Windows)
+      $JAVA_HOME/bin/keytool -genkey -alias tomcat -keyalg RSA \ -keystore /path/to/my/keystore (Unix)
