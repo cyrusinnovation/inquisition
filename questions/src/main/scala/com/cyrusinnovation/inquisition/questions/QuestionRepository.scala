@@ -6,4 +6,6 @@ trait QuestionRepository {
   def save(question: Question): Question
   def findById(id: String): Option[Question]
   def findRecent(now: DateTime): List[Question]
+  def findQuestionCount(): Int
+  def saveQuestionAnswer(question: Question, questionAnswer: QuestionAnswer): Question
 }

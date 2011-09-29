@@ -1,0 +1,30 @@
+#import (com.cyrusinnovation.inquisition.questions.Question)
+<% attributes("title") = "Add Question Response" %>
+<%@ val questionId: String %>
+<div class="content">
+    <form method="post" action="${contextPath}/questions/newResponse">
+        <div class="clearfix">
+            <label for="title">Title</label>
+
+            <div class="input">
+                <input type="text" size="100" name="title" id="title"/>
+            </div>
+        </div>
+        <div class="clearfix">
+            <label for="bodyInput">Body</label>
+
+            <div class="input">
+                <textarea class="xxlarge" name="body" id="bodyInput" rows="3"></textarea>
+                <span class="help-block">
+                    Sorry, we don't support fancy text formatting yet!
+                </span>
+            </div>
+
+        </div>
+        <input type="hidden" name="questionId" value="${questionId}"/>
+        <div class="actions">
+            <input type="submit" value="Respond To Question" class="btn primary">&nbsp;
+            <!--<button class="btn" type="reset">Cancel</button>-->
+        </div>
+    </form>
+</div>

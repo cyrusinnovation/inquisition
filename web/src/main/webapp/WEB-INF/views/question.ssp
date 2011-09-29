@@ -6,4 +6,14 @@
     <h2>${question.title}</h2>
     <h3>Asked by ${question.creatorUsername}</h3>
     ${question.body}
+    <hr>
+        <a href="${contextPath}/questions/newResponse/${question.id}">Add Comment</a>
+    <hr>
+
+    <hr>
+        #for (qa <- question.answers)
+            <h2>${qa.title}</h2>
+            <h3>Asked by ${qa.body}</h3>
+        #end
+    <hr>
 </div>

@@ -16,6 +16,11 @@
           <module name="web" />
         </modules>
       </facet-type>
+      <facet-type id="Spring">
+        <modules>
+          <module name="questions" />
+        </modules>
+      </facet-type>
       <facet-type id="web">
         <modules>
           <module name="web" />

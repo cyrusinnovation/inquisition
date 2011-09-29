@@ -1,6 +1,6 @@
 package com.cyrusinnovation.inquisition.questions.mongodb
 
-import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
+import com.cyrusinnovation.inquisition.questions.{Question, QuestionAnswer, QuestionRepository}
 import org.springframework.beans.factory.annotation.Autowired
 import com.mongodb.casbah.Imports._
 import com.novus.salat._
@@ -13,10 +13,24 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   val questions = db("questions")
 
   def save(question: Question): Question = {
-    val dbObj = grater[Question].asDBObject(question)
-    val result = questions.insert(dbObj, WriteConcern.Safe)
+    question.id match {
+      case None =>{
+            val dbObj = grater[Question].asDBObject(question)
+            val result = questions.insert(dbObj, WriteConcern.Safe)
+            question.copy(id = Some(dbObj("_id").toString))
+      }
+      case Some(id: String) => {
+            val dbObj = grater[Question].asDBObject(question)
+            val res = questions.update(MongoDBObject("_id" -> question.id), dbObj, false,false, WriteConcern.Safe)
+            question.copy(id = Some(dbObj("_id").toString))
+      }
+    }
+  }
 
-    question.copy(id = Some(dbObj("_id").toString))
+  def saveQuestionAnswer(question: Question, questionAnswer: QuestionAnswer): Question = {
+      val answerList = questionAnswer +: question.answers
+      val updatedQuestion = question.copy(answers = answerList)
+      save(updatedQuestion)
   }
 
   def db2question(dbObj: DBObject): Question = {
@@ -32,5 +46,9 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   def findRecent(now: DateTime): List[Question] = {
     val results = questions.find() map (db2question)
     results.toList
+  }
+
+  def findQuestionCount(): Int = {
+    questions.count(x => true)
   }
 }
