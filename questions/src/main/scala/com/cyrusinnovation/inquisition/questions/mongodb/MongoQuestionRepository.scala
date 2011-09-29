@@ -21,16 +21,14 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
       }
       case Some(id: String) => {
             val dbObj = grater[Question].asDBObject(question)
-            val res = questions.update(MongoDBObject("_id" -> question.id), dbObj, false,false, WriteConcern.Safe)
-            question.copy(id = Some(dbObj("_id").toString))
+            val res = questions.update(MongoDBObject("_id" -> new ObjectId(id)), dbObj, false,false, WriteConcern.Safe)
+            question.copy(id = Some(dbObj("id").toString))
       }
     }
   }
 
   def saveQuestionAnswer(question: Question, questionAnswer: QuestionAnswer): Question = {
-      val answerList = questionAnswer +: question.answers
-      val updatedQuestion = question.copy(answers = answerList)
-      save(updatedQuestion)
+      Question(None, "Title", "UserName")
   }
 
   def db2question(dbObj: DBObject): Question = {

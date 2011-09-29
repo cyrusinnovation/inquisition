@@ -8,7 +8,7 @@ class QuestionFormData {
   @BeanProperty var body = ""
 
   def toQuestion: Question = {
-    Question(None, title, "tester", body, List())
+    Question(None, title, "tester", body)
   }
 }
 

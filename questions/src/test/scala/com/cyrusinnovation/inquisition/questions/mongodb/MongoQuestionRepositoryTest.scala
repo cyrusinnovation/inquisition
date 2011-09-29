@@ -21,19 +21,17 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
   }
 
   def uniqueQuestion(title:String = "How do I use MongoDB?"): Question = {
-    val questionAnswers = List(QuestionAnswer("title", "creator", "body"),
-                               QuestionAnswer("title", "creator", "body"))
-    Question(None, title = title + " " + System.nanoTime(), creatorUsername = "tester", body = "The question body.", answers = questionAnswers)
+    Question(id = None, title = title + " " + System.nanoTime(), creatorUsername = "tester", body = "The question body.")
   }
 
   test("should be able to save a question and get it back") {
     val q = uniqueQuestion()
+    q.id should be (None)
     val savedQuestion = repository.save(q)
-
+    savedQuestion.id should not be  (None)
+    savedQuestion.id should be ('defined)
     val retrievedQuestion = repository.findById(savedQuestion.id.get).get
-    val retrievedQuestionAnswerCount =retrievedQuestion.answers.count((x) => true)
-    retrievedQuestion should equal(q.copy(id = savedQuestion.id))
-    retrievedQuestionAnswerCount should be(2)
+    retrievedQuestion.id should be(savedQuestion.id)
   }
 
   test("should be able to count the number of questions") {
@@ -47,12 +45,10 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
   }
 
   test("should be able respond to a question with an anwser without creating a duplicate question.") {
-    val savedQuestion = repository.save(Question(None, "Title", "Tester","Body", List()))
-    savedQuestion.answers.count(x => true) should be(0)
+    val savedQuestion = repository.save(Question(None, "Title", "Tester","Body"))
 
     repository.saveQuestionAnswer(savedQuestion, new QuestionAnswer("Title", "Creator", "Body"))
     val updatedQuestion = repository.findById(savedQuestion.id.get).get
-    updatedQuestion.answers.count((x) => true) should be(1)
   }
 
   test("should be able to save a question with an existing id to update it")
@@ -64,7 +60,12 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
 
     questionCount should be(1)
     updatedQuestion.id should be(savedQuestion.id)
+    updatedQuestion.title should  not be(savedQuestion.title)
+
+    val updatedQuestionReturned = repository.findById(updatedQuestion.id.get).get
+    updatedQuestionReturned.title should be(updatedQuestion.title)
   }
+
 
   test("should return none if nothing has that id") {
     val result = repository.findById("dead6bb0744e9d3695a7f810")
