@@ -5,10 +5,6 @@ import com.mongodb.casbah.MongoConnection
 import org.joda.time.DateTime
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import com.cyrusinnovation.inquisition.questions.{QuestionAnswer, Question}
-import org.bson.types.ObjectId
-import com.novus.salat._
-import com.novus.salat.global._
-import com.novus.salat.annotations._
 
 class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   val con = MongoConnection()
