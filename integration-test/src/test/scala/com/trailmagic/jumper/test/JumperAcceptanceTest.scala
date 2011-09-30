@@ -43,6 +43,14 @@ class JumperAcceptanceTest {
   }
 
   @Test
+  def testRegistrationLinkAppearsOnSignInForm() {
+    val originalUrl = WebConstants.HomeUrl
+    driver.get(originalUrl)
+    driver.findElement(By.linkText("Sign in")).click()
+    driver.findElement(By.linkText("Register"))
+  }
+
+  @Test
   def testLoginRedirectsToOriginalPage() {
     val originalUrl = WebConstants.HomeUrl
     driver.get(originalUrl)

@@ -1,7 +1,6 @@
 package com.trailmagic.jumper.web.users
 
 import com.trailmagic.jumper.web.ResourceNotFoundException
-import org.springframework.web.servlet.ModelAndView
 import org.springframework.ui.ModelMap
 import com.trailmagic.jumper.core.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +10,8 @@ import org.springframework.validation.BindingResult
 import com.trailmagic.jumper.core.security.{NonUniqueUsernameException, UserService}
 import javax.validation.Valid
 import com.trailmagic.jumper.web.util.FormHelper
+import org.springframework.web.servlet.ModelAndView
+
 
 @Controller
 @RequestMapping(Array("/users"))
@@ -30,11 +31,16 @@ class UsersController @Autowired()(userRepository: UserRepository, userService: 
     } else {
         try {
           val savedUser = userService.createUser(userData.toUser)
-          new ModelAndView("redirect:/users/" + savedUser.username)
+          new ModelAndView("redirect:signup-thankyou")
         } catch {
           case e: NonUniqueUsernameException => new ModelAndView("new-user-form", "errors", Set("Username is already taken"))
         }
     }
+  }
+
+  @RequestMapping(Array("/signup-thankyou"))
+  def displaySignupThankyou(): ModelAndView = {
+    new ModelAndView("signup-thankyou")
   }
 
   @RequestMapping(Array("/{username}"))

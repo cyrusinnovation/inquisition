@@ -33,8 +33,10 @@
     <br/>
     <div class="actions">
       <input type="submit" value="Login" class="btn primary"/>
+      <a href="/users/new">Register</a>
     </div>
   </form>
+
   <script type="text/javascript">
     if (!("autofocus" in document.createElement("input"))) {
       document.getElementById("username").focus();
