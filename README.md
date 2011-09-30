@@ -30,3 +30,11 @@ The command to generate a keystore file is
 
       %JAVA_HOME%\bin\keytool -genkey -alias tomcat -keyalg RSA \ -keystore /path/to/my/keystore (Windows)
       $JAVA_HOME/bin/keytool -genkey -alias tomcat -keyalg RSA \ -keystore /path/to/my/keystore (Unix)
+
+# OSX MongoDB Performance
+
+Under OSX the mongodb performance was really bad until i started running mongo with the following command
+line options
+
+        ./mongodb/bin/mongod --nssize 2 --dbpath ./db --smallfiles --noprealloc
+
