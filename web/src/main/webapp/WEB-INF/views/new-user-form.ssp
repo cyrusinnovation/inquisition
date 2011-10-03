@@ -20,7 +20,7 @@
             Username:
 
         </label>
-        <input name="username" type="text"/>
+        <input name="username" type="text" />
         </li>
         <li>
         <label>

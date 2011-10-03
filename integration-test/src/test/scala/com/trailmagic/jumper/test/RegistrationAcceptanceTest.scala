@@ -75,7 +75,7 @@ class RegistrationAcceptanceTest {
     assertTrue("Expected invalid email error message. Actual error messages: " + errorMessages, errorMessages.exists((x) => x.toLowerCase.contains("valid email")))
   }
 
-    @Test
+  @Test
   def shortPasswordCausesError() {
     helper.fillRegistrationForm(password = "p")
     helper.submitRegistrationForm();
