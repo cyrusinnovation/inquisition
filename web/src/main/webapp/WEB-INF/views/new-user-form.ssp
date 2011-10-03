@@ -1,4 +1,6 @@
+<% import com.trailmagic.jumper.web.users.UserFormData %>
 <%@ val errors: Iterable[String] %>
+<%@ val user: UserFormData %>
 <% attributes("title") = "Jumper | Create Account" %>
 
 <div class="content">
@@ -18,35 +20,30 @@
         <li>
         <label>
             Username:
-
         </label>
-        <input name="username" type="text" />
+        <input name="username" type="text" value="${user.username}"/>
         </li>
         <li>
         <label>
             First Name:
-
         </label>
-        <input name="firstName" type="text" autocapitalize="on"/>
+        <input name="firstName" type="text" autocapitalize="on" value="${user.firstName}"/>
         </li>
         <li>
         <label>
             Last Name:
-
         </label>
-        <input name="lastName" type="text" autocapitalize="on"/>
+        <input name="lastName" type="text" autocapitalize="on" value="${user.lastName}"/>
         </li>
         <li>
         <label>
             Email Address:
-
         </label>
-        <input name="email" type="email"/>
+        <input name="email" type="email" value="${user.email}"/>
         </li>
         <li>
         <label>
             Password:
-
         </label>
         <input name="password" type="password"/>
         </li>

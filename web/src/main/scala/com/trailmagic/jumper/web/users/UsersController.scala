@@ -18,7 +18,7 @@ import org.springframework.web.servlet.ModelAndView
 class UsersController @Autowired()(userRepository: UserRepository, userService: UserService) {
   @RequestMapping(Array("/new"))
   def showNewUserForm() = {
-    new ModelAndView("new-user-form", "errors", Set())
+    new ModelAndView("new-user-form", "errors", Set()).addObject("user", new UserFormData)
   }
 
   @RequestMapping(value = Array("/new"), method = Array(RequestMethod.POST))
@@ -27,7 +27,8 @@ class UsersController @Autowired()(userRepository: UserRepository, userService: 
 //    fieldOrder.flatMap(bindingResult.getFieldErrors(_).asScala.map(_.getDefaultMessage))
     val errors = FormHelper.getAllErrors(bindingResult)
     if (!errors.isEmpty) {
-      new ModelAndView("new-user-form", "errors", errors)
+      val modelAndView = new ModelAndView("new-user-form", "errors", errors)
+      modelAndView.addObject("user",userData)
     } else {
         try {
           val savedUser = userService.createUser(userData.toUser)

@@ -84,4 +84,17 @@ class RegistrationAcceptanceTest {
     val errorMessages = helper.getErrorMessages
     assertTrue("Expected invalid password error message" + errorMessages, errorMessages.exists((x) => x.toLowerCase.contains("password must be at least")))
   }
+
+  @Test
+  def allFormFieldsExceptPasswordRefillOnError() {
+    helper.fillRegistrationForm(username = "Username", password = "p", email = "a@example.com")
+    helper.submitRegistrationForm();
+
+    assertEquals("Username not refilled on failed registration", "Username", driver.findElement(By.name("username")).getAttribute("value"))
+    assertEquals("Email not refilled on failed registration", "a@example.com", driver.findElement(By.name("email")).getAttribute("value"))
+    assertEquals("Firstname not refilled on failed registration", "FirstName", driver.findElement(By.name("firstName")).getAttribute("value"))
+    assertEquals("Lastname not refilled on failed registration", "LastName", driver.findElement(By.name("lastName")).getAttribute("value"))
+    assertEquals("Password filled on failed registration", "", driver.findElement(By.name("password")).getAttribute("value"))
+  }
+
 }
