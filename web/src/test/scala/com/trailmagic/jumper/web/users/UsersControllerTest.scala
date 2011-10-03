@@ -5,12 +5,10 @@ import com.trailmagic.jumper.core.security.UserService
 import org.junit.Assert._
 import org.junit.{Before, Test}
 import org.mockito.{MockitoAnnotations, Mock}
-import com.trailmagic.jumper.core.{InMemoryUserRepository, User, UserRepository}
 import org.springframework.validation.{ObjectError, BindingResult}
 import scala.collection.JavaConverters._;
 import org.mockito.Mockito.when
-
-
+import com.trailmagic.jumper.core.{SavedUser, InMemoryUserRepository, User, UserRepository}
 
 
 class UsersControllerTest {
@@ -28,7 +26,6 @@ class UsersControllerTest {
   }
 
 
-
   @Test
   def testCreateNewUserUser_with_errors() {
 
@@ -36,7 +33,7 @@ class UsersControllerTest {
     userFormData.setEmail("a@example.com");
     userFormData.setFirstName("Joe");
 
-                    val passwordError = new ObjectError("password", "password too short");
+    val passwordError = new ObjectError("password", "password too short");
 
     val errors = List(passwordError).asJava;
 
@@ -45,6 +42,25 @@ class UsersControllerTest {
     val mav = controller.createNewUser(userFormData, bindingData)
     assertTrue(mav.getModel.get("user") != null)
     assertEquals(userFormData, mav.getModel.get("user"))
+  }
+
+  @Test
+  def testCreateNewUserUser_with_no_errors() {
+
+    val userFormData = new UserFormData();
+    userFormData.setEmail("a@example.com");
+    userFormData.setFirstName("Joe");
+
+
+
+    val errors = List[ObjectError]().asJava;
+
+    when(bindingData.getAllErrors).thenReturn(errors);
+    when(userService.createUser(userFormData.toUser)).thenReturn(new SavedUser("id", TestUser))
+
+    val mav = controller.createNewUser(userFormData, bindingData)
+    assertTrue(mav.getModel.get("user") == null)
+    assertEquals("redirect:signup-thankyou", mav.getViewName)
   }
 
   @Test
