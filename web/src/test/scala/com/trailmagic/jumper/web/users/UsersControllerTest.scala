@@ -1,7 +1,6 @@
 package com.trailmagic.jumper.web.users
 
 import com.trailmagic.jumper.web.ResourceNotFoundException
-import com.trailmagic.jumper.core.security.UserService
 import org.junit.Assert._
 import org.junit.{Before, Test}
 import org.mockito.{MockitoAnnotations, Mock}
@@ -9,7 +8,7 @@ import org.springframework.validation.{ObjectError, BindingResult}
 import scala.collection.JavaConverters._;
 import org.mockito.Mockito.when
 import com.trailmagic.jumper.core.{SavedUser, InMemoryUserRepository, User, UserRepository}
-
+import com.trailmagic.jumper.core.security.{NonUniqueEmailException, NonUniqueUsernameException, UserService}
 
 class UsersControllerTest {
   var controller: UsersController = _
@@ -40,8 +39,10 @@ class UsersControllerTest {
     when(bindingData.getAllErrors).thenReturn(errors);
 
     val mav = controller.createNewUser(userFormData, bindingData)
-    assertTrue(mav.getModel.get("user") != null)
+    assertNotNull("should have the user object in the model", mav.getModel.get("user"))
     assertEquals(userFormData, mav.getModel.get("user"))
+    assertNotNull("should have the errors object in the model", mav.getModel.get("errors"))
+    assertEquals("new-user-form", mav.getViewName)
   }
 
   @Test
@@ -59,9 +60,56 @@ class UsersControllerTest {
     when(userService.createUser(userFormData.toUser)).thenReturn(new SavedUser("id", TestUser))
 
     val mav = controller.createNewUser(userFormData, bindingData)
-    assertTrue(mav.getModel.get("user") == null)
+    assertNotNull("should have the user object in the model", mav.getModel.get("user"))
+    assertNull("should not have the errors object in the model", mav.getModel.get("errors"))
     assertEquals("redirect:signup-thankyou", mav.getViewName)
   }
+
+
+  @Test
+  def testCreateNewUserUser_with_no_errors_and_username_already_used() {
+
+    val userFormData = new UserFormData();
+    userFormData.setEmail("a@example.com");
+    userFormData.setFirstName("Joe");
+
+
+
+    val errors = List[ObjectError]().asJava;
+
+    when(bindingData.getAllErrors).thenReturn(errors);
+    when(userService.createUser(userFormData.toUser)).thenThrow(new NonUniqueUsernameException("this is a message"))
+
+    val mav = controller.createNewUser(userFormData, bindingData)
+    assertNotNull("should have the user object in the model", mav.getModel.get("user"))
+    assertEquals(userFormData, mav.getModel.get("user"))
+    assertNotNull("should have the errors object in the model", mav.getModel.get("errors"))
+    assertEquals("new-user-form", mav.getViewName)
+  }
+
+  @Test
+  def testCreateNewUserUser_with_no_errors_and_email_already_used() {
+
+    val userFormData = new UserFormData();
+    userFormData.setEmail("a@example.com");
+    userFormData.setFirstName("Joe");
+
+
+
+    val errors = List[ObjectError]().asJava;
+
+    when(bindingData.getAllErrors).thenReturn(errors);
+    when(userService.createUser(userFormData.toUser)).thenThrow(new NonUniqueEmailException("this is a message"))
+
+    val mav = controller.createNewUser(userFormData, bindingData)
+    assertNotNull("should have the user object in the model", mav.getModel.get("user"))
+    assertEquals(userFormData, mav.getModel.get("user"))
+    assertNotNull("should have the errors object in the model", mav.getModel.get("errors"))
+    assertEquals("new-user-form", mav.getViewName)
+  }
+
+
+
 
   @Test
   def testUserProfilePage() {

@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.{ModelAttribute, RequestMethod, RequestMapping, PathVariable}
 import org.springframework.validation.BindingResult
-import com.trailmagic.jumper.core.security.{NonUniqueUsernameException, UserService}
 import javax.validation.Valid
 import com.trailmagic.jumper.web.util.FormHelper
 import org.springframework.web.servlet.ModelAndView
+import com.trailmagic.jumper.core.security.{NonUniqueEmailException, NonUniqueUsernameException, UserService}
 
 
 @Controller
@@ -27,14 +27,16 @@ class UsersController @Autowired()(userRepository: UserRepository, userService: 
 //    fieldOrder.flatMap(bindingResult.getFieldErrors(_).asScala.map(_.getDefaultMessage))
     val errors = FormHelper.getAllErrors(bindingResult)
     if (!errors.isEmpty) {
-      val modelAndView = new ModelAndView("new-user-form", "errors", errors)
-      modelAndView.addObject("user",userData)
+      new ModelAndView("new-user-form", "errors", errors).addObject("user",userData)
+
     } else {
         try {
           val savedUser = userService.createUser(userData.toUser)
-          new ModelAndView("redirect:signup-thankyou")
+          new ModelAndView("redirect:signup-thankyou", "user", savedUser)
         } catch {
-          case e: NonUniqueUsernameException => new ModelAndView("new-user-form", "errors", Set("Username is already taken"))
+          case e: NonUniqueUsernameException => new ModelAndView("new-user-form", "errors", Set("Username is already taken")).addObject("user",userData)
+          case e: NonUniqueEmailException => new ModelAndView("new-user-form", "errors", Set("Email is already taken")).addObject("user",userData)
+
         }
     }
   }
