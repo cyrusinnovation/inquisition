@@ -60,8 +60,8 @@ class RegistrationAcceptanceTest {
     helper.submitRegistrationForm()
 
     assertTrue(driver.getCurrentUrl == WebConstants.SignUpThankYouUrl)
-    val bodyTag = driver.findElement(By.tagName("body"));
-    val bodyText: Boolean = bodyTag.getText.contains("Thank You")
+
+    val bodyText = helper.isTextIsOnScreen("Thank You")
     assertTrue("Thank you page not displayed.", bodyText)
   }
 
