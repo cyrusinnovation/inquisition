@@ -6,17 +6,18 @@ import com.cyrusinnovation.inquisition.questions.{Question, QuestionAnswer}
 class QuestionFormData {
   @BeanProperty var title = ""
   @BeanProperty var body = ""
+  @BeanProperty var tags = ""
 
   def toQuestion: Question = {
-    Question(None, title, "tester", body)
+    Question(None, title, "tester", body, tags.split(",").toList)
   }
 }
 
-class QuestionAnswerFormData {
-  @BeanProperty var title = ""
-  @BeanProperty var body = ""
-  @BeanProperty var questionId = ""
-  def toQuestionAnswer: QuestionAnswer = {
-    QuestionAnswer(title, "tester", body)
-  }
-}
+//class QuestionAnswerFormData {
+//  @BeanProperty var title = ""
+//  @BeanProperty var body = ""
+//  @BeanProperty var questionId = ""
+//  def toQuestionAnswer: QuestionAnswer = {
+//    QuestionAnswer(title, "tester", body)
+//  }
+//}

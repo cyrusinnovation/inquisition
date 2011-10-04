@@ -77,4 +77,28 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
 
     savedQuestions.foreach(results.contains(_) should be (true))
   }
+
+  test("make sure we can add a list of tags to a question") {
+      var question = uniqueQuestion()
+
+      question = question.copy(tags = List("java", "spring"))
+
+      val savedQuestion = repository.save(question);
+
+      question = question.copy(id = savedQuestion.id)
+
+      question should equal(savedQuestion)
+  }
+
+  test("make sure we can get a list of tags to a question") {
+      var question = uniqueQuestion()
+
+      question = question.copy(tags = List("java", "spring"))
+
+      val savedQuestion = repository.save(question);
+
+      val returnedQuestion = repository.findById(savedQuestion.id.get)
+
+      savedQuestion.tags should equal(returnedQuestion.get.tags)
+  }
 }
