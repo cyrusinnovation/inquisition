@@ -11,9 +11,10 @@
     <hr>
 
     <hr>
-        #for (qa <- question.answers)
+        <%-- #for (qa <- question.answers)
             <h2>${qa.title}</h2>
             <h3>Asked by ${qa.body}</h3>
         #end
+        --%>
     <hr>
 </div>
