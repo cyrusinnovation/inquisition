@@ -21,7 +21,13 @@
             </div>
 
         </div>
+        <div class="clearfix">
+            <label for="tags">Tags</label>
 
+            <div class="input">
+                <input type="text" size="100" name="tags" id="tags"/>
+            </div>
+        </div>
         <div class="actions">
             <input type="submit" value="Create Question" class="btn primary">&nbsp;
             <!--<button class="btn" type="reset">Cancel</button>-->

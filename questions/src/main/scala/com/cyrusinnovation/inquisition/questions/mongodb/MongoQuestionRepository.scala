@@ -11,6 +11,7 @@ import org.joda.time.DateTime
 @Repository
 class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionRepository {
   val questions = db("questions")
+  questions.ensureIndex(MongoDBObject("tags" -> 1))
 
   def save(question: Question): Question = {
     question.id match {

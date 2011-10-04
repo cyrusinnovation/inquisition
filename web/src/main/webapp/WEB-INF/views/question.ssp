@@ -9,6 +9,13 @@
     <hr>
         <a href="${contextPath}/questions/newResponse/${question.id}">Add Comment</a>
     <hr>
+    <hr>
+        #for (tag <- question.tags)
+           <p>${tag}</p>
+        #end
+
+    <hr>
+
 
     <hr>
         <%-- #for (qa <- question.answers)
