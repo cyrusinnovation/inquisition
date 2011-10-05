@@ -37,3 +37,4 @@ Under OSX the mongodb performance was really bad until i started running mongo w
 line options
 
         ./mongodb/bin/mongod --nssize 2 --dbpath ./db --smallfiles --noprealloc
+

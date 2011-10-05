@@ -5,7 +5,15 @@ import org.openqa.selenium.{WebElement, By, WebDriver}
 import scala.collection.JavaConverters._
 
 class WebDriverHelper(driver: WebDriver) {
-  def getErrorMessages() : Iterable[String] = {
+  def fillAndSubmitQuestionForm(question: String = "this is a question?", questionText: String = "This is the question body.", tagList: String = "TagA,TagB") {
+    driver.findElement(By.id("title")).sendKeys(question);
+    driver.findElement(By.id("bodyInput")).sendKeys(questionText);
+    val tagElement = driver.findElement(By.id("tags"))
+    tagElement.sendKeys(tagList)
+    tagElement.submit()
+  }
+
+  def getErrorMessages(): Iterable[String] = {
     //Get the li elements from the ul element from all divs with the .errors class
     val divErrors = driver.findElements(By.cssSelector("div .errors ul > li")).asScala
     divErrors.map((x) => x.getText)
@@ -49,13 +57,24 @@ class WebDriverHelper(driver: WebDriver) {
 
     assertTrue(isTextIsOnScreen("Sign in"))
   }
+
   def navigateToRegistrationPage() {
     driver.get(WebConstants.NewUserUrl)
+  }
+
+  def navigateToQuestionNewForm() {
+    driver.get(WebConstants.NewQuestionUrl)
   }
 
   def isTextIsOnScreen(textToLookFor: String): Boolean = {
     val bodyTag = driver.findElement(By.tagName("body"));
     bodyTag.getText.contains(textToLookFor)
 
+  }
+
+  def navigateToQuestionFormAndCreateQuestion(question: String = "this is a question?", questionText: String = "This is the question body.", tagList: String = "TagA,TagB") {
+    navigateToQuestionNewForm()
+    assertEquals(WebConstants.NewQuestionUrl, driver.getCurrentUrl)
+    fillAndSubmitQuestionForm(question, questionText, tagList)
   }
 }
