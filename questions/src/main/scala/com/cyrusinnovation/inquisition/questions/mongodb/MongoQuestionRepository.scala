@@ -2,11 +2,11 @@ package com.cyrusinnovation.inquisition.questions.mongodb
 
 import com.cyrusinnovation.inquisition.questions.{Question, QuestionAnswer, QuestionRepository}
 import org.springframework.beans.factory.annotation.Autowired
-import com.mongodb.casbah.Imports._
 import com.novus.salat._
 import com.novus.salat.global._
 import org.springframework.stereotype.Repository
 import org.joda.time.DateTime
+import com.mongodb.casbah.Imports._
 
 @Repository
 class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionRepository {
@@ -52,6 +52,6 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   }
 
   def findUniqueTags(): List[String] = {
-    questions.find("tags").map(x => x.toString).toList
+    questions.distinct("tags").map(x => x.toString).toList
   }
 }
