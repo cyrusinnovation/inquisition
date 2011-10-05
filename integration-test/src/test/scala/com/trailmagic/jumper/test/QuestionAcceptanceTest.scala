@@ -53,4 +53,9 @@ class QuestionAcceptanceTest {
     helper.navigateToQuestionFormAndCreateQuestion(questionTitleText)
 
   }
+
+  @Test
+  def someNewTest() {
+    assertTrue(true)
+  }
 }
