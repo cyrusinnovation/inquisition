@@ -52,8 +52,8 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     questions.count(x => true)
   }
 
-  def findUniqueTags(): List[String] = {
-    questions.distinct("tags").map(x => x.toString).toList
+  def findUniqueTagNamesOrderedByTagName(): List[String] = {
+    questions.distinct("tags").map(x => x.toString).sortBy(x => x).toList
   }
 
   def findQuestionsByTag(tag: String): List[Question] = {
