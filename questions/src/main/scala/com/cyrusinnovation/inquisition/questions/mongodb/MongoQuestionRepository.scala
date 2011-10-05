@@ -10,31 +10,32 @@ import com.mongodb.casbah.Imports._
 
 @Repository
 class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionRepository {
+
   val questions = db("questions")
   questions.ensureIndex(MongoDBObject("tags" -> 1))
 
   def save(question: Question): Question = {
     question.id match {
       case None =>{
-            val dbObj = grater[Question].asDBObject(question)
-            val result = questions.insert(dbObj, WriteConcern.Safe)
-            question.copy(id = Some(dbObj("_id").toString))
+        val dbObj = grater[Question].asDBObject(question)
+        val result = questions.insert(dbObj, WriteConcern.Safe)
+        question.copy(id = Some(dbObj("_id").toString))
       }
       case Some(id: String) => {
-            val dbObj = grater[Question].asDBObject(question)
-            val res = questions.update(MongoDBObject("_id" -> new ObjectId(id)), dbObj, false,false, WriteConcern.Safe)
-            question.copy(id = Some(dbObj("id").toString))
+        val dbObj = grater[Question].asDBObject(question)
+        val res = questions.update(MongoDBObject("_id" -> new ObjectId(id)), dbObj, false,false, WriteConcern.Safe)
+        question.copy(id = Some(dbObj("id").toString))
       }
     }
   }
 
   def saveQuestionAnswer(question: Question, questionAnswer: QuestionAnswer): Question = {
-      Question(None, "Title", "UserName")
+    Question(None, "Title", "UserName")
   }
 
   def db2question(dbObj: DBObject): Question = {
-      val question = grater[Question].asObject(dbObj)
-      question.copy(id = Some(dbObj("_id").toString))
+    val question = grater[Question].asObject(dbObj)
+    question.copy(id = Some(dbObj("_id").toString))
   }
 
   def findById(id: String): Option[Question] = {
@@ -53,5 +54,10 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
 
   def findUniqueTags(): List[String] = {
     questions.distinct("tags").map(x => x.toString).toList
+  }
+
+  def findQuestionsByTag(tag: String): List[Question] = {
+    val results = questions.find(MongoDBObject("tags" -> tag))
+    results.map(db2question).toList
   }
 }
