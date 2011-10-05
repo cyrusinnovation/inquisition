@@ -50,4 +50,8 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   def findQuestionCount(): Int = {
     questions.count(x => true)
   }
+
+  def findUniqueTags(): List[String] = {
+    questions.find("tags").map(x => x.toString).toList
+  }
 }
