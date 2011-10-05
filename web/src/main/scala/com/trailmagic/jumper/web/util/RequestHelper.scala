@@ -23,4 +23,8 @@ object RequestHelper {
       case url: String => "?spring-security-redirect=" + URLEncoder.encode(url, "UTF-8")
     }
   }
+
+  def sessionVariable(request: HttpServletRequest, variable: String): AnyRef = {
+     request.getSession.getAttribute(variable)
+  }
 }

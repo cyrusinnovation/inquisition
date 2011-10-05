@@ -15,19 +15,19 @@ class WebDriverHelper(driver: WebDriver) {
     driver.findElement(By.name("email")).submit()
   }
 
-  def fillAndSubmitLoginForm() {
-    driver.findElement(By.id("username")).sendKeys("tester");
+  def fillAndSubmitLoginForm(username: String = "tester", password: String = "password") {
+    driver.findElement(By.id("username")).sendKeys(username);
     val passwordElement = driver.findElement(By.id("password"));
-    passwordElement.sendKeys("password");
+    passwordElement.sendKeys(password);
     passwordElement.submit();
   }
 
-  def login() {
-    driver.get(WebConstants.BaseUrl + "/");
+  def login(username: String = "tester", password: String = "password") {
+    navigateToLoginPage()
 
     assertEquals(WebConstants.SecureBaseUrl + "/login", driver.getCurrentUrl)
 
-    fillAndSubmitLoginForm()
+    fillAndSubmitLoginForm(username, password)
   }
 
   def fillRegistrationForm(username: String = "Username" + System.currentTimeMillis(), password: String = "Password",
@@ -40,7 +40,22 @@ class WebDriverHelper(driver: WebDriver) {
     driver.findElement(By.name("email")).sendKeys(email)
   }
 
+  def navigateToLoginPage() {
+    driver.get(WebConstants.LoginUrl)
+  }
+
+  def navigateToLogoutPage() {
+    driver.get(WebConstants.LogoutUrl)
+
+    assertTrue(isTextIsOnScreen("Sign in"))
+  }
   def navigateToRegistrationPage() {
     driver.get(WebConstants.NewUserUrl)
+  }
+
+  def isTextIsOnScreen(textToLookFor: String): Boolean = {
+    val bodyTag = driver.findElement(By.tagName("body"));
+    bodyTag.getText.contains(textToLookFor)
+
   }
 }

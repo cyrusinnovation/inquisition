@@ -12,6 +12,7 @@ object WebConstants {
   final val HomeUrl = SecureBaseUrl + "/"
   final val SignUpThankYouUrl = WebConstants.SecureBaseUrl + "/users/signup-thankyou"
   final val LoginUrl = SecureBaseUrl + "/login"
+  final val LogoutUrl = SecureBaseUrl + "/logout"
 
   def UserProfileUrl(username: String): String = {
     SecureBaseUrl + "/users/" + URLEncoder.encode(username, "UTF-8")

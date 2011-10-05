@@ -12,7 +12,7 @@
     <div class="clearfix">
       <label for="username">Username:</label>
       <div class="input">
-        <input id="username" type="text" name="j_username" autofocus="true"/>
+        <input id="username" type="text" name="j_username" autofocus="true" value="${request.getSession.getAttribute("SPRING_SECURITY_LAST_USERNAME")}"/>
       </div>
     </div>
     <div class="clearfix">
