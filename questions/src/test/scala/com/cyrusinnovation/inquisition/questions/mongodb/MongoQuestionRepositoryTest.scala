@@ -106,9 +106,9 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
     repository.save(uniqueQuestion().copy(tags = List("java", "spring")));
     repository.save(uniqueQuestion().copy(tags = List("scala", "spring")));
     repository.findQuestionCount() should equal(2)
-    val uniqueTags = repository.findUniqueTags()
+    val uniqueTags = repository.findUniqueTagNamesOrderedByTagName()
 
-    uniqueTags should equal(List("java", "spring", "scala"))
+    uniqueTags should equal(List("java", "scala", "spring"))
   }
 
   test("find questions with given tag") {
