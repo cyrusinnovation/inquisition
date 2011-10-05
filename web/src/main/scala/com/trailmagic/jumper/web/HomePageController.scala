@@ -15,7 +15,8 @@ class HomePageController @Autowired()(questionRepository: QuestionRepository, ti
   @RequestMapping(Array("/"))
   def showIndex() = {
     val model = Map("currentUser" -> SecurityHelper.getAuthenticatedUser,
-    "questions" -> questionRepository.findRecent(timeSource.now))
+    "questions" -> questionRepository.findRecent(timeSource.now),
+    "tags" -> questionRepository.findUniqueTagNamesOrderedByTagName())
     new ModelAndView("index", model.asJava)
   }
 

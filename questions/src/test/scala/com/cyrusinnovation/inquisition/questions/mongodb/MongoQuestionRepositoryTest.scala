@@ -120,4 +120,8 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
     question.length should be(1)
     question.head should equal(correctQuestion)
   }
+
+  test(""){
+
+  }
 }

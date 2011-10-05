@@ -1,6 +1,7 @@
 #import (com.cyrusinnovation.inquisition.questions.Question)
 <% attributes("title") = "Inquisition" %>
 <%@ val questions: List[Question] %>
+<%@ val tags: List[String] %>
 
 <div class="content">
   <a class="btn large primary" href="${contextPath}/questions/new">New Question</a>
@@ -11,6 +12,13 @@
     <ul>
         #for (q <- questions)
             <li><a href="${contextPath}/questions/${q.id}">${q.title}</a> : ${q.body.take(10)}...</li>
+        #end
+    </ul>
+
+  <h1>Top Tags</h1>
+    <ul>
+        #for (tag <- tags)
+            <li>${tag}</li>
         #end
     </ul>
 </div>
