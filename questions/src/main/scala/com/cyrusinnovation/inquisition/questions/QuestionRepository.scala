@@ -8,4 +8,6 @@ trait QuestionRepository {
   def findRecent(now: DateTime): List[Question]
   def findQuestionCount(): Int
   def saveQuestionAnswer(question: Question, questionAnswer: QuestionAnswer): Question
+  def findUniqueTags(): List[String]
+  def findQuestionsByTag(tag: String): List[Question]
 }
