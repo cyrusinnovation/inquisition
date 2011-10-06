@@ -7,6 +7,7 @@ import com.novus.salat.global._
 import org.springframework.stereotype.Repository
 import org.joda.time.DateTime
 import com.mongodb.casbah.Imports._
+import com.mongodb.WriteResult
 
 @Repository
 class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionRepository {
@@ -39,7 +40,7 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   }
 
   def findById(id: String): Option[Question] = {
-    val result: Option[DBObject] = questions.findOne(MongoDBObject("_id" -> new ObjectId(id)))
+    val result: Option[DBObject] = questions.findOneByID(new ObjectId(id))
     result.map { db2question }
   }
 
@@ -59,5 +60,9 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   def findQuestionsByTag(tag: String): List[Question] = {
     val results = questions.find(MongoDBObject("tags" -> tag))
     results.map(db2question).toList
+  }
+
+  def deleteQuestion(id: String) {
+    questions.remove(MongoDBObject("_id" -> new ObjectId(id)), WriteConcern.Safe)
   }
 }

@@ -69,6 +69,15 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     mav.getModel.get("question") should be(q.toQuestion)
   }
 
+  test("delete a question")
+  {
+    val questionId = "questionId"
+    val q = uniqueQuestionFormData("some new question");
+
+    val viewName = controller.deleteQuestion(questionId)
+    verify(repository, times(1)).deleteQuestion(questionId)
+    viewName should be ("/")
+  }
 
   test("throw a resource not found exception") {
     val questionId = "questionId"

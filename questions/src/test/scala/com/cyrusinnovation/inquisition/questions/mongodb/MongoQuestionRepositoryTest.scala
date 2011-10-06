@@ -1,10 +1,12 @@
 package com.cyrusinnovation.inquisition.questions.mongodb
 
 import org.scalatest.matchers.{ShouldMatchers, MustMatchers}
+import org.scalatest.matchers.ShouldMatchers.produce
 import com.mongodb.casbah.MongoConnection
 import org.joda.time.DateTime
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import com.cyrusinnovation.inquisition.questions.{QuestionAnswer, Question}
+import java.io.FileNotFoundException
 
 class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   val con = MongoConnection()
@@ -64,7 +66,7 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
 
 
   test("should return none if nothing has that id") {
-    val result = repository.findById("dead6bb0744e9d3695a7f810")
+    val result = repository.findById(MongoTestConstants.DeadObjectIdString)
     result should be(None)
   }
 
@@ -121,7 +123,17 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
     question.head should equal(correctQuestion)
   }
 
-  test(""){
+  test("delete a question with a given object id"){
+    val savedQuestion = repository.save(uniqueQuestion())
+    val savedQuestionId = savedQuestion.id.get
 
+    repository.deleteQuestion(savedQuestionId)
+
+    val deletedQuestion = repository.findById(savedQuestionId)
+    deletedQuestion should be(None)
+  }
+
+  test("deleting a non-existant question does not throw an exception") {
+    repository.deleteQuestion(MongoTestConstants.DeadObjectIdString)
   }
 }
