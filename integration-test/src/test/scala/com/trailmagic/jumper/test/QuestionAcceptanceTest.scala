@@ -55,7 +55,29 @@ class QuestionAcceptanceTest {
   }
 
   @Test
-  def someNewTest() {
-    assertTrue(true)
+  def optionToDeleteAQuestion() {
+    val questionTitleText = "Some Title " + System.currentTimeMillis()
+    helper.navigateToQuestionFormAndCreateQuestion(questionTitleText)
+
+      // eventually be a helper method to cleanup after ourselves
+    driver.findElement(By linkText questionTitleText).click()
+
+    driver.findElement(By linkText "Delete Question")
+
+  }
+
+
+  @Test
+  def canDeleteAQuestion() {
+    val questionTitleText = "Some Title " + System.currentTimeMillis()
+    helper.navigateToQuestionFormAndCreateQuestion(questionTitleText)
+
+      // eventually be a helper method to cleanup after ourselves
+    driver.findElement(By linkText questionTitleText).click()
+
+    driver.findElement(By linkText "Delete Question").click()
+
+    assertFalse(helper.isTextIsOnScreen(questionTitleText))
+
   }
 }

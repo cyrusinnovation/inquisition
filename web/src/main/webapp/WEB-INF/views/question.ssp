@@ -16,7 +16,7 @@
 
     <hr>
 
-
+    <p><a href="delete" id="questionDelete" value="${question.id}">Delete Question</a></p>
     <hr>
         <%-- #for (qa <- question.answers)
             <h2>${qa.title}</h2>

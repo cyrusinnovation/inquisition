@@ -38,7 +38,7 @@ class LoginAcceptanceTest {
   }
 
   @Test
-  def someTest() {
+  def canaryTest() {
     assertNotNull(profile)
     assertNotNull(driver)
     assertNotNull(helper)

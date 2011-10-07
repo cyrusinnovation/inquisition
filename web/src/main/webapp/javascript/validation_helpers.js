@@ -23,3 +23,11 @@ var validatePassword = function(password, error) {
 var setFocus = function(elementid) {
   setTimeout("document.getElementById('" + elementid + "').focus();", 100);
 }
+
+$("#questionDelete").click(function(event) {
+   event.preventDefault();
+
+   // if the element is of type delete question, then
+   // override default action
+   // submit delete of /questions/${questionid}
+});

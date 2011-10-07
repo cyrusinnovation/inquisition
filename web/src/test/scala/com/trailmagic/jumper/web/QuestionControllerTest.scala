@@ -29,10 +29,12 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     SecurityHelper.setAuthenticatedUser(None)
   }
 
-  def uniqueQuestionFormData(title: String = "How do I use MongoDB?"): QuestionFormData = {
+  def uniqueQuestionFormData(title: String = "some new question", body: String = "The question body."):
+  QuestionFormData
+  = {
     val questionFormData = new QuestionFormData();
     questionFormData.setTitle(title + " " + System.currentTimeMillis())
-    questionFormData.setBody("The question body.");
+    questionFormData.setBody(body);
     return questionFormData;
   }
 
@@ -41,19 +43,19 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
   }
 
   test("create a new question returns to the home page") {
-    val q = uniqueQuestionFormData("some new question");
+    val q = uniqueQuestionFormData();
     controller.addQuestion(q) should be("redirect:/")
   }
 
   test("create a new question returns calls the question repository") {
-    val q = uniqueQuestionFormData("some new question");
+    val q = uniqueQuestionFormData();
     when(repository.save(q.toQuestion)).thenReturn(null);
     controller.addQuestion(q) should be("redirect:/")
   }
 
   test("show question tests that the view is question") {
     val questionId = "questionId"
-    val q = uniqueQuestionFormData("some new question");
+    val q = uniqueQuestionFormData();
     when(repository.findById(questionId)).thenReturn(Some(q.toQuestion));
     val mav = controller.showQuestion(questionId)
     mav.getViewName should be("question")
@@ -62,7 +64,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
   test("show question tests that the model contains the question") {
     val questionId = "questionId"
-    val q = uniqueQuestionFormData("some new question");
+    val q = uniqueQuestionFormData();
     when(repository.findById(questionId)).thenReturn(Some(q.toQuestion));
     val mav = controller.showQuestion(questionId)
     mav.getModel.containsKey("question") should be(true)
@@ -72,7 +74,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
   test("delete a question")
   {
     val questionId = "questionId"
-    val q = uniqueQuestionFormData("some new question");
+    val q = uniqueQuestionFormData();
 
     val viewName = controller.deleteQuestion(questionId)
     verify(repository, times(1)).deleteQuestion(questionId)
@@ -81,7 +83,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
   test("throw a resource not found exception") {
     val questionId = "questionId"
-    val q = uniqueQuestionFormData("some new question");
+    val q = uniqueQuestionFormData();
     when(repository.findById(questionId)).thenReturn(None);
     evaluating {
       controller.showQuestion(questionId)
