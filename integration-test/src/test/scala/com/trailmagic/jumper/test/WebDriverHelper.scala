@@ -5,6 +5,17 @@ import org.openqa.selenium.{WebElement, By, WebDriver}
 import scala.collection.JavaConverters._
 
 class WebDriverHelper(driver: WebDriver) {
+  def logout() {
+    getSignOutElement().click()
+  }
+
+  def getSignOutElement() : WebElement = {
+    //Open drop down menu so the "Sign out" link text is visible and the element can be grabbed
+    driver.findElement(By.cssSelector(".auth-trigger")).click()
+    driver.findElement(By.linkText("Sign out"))
+  }
+
+
   def fillAndSubmitQuestionForm(question: String = "this is a question?", questionText: String = "This is the question body.", tagList: String = "TagA,TagB") {
     driver.findElement(By.id("title")).sendKeys(question);
     driver.findElement(By.id("bodyInput")).sendKeys(questionText);
@@ -21,6 +32,10 @@ class WebDriverHelper(driver: WebDriver) {
 
   def submitRegistrationForm() {
     driver.findElement(By.name("email")).submit()
+  }
+  def clearLoginForm() {
+    driver.findElement(By.id("username")).clear()
+    driver.findElement(By.id("password")).clear()
   }
 
   def fillAndSubmitLoginForm(username: String = "tester", password: String = "password") {
