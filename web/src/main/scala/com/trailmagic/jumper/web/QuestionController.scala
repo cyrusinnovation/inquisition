@@ -1,6 +1,5 @@
 package com.trailmagic.jumper.web
 
-import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.bind.annotation.{ModelAttribute, RequestMethod, PathVariable, RequestMapping}
 import org.springframework.beans.factory.annotation.Autowired
 import com.cyrusinnovation.inquisition.questions.QuestionRepository
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Controller
 import scala.collection.JavaConverters._
 import java.security.Principal
 import util.SecurityHelper
+import org.springframework.web.servlet.ModelAndView
 
 @Controller
 class QuestionController @Autowired()(questionRepository: QuestionRepository, timeSource: TimeSource) {
@@ -40,11 +40,22 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository, ti
       case None => throw new ResourceNotFoundException
     }
   }
+
   @RequestMapping(value = Array("/questions/{questionId}"), method = Array(RequestMethod.DELETE))
   def deleteQuestion(id: String): String = {
     questionRepository.deleteQuestion(id)
     "/"
   }
+
+  @RequestMapping(value = Array("/questions/search"), method = Array(RequestMethod.POST))
+  def searchQuestions(@ModelAttribute tags: TagFormData) = {
+    val tagList = tags.toTagList
+    val questions = questionRepository.findQuestionsByTags(tagList)
+    val model = Map("questions" -> questions,
+                    "searchTerms" -> tags.getTagQuery())
+    new ModelAndView("search-results", model.asJava)
+  }
+
   //
   //    @RequestMapping(Array("/questions/newResponse/{questionId}"))
   //    def showNewQuestionResponseForm(@PathVariable questionId: String) = {

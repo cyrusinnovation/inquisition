@@ -6,11 +6,11 @@ import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import org.mockito.MockitoAnnotations.Mock
 import org.mockito.MockitoAnnotations
 
-import com.cyrusinnovation.inquisition.questions.QuestionRepository
 import org.mockito.Mockito._
 import java.security.Principal
 import util.SecurityHelper
 import com.trailmagic.jumper.core.{User, SavedUser, TimeSource}
+import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
 
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   @Mock var timeSource: TimeSource = _
@@ -88,5 +88,19 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     evaluating {
       controller.showQuestion(questionId)
     } should produce[ResourceNotFoundException]
+  }
+
+  test("search for questions with a tag") {
+    val questionReturn = List[Question]()
+    val tagFormData = new TagFormData()
+    tagFormData.setTagQuery("taga, tagb")
+    when(repository.findQuestionsByTags(tagFormData.toTagList)).thenReturn(questionReturn)
+
+    val mav = controller.searchQuestions(tagFormData)
+    val model = mav.getModel
+
+    mav.getViewName should be ("search-results")
+    model.get("searchTerms") should equal(tagFormData.getTagQuery())
+    model.get("questions") should equal(questionReturn)
   }
 }

@@ -136,4 +136,23 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
   test("deleting a non-existant question does not throw an exception") {
     repository.deleteQuestion(MongoTestConstants.DeadObjectIdString)
   }
+
+  test("can do simple tag search") {
+    repository.save(uniqueQuestion().copy(tags = List("java")));
+    repository.save(uniqueQuestion().copy(tags = List("scala")));
+    repository.findQuestionCount() should equal(2)
+
+    val results = repository.findQuestionsByTags(List("java", "scala"))
+    results.length should be(2)
+  }
+
+  test("simple tag search only returns items with matching tags") {
+    val answer = repository.save(uniqueQuestion().copy(tags = List("java")));
+    repository.save(uniqueQuestion().copy(tags = List("scala")));
+    repository.findQuestionCount() should equal(2)
+
+    val results = repository.findQuestionsByTags(List("java"))
+    results.length should be(1)
+    results.head should equal(answer)
+  }
 }

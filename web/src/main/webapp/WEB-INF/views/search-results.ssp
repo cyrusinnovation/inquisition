@@ -1,0 +1,13 @@
+#import (com.cyrusinnovation.inquisition.questions.Question)
+<% attributes("title") = "Search Results" %>
+<%@ val questions: List[Question] %>
+<%@ val searchTerms: String %>
+
+<div class="content">
+    <h2>Search Results</h2>
+    <h3>Found ${questions.length} results for search Terms: ${searchTerms}</h3>
+    <hr>
+    #for (q <- questions)
+        <li><a href="${contextPath}/questions/${q.id}">${q.title}</a> : ${q.body.take(10)}...</li>
+    #end
+</div>

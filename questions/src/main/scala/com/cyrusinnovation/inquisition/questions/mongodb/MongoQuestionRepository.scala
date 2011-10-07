@@ -65,4 +65,8 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   def deleteQuestion(id: String) {
     questions.remove(MongoDBObject("_id" -> new ObjectId(id)), WriteConcern.Safe)
   }
+
+  def findQuestionsByTags(tags: List[String]): List[Question] = {
+    questions.find("tags" $in tags).map(db2question).toList
+  }
 }

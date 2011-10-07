@@ -5,6 +5,10 @@ import org.openqa.selenium.{WebElement, By, WebDriver}
 import scala.collection.JavaConverters._
 
 class WebDriverHelper(driver: WebDriver) {
+  def tagSearchBoxElement() : WebElement = {
+    driver.findElement(By.id("search-form"))
+  }
+
   def logout() {
     getSignOutElement().click()
   }
