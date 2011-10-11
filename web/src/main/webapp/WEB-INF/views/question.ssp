@@ -7,21 +7,23 @@
     <h3>Asked by ${question.creatorUsername}</h3>
     ${question.body}
     <hr>
-        <a href="${contextPath}/questions/newResponse/${question.id}">Add Comment</a>
+        <p><a href="delete" id="questionDelete" value="${question.id}">Delete Question</a></p>
+        <p><a href="${contextPath}/questions/newResponse/${question.id}">Add Response</a></p>
     <hr>
+
+    <h1>Tags</h1>
     <hr>
         #for (tag <- question.tags)
            <p>${tag}</p>
         #end
-
     <hr>
 
-    <p><a href="delete" id="questionDelete" value="${question.id}">Delete Question</a></p>
+    <h1>Question Responses</h1>
     <hr>
-        <%-- #for (qa <- question.answers)
+        #for (qa <- question.answers)
             <h2>${qa.title}</h2>
-            <h3>Asked by ${qa.body}</h3>
+            <h3>Asked by ${qa.creatorUsername}</h3>
+            <p>${qa.body}</p>
         #end
-        --%>
     <hr>
 </div>

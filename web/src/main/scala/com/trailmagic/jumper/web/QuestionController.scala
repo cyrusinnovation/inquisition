@@ -52,26 +52,25 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository, ti
     val tagList = tags.toTagList
     val questions = questionRepository.findQuestionsByTags(tagList)
     val model = Map("questions" -> questions,
-                    "searchTerms" -> tags.getTagQuery())
+      "searchTerms" -> tags.getTagQuery())
     new ModelAndView("search-results", model.asJava)
   }
 
-  //
-  //    @RequestMapping(Array("/questions/newResponse/{questionId}"))
-  //    def showNewQuestionResponseForm(@PathVariable questionId: String) = {
-  //        val model = Map("questionId" -> questionId)
-  //        new ModelAndView("new-question-response", model.asJava)
-  //    }
+  @RequestMapping(Array("/questions/newResponse/{questionId}"))
+  def showNewQuestionResponseForm(@PathVariable questionId: String) = {
+    val model = Map("questionId" -> questionId)
+    new ModelAndView("new-question-response", model.asJava)
+  }
 
-  //    @RequestMapping(value = Array("/questions/newResponse"), method = Array(RequestMethod.POST))
-  //    def addQuestionAnswer(@ModelAttribute questionAnswer: QuestionAnswerFormData) = {
-  //        val question = questionRepository.findById(questionAnswer.getQuestionId())
-  //        match {
-  //            case Some(question) => {
-  //                questionRepository.saveQuestionAnswer(question, questionAnswer.toQuestionAnswer)
-  //            }
-  //            case None => throw new ResourceNotFoundException
-  //        }
-  //        "redirect:/"
-  //    }
+  @RequestMapping(value = Array("/questions/newResponse"), method = Array(RequestMethod.POST))
+  def addQuestionAnswer(@ModelAttribute questionAnswer: QuestionAnswerFormData) = {
+    val question = questionRepository.findById(questionAnswer.getQuestionId())
+    match {
+      case Some(question) => {
+        questionRepository.saveQuestionAnswer(question, questionAnswer.toQuestionAnswer)
+      }
+      case None => throw new ResourceNotFoundException
+    }
+    "redirect:/"
+  }
 }

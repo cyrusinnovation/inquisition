@@ -31,7 +31,9 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   }
 
   def saveQuestionAnswer(question: Question, questionAnswer: QuestionAnswer): Question = {
-    Question(None, "Title", "UserName")
+    val updatedQuestion = question.copy(answers = questionAnswer :: question.answers)
+    save(updatedQuestion)
+//    Question(None,"Title","BS")
   }
 
   def db2question(dbObj: DBObject): Question = {

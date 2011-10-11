@@ -80,4 +80,17 @@ class QuestionAcceptanceTest {
     assertFalse(helper.isTextIsOnScreen(questionTitleText))
 
   }
+
+  @Test
+  def canAnswerAQuestion() {
+    val questionTitleText = "Some Title " + System.currentTimeMillis()
+
+    helper.navigateToQuestionFormAndCreateQuestion(questionTitleText)
+    val questionUrl = driver.findElement(By linkText  questionTitleText).getAttribute("href")
+    driver.get(questionUrl)
+    helper.answerQuestion(title = "Test Response")
+    driver.get(questionUrl)
+
+    assertTrue(helper.isTextIsOnScreen("Test Response"))
+  }
 }

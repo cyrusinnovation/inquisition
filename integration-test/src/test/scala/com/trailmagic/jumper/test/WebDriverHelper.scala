@@ -5,6 +5,16 @@ import org.openqa.selenium.{WebElement, By, WebDriver}
 import scala.collection.JavaConverters._
 
 class WebDriverHelper(driver: WebDriver) {
+
+  def answerQuestion(title: String = "Response Title", body: String = "responseBody", creator: String = "Creator") = {
+    driver.findElement(By.linkText("Add Response")).click()
+
+    driver.findElement(By.id("title")).sendKeys(title)
+    val questionBodyElement = driver.findElement(By.id("bodyInput"))
+    questionBodyElement.sendKeys(title)
+    questionBodyElement.submit()
+  }
+
   def tagSearchBoxElement() : WebElement = {
     driver.findElement(By.id("search-form"))
   }
@@ -88,7 +98,6 @@ class WebDriverHelper(driver: WebDriver) {
   def isTextIsOnScreen(textToLookFor: String): Boolean = {
     val bodyTag = driver.findElement(By.tagName("body"));
     bodyTag.getText.contains(textToLookFor)
-
   }
 
   def navigateToQuestionFormAndCreateQuestion(question: String = "this is a question?", questionText: String = "This is the question body.", tagList: String = "TagA,TagB") {
