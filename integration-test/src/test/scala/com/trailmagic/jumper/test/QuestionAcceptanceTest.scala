@@ -59,7 +59,6 @@ class QuestionAcceptanceTest {
     val questionTitleText = "Some Title " + System.currentTimeMillis()
     helper.navigateToQuestionFormAndCreateQuestion(questionTitleText)
 
-      // eventually be a helper method to cleanup after ourselves
     driver.findElement(By linkText questionTitleText).click()
 
     driver.findElement(By linkText "Delete Question")
@@ -72,14 +71,18 @@ class QuestionAcceptanceTest {
     val questionTitleText = "Some Title " + System.currentTimeMillis()
     helper.navigateToQuestionFormAndCreateQuestion(questionTitleText)
 
-      // eventually be a helper method to cleanup after ourselves
     driver.findElement(By linkText questionTitleText).click()
 
     driver.findElement(By linkText "Delete Question").click()
 
+
+    helper.clickDialogConfirmButton
+
     assertFalse(helper.isTextIsOnScreen(questionTitleText))
 
   }
+
+
 
   @Test
   def canAnswerAQuestion() {

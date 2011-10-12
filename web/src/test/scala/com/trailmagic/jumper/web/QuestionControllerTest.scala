@@ -78,7 +78,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
     val viewName = controller.deleteQuestion(questionId)
     verify(repository, times(1)).deleteQuestion(questionId)
-    viewName should be ("/")
+    viewName should be ("redirect:/")
   }
 
   test("throw a resource not found exception") {

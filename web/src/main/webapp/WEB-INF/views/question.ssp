@@ -7,7 +7,8 @@
     <h3>Asked by ${question.creatorUsername}</h3>
     ${question.body}
     <hr>
-        <p><a href="delete" id="questionDelete" value="${question.id}">Delete Question</a></p>
+        <p><a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink">Delete
+    Question</a>    <div id="dialog" title="Confirmation Required">Are you sure about this?</div></p>
         <p><a href="${contextPath}/questions/newResponse/${question.id}">Add Response</a></p>
     <hr>
 
@@ -19,10 +20,6 @@
     <hr>
 
 
-    <p><a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink">Delete
-    Question</a></p>
-
-    <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
 
     <h1>Question Responses</h1>
 
