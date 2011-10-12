@@ -7,9 +7,9 @@ import org.openqa.selenium.{By, WebDriver}
 import org.junit.{Ignore, Test, After, Before}
 
 class JumperAcceptanceTest {
-  //  val capabilities = new DesiredCapabilities("firefox", "3.6.", Platform.WINDOWS)
-  //  val driver: WebDriver = new RemoteWebDriver(new URL("http://ostewart:0e34cb73-611e-404f-a7ec-bbcead187fcc@ondemand.saucelabs.com:80/wd/hub"), capabilities)
-  //  System.setProperty("webdriver.firefox.profile", "WebDriver")
+  // val capabilities = new DesiredCapabilities("firefox", "3.6.", Platform.WINDOWS)
+  // val driver: WebDriver = new RemoteWebDriver(new URL("http://ostewart:0e34cb73-611e-404f-a7ec-bbcead187fcc@ondemand.saucelabs.com:80/wd/hub"), capabilities)
+  // System.setProperty("webdriver.firefox.profile", "WebDriver")
   var profile: FirefoxProfile = _
   var driver: WebDriver = _
   var helper: WebDriverHelper = _
