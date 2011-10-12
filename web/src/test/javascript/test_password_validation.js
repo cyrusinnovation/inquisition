@@ -4,6 +4,7 @@ TestCase('Password Validation Test', {
         this.password = {value: 'password', id: 'passwordid'};
         this.error = {innerHTML: ''};
         this.errorMessage = 'Password must be at least eight characters!';
+
     },
 
     tearDown: function() {

@@ -16,7 +16,12 @@
 
     <hr>
 
-    <p><a href="delete" id="questionDelete" value="${question.id}">Delete Question</a></p>
+    <p><a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink">Delete
+    Question</a></p>
+
+    <div id="dialog" title="Confirmation Required">
+  Are you sure about this?
+</div>
     <hr>
         <%-- #for (qa <- question.answers)
             <h2>${qa.title}</h2>
