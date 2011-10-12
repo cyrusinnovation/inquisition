@@ -22,9 +22,7 @@
     <p><a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink">Delete
     Question</a></p>
 
-    <div id="dialog" title="Confirmation Required">
-  Are you sure about this?
-</div>
+    <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
 
     <h1>Question Responses</h1>
 
