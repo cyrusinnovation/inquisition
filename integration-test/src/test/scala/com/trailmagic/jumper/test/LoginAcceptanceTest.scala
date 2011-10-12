@@ -53,7 +53,7 @@ class LoginAcceptanceTest {
   @Test
   def submitForm() {
     helper.fillAndSubmitLoginForm()
-    assertTrue(helper.isTextIsOnScreen("tester"))
+    assertTrue(helper.isTextIsOnScreen(DataHelper.TestUser.firstName))
     assertFalse(helper.isTextIsOnScreen("Login Failed!"))
   }
 

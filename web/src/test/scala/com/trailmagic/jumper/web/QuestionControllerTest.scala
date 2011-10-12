@@ -6,11 +6,12 @@ import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import org.mockito.MockitoAnnotations.Mock
 import org.mockito.MockitoAnnotations
 
-import com.cyrusinnovation.inquisition.questions.QuestionRepository
 import org.mockito.Mockito._
 import java.security.Principal
 import util.SecurityHelper
 import com.trailmagic.jumper.core.{User, SavedUser, TimeSource}
+import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
+import com.trailmagic.jumper.web.ResourceNotFoundException
 
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   @Mock var timeSource: TimeSource = _
@@ -88,5 +89,58 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     evaluating {
       controller.showQuestion(questionId)
     } should produce[ResourceNotFoundException]
+  }
+
+  test("search for questions with a tag") {
+    val questionReturn = List[Question]()
+    val tagFormData = new TagFormData()
+    tagFormData.setTagQuery("taga, tagb")
+    when(repository.findQuestionsByTags(tagFormData.toTagList)).thenReturn(questionReturn)
+
+    val mav = controller.searchQuestions(tagFormData)
+    val model = mav.getModel
+
+    mav.getViewName should be ("search-results")
+    model.get("searchTerms") should equal(tagFormData.getTagQuery())
+    model.get("questions") should equal(questionReturn)
+  }
+
+  test("display new question form") {
+    val questionId = "dead6bb0744e9d3695a7f810"
+    val question = Some(new Question(None, "Title", "Creator"))
+    when(repository.findById(questionId)).thenReturn(question)
+
+    val mav = controller.showNewQuestionResponseForm(questionId)
+
+    mav.getViewName() should be("new-question-response")
+    mav.getModelMap.get("questionId") should equal(questionId)
+  }
+
+  test("can save new question response") {
+    val questionId = "dead6bb0744e9d3695a7f810"
+    val questionAnswerModel = new QuestionAnswerFormData()
+    questionAnswerModel.setQuestionId(questionId)
+    questionAnswerModel.setTitle("Title")
+    questionAnswerModel.setBody("Body text")
+    val question = new Question(None, "Title", "Creator")
+
+    when(repository.findById(questionId)).thenReturn(Some(question))
+    when(repository.saveQuestionAnswer(question, questionAnswerModel.toQuestionAnswer)).thenReturn(question)
+
+    val nextView = controller.addQuestionAnswer(questionAnswerModel)
+    nextView should be("redirect:/")
+  }
+
+  test("Exception thrown if a question response is added to a non-exstant questions") {
+    val questionId = "dead6bb0744e9d3695a7f810"
+    val questionAnswerModel = new QuestionAnswerFormData()
+    questionAnswerModel.setQuestionId(questionId)
+    questionAnswerModel.setTitle("Title")
+    questionAnswerModel.setBody("Body text")
+    when(repository.findById(questionId)).thenReturn(None)
+
+    evaluating {
+      controller.addQuestionAnswer(questionAnswerModel)
+    } should produce [ResourceNotFoundException]
   }
 }

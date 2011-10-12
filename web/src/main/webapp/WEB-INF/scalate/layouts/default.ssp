@@ -19,6 +19,13 @@
         <div class="container">
           <h3><a href="${contextPath}/">Inquisition</a></h3>
           <ul class="nav">
+            #match (SecurityHelper.getAuthenticatedUser)
+            #case (Some(user))
+                 <form id="search-form" class="js-search-form" action="${contextPath}/questions/search" method="POST">
+                    <input value="" placeholder="Search" name="tagQuery" id="search-query" type="text" />
+                 </form>
+            #otherwise
+            #end
             <li class="active"><a href="${contextPath}/">Home</a></li>
           </ul>
           <ul class="nav secondary-nav">

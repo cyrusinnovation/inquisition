@@ -25,6 +25,9 @@ For tomcat version 7 the line (At the top of the default server.xml)
 
 Must be commented or tomcat throws an exception during startup.
 
+Unless the memory is increased on the Java VM tomcat (version 6 and 7) will through out of memory errors.  To increase
+the memory use the following VM Parameter -Xmx256m which will prevent this from happening.
+
 # Generate keystoreFile
 The command to generate a keystore file is
 

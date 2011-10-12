@@ -62,12 +62,10 @@ class JumperAcceptanceTest {
     assertEquals("Authenticated user's name in dropdown",
                  DataHelper.TestUser.firstName + " " + DataHelper.TestUser.lastName,
                  driver.findElement(By.cssSelector(".auth-trigger")).getText)
-    driver.findElement(By.cssSelector(".auth-trigger")).click()
-    driver.findElement(By.linkText("Sign out"))
+    helper.getSignOutElement
   }
 
   @Test
-  @Ignore
   def testLoginFailureStillRedirectsToOriginalPage() {
     val originalUrl = WebConstants.HomeUrl
     driver.get(originalUrl)
@@ -76,50 +74,24 @@ class JumperAcceptanceTest {
     usernameElement.sendKeys("i don't exist");
     usernameElement.submit();
 
+    helper.clearLoginForm()
     helper.fillAndSubmitLoginForm()
     assertEquals(originalUrl, driver.getCurrentUrl)
-    driver.findElement(By.linkText("Sign out"))
+    helper.getSignOutElement
   }
 
   @Test
-  @Ignore
   def testLogoutReturnsToFrontPage() {
+    helper.login()
+    helper.logout()
 
+    assertEquals(WebConstants.HomeUrl, driver.getCurrentUrl)
+    assertTrue(helper.isTextIsOnScreen("Sign in"))
   }
 
-  @Test
-  def testFrontPagePresentsSignupFormToUnauthenticatedUser() {
-    driver.get(WebConstants.HomeUrl)
-    driver.findElement(By.name("emailAddress"))
-    assertEquals("No name in authentication info", "Sign in", driver.findElement(By.cssSelector(".auth-trigger")).getText)
-  }
-
-  @Test
-  def testSignupWithEmailRedirectsToThankYouPage() {
-    driver.get(WebConstants.BaseUrl)
-    val email = driver.findElement(By.name("emailAddress"))
-    email.sendKeys("foo@bar.com")
-    email.submit()
-    assertEquals(WebConstants.SignUpThankYouUrl, driver.getCurrentUrl)
-    assertEquals("Thank You", driver.findElement(By.tagName("h1")).getText)
-  }
 
   def fillFieldByName(name: String, value: String) {
     driver.findElement(By.name(name)).sendKeys(value)
-  }
-
-  @Test
-  def testCreateNewUserForwardsToUserPage() {
-    driver.get(WebConstants.NewUserUrl)
-    fillFieldByName("email", "newuser@example.com")
-    fillFieldByName("username", "newuser")
-    fillFieldByName("firstName", "New")
-    fillFieldByName("lastName", "User")
-    fillFieldByName("password", "password")
-    driver.findElement(By.cssSelector("input[type='submit']")).click()
-
-    assertEquals(WebConstants.UserProfileUrl("newuser"), driver.getCurrentUrl)
-    assertEquals("New User", driver.findElement(By.tagName("h1")).getText)
   }
 
   @Test

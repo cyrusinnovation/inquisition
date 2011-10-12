@@ -136,4 +136,48 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
   test("deleting a non-existant question does not throw an exception") {
     repository.deleteQuestion(MongoTestConstants.DeadObjectIdString)
   }
+
+  test("can do simple tag search") {
+    repository.save(uniqueQuestion().copy(tags = List("java")));
+    repository.save(uniqueQuestion().copy(tags = List("scala")));
+    repository.findQuestionCount() should equal(2)
+
+    val results = repository.findQuestionsByTags(List("java", "scala"))
+    results.length should be(2)
+  }
+
+  test("simple tag search only returns items with matching tags") {
+    val answer = repository.save(uniqueQuestion().copy(tags = List("java")));
+    repository.save(uniqueQuestion().copy(tags = List("scala")));
+    repository.findQuestionCount() should equal(2)
+
+    val results = repository.findQuestionsByTags(List("java"))
+    results.length should be(1)
+    results.head should equal(answer)
+  }
+
+  test("Can save a question with an answer") {
+    val answer = new QuestionAnswer("Answer", "creator", "body string")
+    val question: Question = uniqueQuestion().copy(answers = List(answer))
+
+    val savedQuestion = repository.save(question)
+    val retrievedQuestion = repository.findById(savedQuestion.id.get)
+
+    val answers = retrievedQuestion.get.answers
+    answers should have length(1)
+    answers.head should equal(answer)
+  }
+
+  test("Can update a question with an answer") {
+    val answer = new QuestionAnswer("Answer", "creator", "bodystring")
+    val question: Question = uniqueQuestion()
+
+    val savedQuestion = repository.saveQuestionAnswer(question, answer)
+    val retrievedQuestion = repository.findById(savedQuestion.id.get)
+
+    val answers = retrievedQuestion.get.answers
+    answers should have length(1)
+    answers.head should equal(answer)
+
+  }
 }

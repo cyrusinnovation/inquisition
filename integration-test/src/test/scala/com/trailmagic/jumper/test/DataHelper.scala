@@ -10,10 +10,10 @@ object DataHelper {
 
   def prepareTestData() {
     val con = MongoConnection()
-    val db = con("test_inquisition")
+    val db = con("inquisition")
 
     db("users").drop()
-    db("places").drop()
+    db("questions").drop()
 
     val repository = new MongoUserRepository(db)
     repository.save(TestUser)
