@@ -41,7 +41,7 @@ $(".confirmLink").click(function(e) {
       "Confirm" : function() {
           var f = document.createElement('form');
           $(this).after($(f).attr({
-          method: 'post',
+          method: 'POST',
           action: $(this).attr('value')
       }).append('<input type="hidden" name="_method" value="DELETE" />'));
       $(f).submit();

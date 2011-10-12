@@ -7,7 +7,6 @@ import com.trailmagic.jumper.core.TimeSource
 import org.springframework.stereotype.Controller
 
 import scala.collection.JavaConverters._
-import java.security.Principal
 import util.SecurityHelper
 import org.springframework.web.servlet.ModelAndView
 
@@ -42,9 +41,10 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository, ti
   }
 
   @RequestMapping(value = Array("/questions/{questionId}"), method = Array(RequestMethod.DELETE))
-  def deleteQuestion(id: String): String = {
-    questionRepository.deleteQuestion(id)
-    "/"
+  def deleteQuestion(@PathVariable questionId: String) = {
+
+    questionRepository.deleteQuestion(questionId)
+    "redirect:/"
   }
 
   @RequestMapping(value = Array("/questions/search"), method = Array(RequestMethod.POST))

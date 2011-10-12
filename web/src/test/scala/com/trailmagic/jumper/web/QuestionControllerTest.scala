@@ -7,11 +7,10 @@ import org.mockito.MockitoAnnotations.Mock
 import org.mockito.MockitoAnnotations
 
 import org.mockito.Mockito._
-import java.security.Principal
 import util.SecurityHelper
 import com.trailmagic.jumper.core.{User, SavedUser, TimeSource}
 import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
-import com.trailmagic.jumper.web.ResourceNotFoundException
+
 
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   @Mock var timeSource: TimeSource = _
