@@ -79,4 +79,10 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   def findQuestionsByTags(tags: List[String]): List[Question] = {
     questions.find("tags" $in tags).map(db2question).toList
   }
+
+    def findMostPopularTags(numberToRetreive: Int): List[String] = {
+       questions.group(MongoDBObject("tags" -> 1), MongoDBObject("sum:0" -> 1), "function(doc, " +
+               "prev) { prev.sum += 1}").map(x => x.toString).toList
+
+    }
 }
