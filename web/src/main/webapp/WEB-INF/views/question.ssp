@@ -1,4 +1,5 @@
 #import (com.cyrusinnovation.inquisition.questions.Question)
+#import(com.trailmagic.jumper.web.util.SecurityHelper)
 <% attributes("title") = "View Question" %>
 <%@ val question: Question %>
 
@@ -7,8 +8,10 @@
     <h3>Asked by ${question.creatorUsername}</h3>
     ${question.body}
     <hr>
+    #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
         <p><a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink">Delete
     Question</a>    <div id="dialog" title="Confirmation Required">Are you sure about this?</div></p>
+    #end
         <p><a href="${contextPath}/questions/newResponse/${question.id}">Add Response</a></p>
     <hr>
 
