@@ -7,6 +7,7 @@ import org.joda.time.DateTime
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import com.cyrusinnovation.inquisition.questions.{QuestionAnswer, Question}
 import java.io.FileNotFoundException
+import java.security.InvalidParameterException
 
 class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   val con = MongoConnection()
@@ -127,14 +128,21 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
     val savedQuestion = repository.save(uniqueQuestion())
     val savedQuestionId = savedQuestion.id.get
 
-    repository.deleteQuestion(savedQuestionId)
+    repository.deleteQuestion(savedQuestionId, savedQuestion.creatorUsername)
 
     val deletedQuestion = repository.findById(savedQuestionId)
     deletedQuestion should be(None)
   }
 
+  test("delete a question with a given object id, but not the correct username"){
+    val savedQuestion = repository.save(uniqueQuestion())
+    val savedQuestionId = savedQuestion.id.get
+    evaluating(repository.deleteQuestion(savedQuestionId, "invalidusername")) should(produce[InvalidParameterException])
+
+  }
+
   test("deleting a non-existant question does not throw an exception") {
-    repository.deleteQuestion(MongoTestConstants.DeadObjectIdString)
+    repository.deleteQuestion(MongoTestConstants.DeadObjectIdString, "")
   }
 
   test("can do simple tag search") {

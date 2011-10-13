@@ -10,6 +10,6 @@ trait QuestionRepository {
   def saveQuestionAnswer(question: Question, questionAnswer: QuestionAnswer): Question
   def findUniqueTagNamesOrderedByTagName(): List[String]
   def findQuestionsByTag(tag: String): List[Question]
-  def deleteQuestion(id: String)
+  def deleteQuestion(id: String, usernameRequestingDelete: String)
   def findQuestionsByTags(tags: List[String]): List[Question]
 }

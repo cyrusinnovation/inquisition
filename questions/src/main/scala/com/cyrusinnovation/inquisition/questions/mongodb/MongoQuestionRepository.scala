@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository
 import org.joda.time.DateTime
 import com.mongodb.casbah.Imports._
 import com.mongodb.WriteResult
+import java.security.InvalidParameterException
 
 @Repository
 class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionRepository {
@@ -64,7 +65,14 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     results.map(db2question).toList
   }
 
-  def deleteQuestion(id: String) {
+  def deleteQuestion(id: String, usernameRequestingDelete: String) {
+      val question = findById(id)
+      if (question == None) {
+          return
+      }
+      if(!question.get.creatorUsername.equals(usernameRequestingDelete)) {
+          throw new InvalidParameterException("requesting user does not have the rights to delte this question")
+      }
     questions.remove(MongoDBObject("_id" -> new ObjectId(id)), WriteConcern.Safe)
   }
 

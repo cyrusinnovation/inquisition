@@ -77,7 +77,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     val q = uniqueQuestionFormData();
 
     val viewName = controller.deleteQuestion(questionId)
-    verify(repository, times(1)).deleteQuestion(questionId)
+    verify(repository, times(1)).deleteQuestion(questionId, "userName")
     viewName should be ("redirect:/")
   }
 
