@@ -120,8 +120,8 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
 
     val tags = repository.findMostPopularTags(1)
 
-    tags.length should be(tags, 1)
-    tags.head should equal("spring")
+    tags should have length(1)
+    tags.head should equal(("spring", 2))
   }
 
   test("find questions with given tag") {

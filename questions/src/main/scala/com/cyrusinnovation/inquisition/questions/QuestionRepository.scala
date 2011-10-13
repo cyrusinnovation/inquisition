@@ -9,7 +9,7 @@ trait QuestionRepository {
   def findQuestionCount(): Int
   def saveQuestionAnswer(question: Question, questionAnswer: QuestionAnswer): Question
   def findUniqueTagNamesOrderedByTagName(): List[String]
-  def findMostPopularTags(numberToRetreive: Int): List[String]
+  def findMostPopularTags(numberToRetreive: Int): List[(String, Int)]
   def findQuestionsByTag(tag: String): List[Question]
   def deleteQuestion(id: String, usernameRequestingDelete: String)
   def findQuestionsByTags(tags: List[String]): List[Question]

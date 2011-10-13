@@ -14,18 +14,19 @@ import java.security.InvalidParameterException
 class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionRepository {
 
   val questions = db("questions")
+  val tags = db("tags")
   questions.ensureIndex(MongoDBObject("tags" -> 1))
 
   def save(question: Question): Question = {
     question.id match {
-      case None =>{
+      case None => {
         val dbObj = grater[Question].asDBObject(question)
         val result = questions.insert(dbObj, WriteConcern.Safe)
         question.copy(id = Some(dbObj("_id").toString))
       }
       case Some(id: String) => {
         val dbObj = grater[Question].asDBObject(question)
-        val res = questions.update(MongoDBObject("_id" -> new ObjectId(id)), dbObj, false,false, WriteConcern.Safe)
+        val res = questions.update(MongoDBObject("_id" -> new ObjectId(id)), dbObj, false, false, WriteConcern.Safe)
         question.copy(id = Some(dbObj("id").toString))
       }
     }
@@ -34,7 +35,7 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   def saveQuestionAnswer(question: Question, questionAnswer: QuestionAnswer): Question = {
     val updatedQuestion = question.copy(answers = questionAnswer :: question.answers)
     save(updatedQuestion)
-//    Question(None,"Title","BS")
+    //    Question(None,"Title","BS")
   }
 
   def db2question(dbObj: DBObject): Question = {
@@ -44,7 +45,9 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
 
   def findById(id: String): Option[Question] = {
     val result: Option[DBObject] = questions.findOneByID(new ObjectId(id))
-    result.map { db2question }
+    result.map {
+      db2question
+    }
   }
 
   def findRecent(now: DateTime): List[Question] = {
@@ -66,13 +69,13 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   }
 
   def deleteQuestion(id: String, usernameRequestingDelete: String) {
-      val question = findById(id)
-      if (question == None) {
-          return
-      }
-      if(!question.get.creatorUsername.equals(usernameRequestingDelete)) {
-          throw new InvalidParameterException("requesting user does not have the rights to delte this question")
-      }
+    val question = findById(id)
+    if (question == None) {
+      return
+    }
+    if (!question.get.creatorUsername.equals(usernameRequestingDelete)) {
+      throw new InvalidParameterException("requesting user does not have the rights to delte this question")
+    }
     questions.remove(MongoDBObject("_id" -> new ObjectId(id)), WriteConcern.Safe)
   }
 
@@ -80,9 +83,35 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     questions.find("tags" $in tags).map(db2question).toList
   }
 
-    def findMostPopularTags(numberToRetreive: Int): List[String] = {
-       questions.group(MongoDBObject("tags" -> 1), MongoDBObject("sum:0" -> 1), "function(doc, " +
-               "prev) { prev.sum += 1}").map(x => x.toString).toList
+  def findMostPopularTags(numberToRetreive: Int): List[(String, Int)] = {
+    val mapFunction = """function() {
+                          if (!this.tags) {
+                            return;
+                          }
 
-    }
+                          for (index in this.tags) {
+                            emit(this.tags[index], 1);
+                          }
+                        }"""
+
+    val reduceFunction = """function(previous, current) {
+                              var count = 0;
+
+                              for (index in current) {
+                                  count += current[index];
+                              }
+
+                              return count;
+                            }"""
+
+    val commandBuilder = MongoDBObject.newBuilder
+    commandBuilder += "mapreduce" -> "questions"
+    commandBuilder += "map" -> mapFunction
+    commandBuilder += "reduce" -> reduceFunction
+    commandBuilder += "out" -> "tags"
+    db.command(commandBuilder.result())
+
+    val tagList = tags.find().sort(MongoDBObject("value" ->  -1)).limit(numberToRetreive)
+    tagList.map(x => (x.getAs[String]("_id").get, x.getAs[Int]("value").get)).toList
+  }
 }
