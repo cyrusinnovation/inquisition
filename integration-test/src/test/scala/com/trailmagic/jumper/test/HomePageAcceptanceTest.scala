@@ -41,13 +41,13 @@ class HomePageAcceptanceTest {
   @Test
   def homePageShowsTags()
   {
-    val tagOne = "tagOne" + System.currentTimeMillis()
-    val tagTwo = "tagTwo" + System.currentTimeMillis()
+    val tagOne = "tagOne, tagTwo, tagThree, tagFour, tagFive, tagSix, tagSeven, tagEight, tagNine, tagTen, TagEleven"
+    val tagTwo = "tagOne, tagTwo, tagThree, tagFour, tagFive, tagSix, tagSeven, tagEight, tagNine, tagTen"
 
     helper.navigateToQuestionFormAndCreateQuestion(tagList = tagOne)
     helper.navigateToQuestionFormAndCreateQuestion(tagList = tagTwo)
 
-    assertTrue(helper.isTextIsOnScreen(tagOne))
-    assertTrue(helper.isTextIsOnScreen(tagTwo))
+    tagTwo.split(", ").map(x => assertTrue("Tag should be on screen: " + x, helper.isTextIsOnScreen(x)))
+    assertFalse(helper.isTextIsOnScreen("tagEleven"))
   }
 }
