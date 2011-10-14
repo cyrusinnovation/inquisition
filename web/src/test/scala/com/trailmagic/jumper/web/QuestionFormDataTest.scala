@@ -39,4 +39,14 @@ class QuestionFormDataTest extends FunSuite with BeforeAndAfterEach with ShouldM
     question.tags(1) should equal("b")
     question.tags(2) should equal("c")
   }
+
+  test("When passed one tag should parsed into a list") {
+    val tagList = "aTag"
+    val qfd = new QuestionFormData()
+    qfd.setTags(tagList)
+    val question = qfd.toQuestion
+    question.tags should not be(null)
+    question.tags should have length(1)
+    question.tags(0) should equal(tagList)
+  }
 }

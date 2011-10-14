@@ -39,8 +39,7 @@ class HomePageAcceptanceTest {
   }
 
   @Test
-  def homePageShowsTags()
-  {
+  def homePageShowsTags() {
     val tagOne = "tagOne, tagTwo, tagThree, tagFour, tagFive, tagSix, tagSeven, tagEight, tagNine, tagTen, TagEleven"
     val tagTwo = "tagOne, tagTwo, tagThree, tagFour, tagFive, tagSix, tagSeven, tagEight, tagNine, tagTen"
 
@@ -49,5 +48,14 @@ class HomePageAcceptanceTest {
 
     tagTwo.split(", ").map(x => assertTrue("Tag should be on screen: " + x, helper.isTextIsOnScreen(x)))
     assertFalse(helper.isTextIsOnScreen("tagEleven"))
+  }
+
+  @Test
+  def verifyNoTagsDisplayWhenNoneWereEntered() {
+
+    helper.navigateToQuestionFormAndCreateQuestion(tagList = "")
+
+    val element = driver.findElement(By id "tagList")
+    assertTrue(element.getText, element.getText.isEmpty)
   }
 }
