@@ -114,4 +114,13 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     val tagList = tags.find().sort(MongoDBObject("value" ->  -1)).limit(numberToRetreive)
     tagList.map(x => (x.getAs[String]("_id").get, x.getAs[Int]("value").get)).toList
   }
+
+  def findTagsByPrefix(tagPrefix: String): List[String] = {
+
+    val myRegex = "/^" + tagPrefix + ".*/"
+    val mongoSucks = MongoDBObject( "_id" -> myRegex)
+    tags.find( mongoSucks).map(x => x.toString).toList
+//    List()
+
+  }
 }

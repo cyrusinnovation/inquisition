@@ -198,4 +198,15 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
     answers.head should equal(answer)
 
   }
+
+  test("Can find tags matching a given prefix") {
+    val question = uniqueQuestion().copy(tags = List("abc", "def", "ghi", "atag"))
+    repository.save(question)
+    repository.findMostPopularTags(0)
+    val tags = repository.findTagsByPrefix("abc")
+
+    tags should have length(2)
+    tags.head should equal("abc")
+    tags.tail should equal("atag")
+  }
 }

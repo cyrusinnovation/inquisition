@@ -13,4 +13,5 @@ trait QuestionRepository {
   def findQuestionsByTag(tag: String): List[Question]
   def deleteQuestion(id: String, usernameRequestingDelete: String)
   def findQuestionsByTags(tags: List[String]): List[Question]
+  def findTagsByPrefix(tagPrefix: String): List[String]
 }
