@@ -10,16 +10,12 @@ class QuestionFormData {
   @BeanProperty var tags = ""
 
   def toQuestion: Question = {
-    var tagList: List[String]          = List()
-    try {
-    tagList = tags
-                      .split(",")
-                      .map(x=> x.trim)
-                      .filterNot(x => x.isEmpty)
-                      .toList
-    } catch {
-            case e: NullPointerException => tagList
-    }
+    val tagList = Option(tags)
+                  .getOrElse("")
+                  .split(",")
+                  .map(x=> x.trim)
+                  .filterNot(x => x.isEmpty)
+                  .toList
     Question(None, title, "tester", body, tagList)
   }
 }
