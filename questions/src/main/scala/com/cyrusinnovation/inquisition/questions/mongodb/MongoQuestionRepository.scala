@@ -85,14 +85,14 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
 
   def findMostPopularTags(numberToRetreive: Int): List[(String, Int)] = {
     val mapFunction = """function() {
-                          if (!this.tags) {
-                            return;
-                          }
+                           if (!this.tags) {
+                             return;
+                           }
 
-                          for (index in this.tags) {
-                            emit(this.tags[index], 1);
-                          }
-                        }"""
+                           for (index in this.tags) {
+                             emit(this.tags[index], 1);
+                           }
+                         }"""
 
     val reduceFunction = """function(previous, current) {
                               var count = 0;

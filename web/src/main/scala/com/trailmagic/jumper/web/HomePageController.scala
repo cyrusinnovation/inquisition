@@ -12,11 +12,14 @@ import org.slf4j._
 
 @Controller
 class HomePageController @Autowired()(questionRepository: QuestionRepository, timeSource: TimeSource) {
+  final val DEFAULT_NUMBER_OF_TAGS_TO_RETRIEVE: Int = 10
+
   @RequestMapping(Array("/"))
   def showIndex() = {
+
     val model = Map("currentUser" -> SecurityHelper.getAuthenticatedUser,
     "questions" -> questionRepository.findRecent(timeSource.now),
-    "tags" -> questionRepository.findUniqueTagNamesOrderedByTagName())
+    "tags" -> questionRepository.findMostPopularTags(DEFAULT_NUMBER_OF_TAGS_TO_RETRIEVE))
     new ModelAndView("index", model.asJava)
   }
 
