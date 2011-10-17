@@ -9,6 +9,7 @@
   <link rel="stylesheet" type="text/css" href="${contextPath}/style/bootstrap-1.2.0.css">
   <link rel="stylesheet" type="text/css" href="${contextPath}/style/custom.css">
   <link rel="stylesheet" type="text/css" href="${contextPath}/style/ui-lightness/jquery-ui-1.8.16.custom.css">
+  <link rel="stylesheet" type="text/css" href="${contextPath}/style/jquery.tagit.css">
 </head>
 <body>
 <div class="container">
@@ -53,6 +54,7 @@
 
   <script type="text/javascript" src="/javascript/jquery-1.6.2.min.js"></script>
   <script type="text/javascript" src="/javascript/jquery-ui-1.8.16.custom.min.js"></script>
+  <script type="text/javascript" src="/javascript/tag-it.js"></script>
   <script type="text/javascript" src="/javascript/validation_helpers.js"></script>
   <script>
     $("body").bind("click", function (e) {
