@@ -73,4 +73,11 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository, ti
         }
         "redirect:/"
     }
+
+    @RequestMapping(value =Array("/questions/tags/{prefix}"), method = Array(RequestMethod.GET))
+    def tagCompletion(@PathVariable prefix: String) = {
+      val tags = questionRepository.findTagsByPrefix(prefix)
+      val model = Map("tags" -> tags.asJava)
+      new ModelAndView("tags", model.asJava)
+    }
 }

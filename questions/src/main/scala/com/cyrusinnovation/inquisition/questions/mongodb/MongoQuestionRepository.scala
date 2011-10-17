@@ -7,14 +7,15 @@ import com.novus.salat.global._
 import org.springframework.stereotype.Repository
 import org.joda.time.DateTime
 import com.mongodb.casbah.Imports._
-import com.mongodb.WriteResult
 import java.security.InvalidParameterException
+import com.mongodb.{QueryBuilder, WriteResult}
 
 @Repository
 class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionRepository {
 
   val questions = db("questions")
   val tags = db("tags")
+  tags.ensureIndex(MongoDBObject("_id" -> 1))
   questions.ensureIndex(MongoDBObject("tags" -> 1))
 
   def save(question: Question): Question = {
@@ -115,12 +116,12 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     tagList.map(x => (x.getAs[String]("_id").get, x.getAs[Int]("value").get)).toList
   }
 
-  def findTagsByPrefix(tagPrefix: String): List[String] = {
+  def findTagsByPrefix(tagPrefix: String, limit: Int = 10): List[String] = {
+    val mongoBlowsBuilder = MongoDBObject.newBuilder
+    val regexString = "^" +tagPrefix + ".*"
+    mongoBlowsBuilder += "_id" -> regexString.r
 
-    val myRegex = "/^" + tagPrefix + ".*/"
-    val mongoSucks = MongoDBObject( "_id" -> myRegex)
-    tags.find( mongoSucks).map(x => x.toString).toList
-//    List()
+    tags.find(mongoBlowsBuilder.result()).limit(limit).map(x => x.getAs[String]("_id").get).toList
 
   }
 }

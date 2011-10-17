@@ -142,4 +142,26 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
       controller.addQuestionAnswer(questionAnswerModel)
     } should produce [ResourceNotFoundException]
   }
+
+    test("Can find tags by prefix") {
+      when(repository.findTagsByPrefix("a")).thenReturn(List("a1", "a2"))
+      val mav = controller.tagCompletion("a")
+      val tagList = mav.getModel.get("tags").asInstanceOf[java.util.List[String]]
+      val viewName = mav.getViewName
+
+      viewName should be("tags")
+      tagList should have length(2)
+      tagList should contain("a1")
+      tagList should contain("a2")
+    }
+
+    test("Can find tags by prefix that does not exist") {
+      when(repository.findTagsByPrefix("a")).thenReturn(List())
+      val mav = controller.tagCompletion("a")
+      val tagList = mav.getModel.get("tags").asInstanceOf[java.util.List[String]]
+      val viewName = mav.getViewName
+
+      viewName should be("tags")
+      tagList should have length(0)
+    }
 }

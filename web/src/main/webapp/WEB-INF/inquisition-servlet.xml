@@ -7,39 +7,48 @@
            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
-  <context:component-scan base-package="com.trailmagic.jumper.web"/>
-  <mvc:annotation-driven/>
-  <mvc:view-controller path="login"/>
+    <context:component-scan base-package="com.trailmagic.jumper.web"/>
+    <mvc:annotation-driven/>
+    <mvc:view-controller path="login"/>
 
-  <mvc:interceptors>
-    <bean class="org.springframework.web.servlet.mvc.WebContentInterceptor">
-      <property name="cacheMappings">
-        <props>
-          <!--<prop key="/mf/by-id/**">864000</prop>-->
-        </props>
-      </property>
-      <property name="requireSession" value="false"/>
+    <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+            <property name="cacheMappings">
+                <props>
+                    <!--<prop key="/mf/by-id/**">864000</prop>-->
+                </props>
+            </property>
+            <property name="requireSession" value="false"/>
+        </bean>
+    </mvc:interceptors>
+
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>messages</value>
+                <value>org/springframework/security/messages</value>
+            </list>
+        </property>
     </bean>
-  </mvc:interceptors>
 
-  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-    <property name="basenames">
-      <list>
-        <value>messages</value>
-        <value>org/springframework/security/messages</value>
-      </list>
-    </property>
-  </bean>
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+        <property name="order" value="1"/>
+    </bean>
 
-  <bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
-    <property name="order" value="1"/>
-  </bean>
+    <bean class="com.trailmagic.jumper.web.BetterScalateViewResolver">
+        <property name="order" value="2"/>
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".ssp"/>
+    </bean>
 
-  <bean class="com.trailmagic.jumper.web.BetterScalateViewResolver">
-    <property name="order" value="2"/>
-    <property name="prefix" value="/WEB-INF/views/"/>
-    <property name="suffix" value=".ssp"/>
-  </bean>
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="3"/>
+        <property name="defaultViews">
+            <list>
+                <ref bean="json" />
+            </list>
+        </property>
+    </bean>
 
-  <bean name="json" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
+    <bean name="json" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
 </beans>
