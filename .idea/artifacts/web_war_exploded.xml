@@ -57,8 +57,8 @@
           <element id="library" level="project" name="Maven: org.yaml:snakeyaml:1.7" />
           <element id="library" level="project" name="Maven: org.fusesource.scalamd:scalamd:1.5" />
           <element id="library" level="project" name="Maven: org.fusesource.scalate:scalate-spring-mvc:1.5.1" />
-          <element id="library" level="project" name="Maven: org.springframework.security:spring-security-config:3.0.5.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-web:3.0.5.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework.security:spring-security-config:3.0.5.RELEASE" />
           <element id="library" level="project" name="Maven: org.hibernate:hibernate-validator:4.1.0.Final" />
           <element id="library" level="project" name="Maven: javax.validation:validation-api:1.0.0.GA" />
           <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.8.0" />

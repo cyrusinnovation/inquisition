@@ -81,6 +81,7 @@
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.7" level="project" />
     <orderEntry type="library" name="Maven: org.fusesource.scalamd:scalamd:1.5" level="project" />
     <orderEntry type="library" name="Maven: org.fusesource.scalate:scalate-spring-mvc:1.5.1" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-web:3.0.5.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:3.0.5.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mockito:mockito-all:1.8.1" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-validator:4.1.0.Final" level="project" />
