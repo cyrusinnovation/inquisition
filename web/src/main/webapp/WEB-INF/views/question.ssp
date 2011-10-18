@@ -4,43 +4,46 @@
 <%@ val question: Question %>
 
 <div class="content">
+<div class="row">
+    <div class="span14">
     <h2>${question.title}</h2>
     <h3>Asked by ${question.creatorUsername}</h3>
-    ${question.body}
+    <pre>${question.body}</pre>
     <hr>
-    #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
-        <p><a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink">Delete
-    Question</a>    <div id="dialog" title="Confirmation Required">Are you sure about this?</div></p>
-    #end
-        <p><a href="${contextPath}/questions/newResponse/${question.id}">Add Response</a></p>
-    <hr>
-
-    <h1>Tags</h1>
-    <hr>
-    #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
-        <p>
-            <div id="dialogDeleteTag" display="hidden" title="Confirmation Required">Are you sure about this?</div>
-        </p>
-    #end
-    <ul>
-        #for (tag <- question.tags)
-           <li>
-           #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
-                <a class="deleteTag" href="/delete" value="/questions/${question.id}/tags/">${tag}</a>
-            #else
-                ${tag}
-            #end
-           </li>
+        #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
+            <p>
+                <a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink">Delete Question</a>
+                <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
+            </p>
         #end
-
-    </ul>
-
+        <p>
+            <a href="${contextPath}/questions/newResponse/${question.id}">Add Response</a>
+        </p>
     <hr>
-
-
-
+        </div>
+            <div class="span2">
+                <h1>Tags</h1>
+                <hr>
+                    #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
+                        <p>
+                            <div id="dialogDeleteTag" display="hidden" title="Confirmation Required">Are you sure about this?</div>
+                        </p>
+                    #end
+                <ul>
+                    #for (tag <- question.tags)
+                       <li>
+                           #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
+                                <a class="deleteTag" href="/delete" value="/questions/${question.id}/tags/">${tag}</a>
+                            #else
+                                ${tag}
+                            #end
+                       </li>
+                    #end
+                </ul>
+            </div>
+    </div>  <!-- row end -->
+    <hr>
     <h1>Question Responses</h1>
-
     <hr>
         #for (qa <- question.answers)
             <h2>${qa.title}</h2>

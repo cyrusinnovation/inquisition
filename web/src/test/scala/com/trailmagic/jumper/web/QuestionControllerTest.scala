@@ -174,4 +174,13 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
       response.getStatus should equal(204)
     }
+
+  test("Can add a tag to a question") {
+      val response = new MockHttpServletResponse()
+
+      val mav = controller.tagAddition("questionId", "tagText", response)
+      verify(repository, times(1)).addTagToQuestion("questionId", "tagText")
+
+      response.getStatus should equal(204)
+    }
 }

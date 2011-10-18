@@ -242,4 +242,36 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
 
     retrievedQuestion.get.tags should equal(tags)
   }
+
+  test("Can add a tag to a given question") {
+    val question = uniqueQuestion()
+    val savedQuestion = repository.save(question)
+
+    repository.addTagToQuestion(savedQuestion.id.get, "atag")
+    val retrievedQuestion = repository.findById(savedQuestion.id.get)
+
+    retrievedQuestion.get.tags should contain("atag")
+  }
+
+  test("No exception is thrown if an existant tag is added to a question") {
+    val tags = List("abc", "def", "ghi")
+    val question = uniqueQuestion().copy(tags = tags)
+    val savedQuestion = repository.save(question)
+
+    repository.addTagToQuestion(savedQuestion.id.get, "abc")
+    val retrievedQuestion = repository.findById(savedQuestion.id.get)
+
+    retrievedQuestion.get.tags should equal(tags)
+  }
+
+  test("No duplicate tag is created if an existant tag is added to a question") {
+    val tags = List("abc", "def", "ghi")
+    val question = uniqueQuestion().copy(tags = tags)
+    val savedQuestion = repository.save(question)
+
+    repository.addTagToQuestion(savedQuestion.id.get, "abc")
+    val retrievedQuestion = repository.findById(savedQuestion.id.get)
+
+    retrievedQuestion.get.tags.count(x => x == "abc") should be(1)
+  }
 }

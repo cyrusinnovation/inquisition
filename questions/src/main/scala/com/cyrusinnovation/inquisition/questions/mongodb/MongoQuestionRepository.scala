@@ -128,7 +128,11 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     val updateQuery = $pull (MongoDBObject("tags"->tagText))
     val query = MongoDBObject("_id" -> new ObjectId(questionId))
     questions.update(query ,updateQuery)
-//    questions.find(query)
-//             .map(x=>println(x))
+  }
+
+  def addTagToQuestion(questionId: String, tagText: String) {
+    val updateQuery = $addToSet ("tags" -> tagText)
+    val query = MongoDBObject("_id" -> new ObjectId(questionId))
+    questions.update(query ,updateQuery)
   }
 }
