@@ -3,8 +3,11 @@ package com.trailmagic.jumper.test
 import org.openqa.selenium.firefox.internal.ProfilesIni
 import org.openqa.selenium.firefox.{FirefoxDriver, FirefoxProfile}
 import org.junit.Assert._
-import org.openqa.selenium.{By, WebDriver}
 import org.junit.{Ignore, Test, After, Before}
+import java.util.concurrent.TimeUnit
+import org.openqa.selenium.support.pagefactory.{ElementLocatorFactory, AjaxElementLocatorFactory}
+import org.openqa.selenium.{WebElement, By, WebDriver}
+import org.openqa.selenium.support.ui.{ExpectedCondition, WebDriverWait}
 
 class QuestionAcceptanceTest {
   //  val capabilities = new DesiredCapabilities("firefox", "3.6.", Platform.WINDOWS)
@@ -82,6 +85,17 @@ class QuestionAcceptanceTest {
 
   }
 
+  @Test
+  def tagsAreAutoCompleted() {
+    helper.navigateToQuestionFormAndCreateQuestion(tagList = "taga, atag, tagb")
+    helper.navigateToQuestionNewForm()
+    val tagElement = driver.findElement(By.className("tagit-new"))
+    val in = tagElement.findElement(By.tagName("input"))
+    in.sendKeys("tag")
+
+    helper.waitForElementToAppearForAjaxCall("taga")
+    assertTrue(helper.isTextIsOnScreen("tagb"))
+  }
 
 
   @Test
@@ -89,7 +103,7 @@ class QuestionAcceptanceTest {
     val questionTitleText = "Some Title " + System.currentTimeMillis()
 
     helper.navigateToQuestionFormAndCreateQuestion(questionTitleText)
-    val questionUrl = driver.findElement(By linkText  questionTitleText).getAttribute("href")
+    val questionUrl = driver.findElement(By linkText questionTitleText).getAttribute("href")
     driver.get(questionUrl)
     helper.answerQuestion(title = "Test Response")
     driver.get(questionUrl)

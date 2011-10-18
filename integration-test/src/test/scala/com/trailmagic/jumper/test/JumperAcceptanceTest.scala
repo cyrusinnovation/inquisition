@@ -35,6 +35,7 @@ class JumperAcceptanceTest {
 
   @After
   def tearDown() {
+
     driver.quit();
   }
 
@@ -48,6 +49,7 @@ class JumperAcceptanceTest {
     driver.get(originalUrl)
     driver.findElement(By.linkText("Sign in")).click()
     driver.findElement(By.linkText("Register"))
+//    helper.isTextIsOnScreen("Register")
   }
 
   @Test
