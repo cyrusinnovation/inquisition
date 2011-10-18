@@ -14,7 +14,10 @@
             /WEB-INF/applicationContext-security.xml
         </param-value>
     </context-param>
-
+    <context-param>
+        <param-name>defaultHtmlEscape</param-name>
+        <param-value>true</param-value>
+    </context-param>
     <filter>
         <filter-name>httpMethodFilter</filter-name>
         <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
