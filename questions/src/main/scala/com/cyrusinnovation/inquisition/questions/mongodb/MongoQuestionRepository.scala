@@ -125,6 +125,10 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
   }
 
   def deleteTagFromQuestion(questionId: String, tagText: String) {
-
+    val updateQuery = $pull (MongoDBObject("tags"->tagText))
+    val query = MongoDBObject("_id" -> new ObjectId(questionId))
+    questions.update(query ,updateQuery)
+//    questions.find(query)
+//             .map(x=>println(x))
   }
 }

@@ -222,6 +222,13 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
   }
 
   test("Can remove a tag from a given question") {
-    repository.deleteTagFromQuestion("","")
+    val tags = List("abc", "def", "ghi")
+    val question = uniqueQuestion().copy(tags = "atag" :: tags)
+    val savedQuestion = repository.save(question)
+
+    repository.deleteTagFromQuestion(savedQuestion.id.get, "atag")
+    val retrievedQuestion = repository.findById(savedQuestion.id.get)
+
+    retrievedQuestion.get.tags should equal(tags)
   }
 }
