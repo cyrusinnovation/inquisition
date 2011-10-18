@@ -17,9 +17,24 @@
 
     <h1>Tags</h1>
     <hr>
+    #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
+        <p>
+            <div id="dialogDeleteTag" display="hidden" title="Confirmation Required">Are you sure about this?</div>
+        </p>
+    #end
+    <ul>
         #for (tag <- question.tags)
-           <p>${tag}</p>
+           <li>
+           #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
+                <a class="deleteTag" href="/delete" value="/questions/${question.id}/tags/">${tag}</a>
+            #else
+                ${tag}
+            #end
+           </li>
         #end
+
+    </ul>
+
     <hr>
 
 

@@ -44,7 +44,6 @@ $(".confirmLink").click(function(e) {
                     action: $(this).attr('value')
                 }).append('<input type="hidden" name="_method" value="DELETE" />'));
                 $(f).submit();
-//        window.location.href = targetUrl;
             },
             "Cancel" : function() {
                 $(this).dialog("close");
@@ -61,6 +60,37 @@ $("#questionDelete").click(function(event) {
     // if the element is of type delete question, then
     // override default action
     // submit delete of /questions/${questionid}
+});
+
+var dialogTagFunction = function() {
+    $("#dialogDeleteTag").dialog({
+        autoOpen: false,
+        modal: true
+    })
+};
+
+$(document).ready(dialogTagFunction);
+
+$(".deleteTag").click(function(event) {
+    event.preventDefault();
+    var targetUrl = $(this).attr("value") + $(this).text();
+
+    $("#dialogDeleteTag").dialog({
+        buttons : {
+            "Confirm" : function() {
+                var f = document.createElement('form');
+                $(this).after($(f).attr({
+                    method: 'POST',
+                    action: targetUrl
+                }).append('<input type="hidden" name="_method" value="DELETE" />'));
+                $(f).submit();
+            },
+            "Cancel" : function() {
+                $(this).dialog("close");
+            }
+        }
+    });
+    $("#dialogDeleteTag").dialog("open");
 });
 
 $(document).ready(function() {
