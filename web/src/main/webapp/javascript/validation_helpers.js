@@ -73,6 +73,7 @@ $(document).ready(dialogTagFunction);
 
 $(".deleteTag").click(function(event) {
     event.preventDefault();
+    var parentListItemNode = $(this).parent("li")
     var targetUrl = $(this).attr("value") + $(this).text();
 
     $("#dialogDeleteTag").dialog({
@@ -85,6 +86,7 @@ $(".deleteTag").click(function(event) {
                 }).append('<input type="hidden" name="_method" value="DELETE" />'));
                 $(f).submit();
                 $(this).dialog("close");
+                parentListItemNode.remove()
             },
             "Cancel" : function() {
                 $(this).dialog("close");

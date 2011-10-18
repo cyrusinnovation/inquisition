@@ -231,4 +231,15 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
 
     retrievedQuestion.get.tags should equal(tags)
   }
+
+  test("No exception is thrown if a non existant tag is removed from a question") {
+    val tags = List("abc", "def", "ghi")
+    val question = uniqueQuestion().copy(tags = tags)
+    val savedQuestion = repository.save(question)
+
+    repository.deleteTagFromQuestion(savedQuestion.id.get, "aNonExistant")
+    val retrievedQuestion = repository.findById(savedQuestion.id.get)
+
+    retrievedQuestion.get.tags should equal(tags)
+  }
 }
