@@ -84,6 +84,7 @@ $(".deleteTag").click(function(event) {
                     action: targetUrl
                 }).append('<input type="hidden" name="_method" value="DELETE" />'));
                 $(f).submit();
+                $(this).dialog("close");
             },
             "Cancel" : function() {
                 $(this).dialog("close");

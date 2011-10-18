@@ -9,12 +9,20 @@ import org.springframework.stereotype.Controller
 import scala.collection.JavaConverters._
 import util.SecurityHelper
 import org.springframework.web.servlet.ModelAndView
+import javax.servlet.http.HttpServletResponse
+import org.springframework.http.HttpStatus
 
 @Controller
 class QuestionController @Autowired()(questionRepository: QuestionRepository, timeSource: TimeSource) {
 
+  @RequestMapping(Array("/questions/{questionId}/tags/{tagText}"))
+  def tagRemoval(@PathVariable questionId: String, @PathVariable tagText: String, response: HttpServletResponse) {
+    questionRepository.deleteTagFromQuestion(questionId, tagText)
+    response.setStatus(HttpStatus.NO_CONTENT.value())
+  }
 
-    @RequestMapping(Array("/questions/new"))
+
+  @RequestMapping(Array("/questions/new"))
     def showNewQuestionForm(): String = {
         "new-question"
     }

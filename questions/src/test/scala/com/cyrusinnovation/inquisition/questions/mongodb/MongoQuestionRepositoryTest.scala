@@ -220,4 +220,8 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
     tags.head should equal("abc")
     tags should not contain("atag")
   }
+
+  test("Can remove a tag from a given question") {
+    repository.deleteTagFromQuestion("","")
+  }
 }

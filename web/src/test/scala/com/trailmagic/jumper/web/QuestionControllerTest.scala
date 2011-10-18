@@ -4,12 +4,13 @@ import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 
 import org.mockito.MockitoAnnotations.Mock
-import org.mockito.MockitoAnnotations
-
 import org.mockito.Mockito._
 import util.SecurityHelper
 import com.trailmagic.jumper.core.{User, SavedUser, TimeSource}
 import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
+import javax.servlet.http.HttpServletResponse
+import org.mockito.{Mockito, MockitoAnnotations}
+import org.springframework.mock.web.MockHttpServletResponse
 
 
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
@@ -163,5 +164,14 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
       viewName should be("tags")
       tagList should have length(0)
+    }
+
+    test("Can remove a tag from a question") {
+      val response = new MockHttpServletResponse()
+
+      val mav = controller.tagRemoval("questionId", "tagText", response)
+      verify(repository, times(1)).deleteTagFromQuestion("questionId", "tagText")
+
+      response.getStatus should equal(204)
     }
 }

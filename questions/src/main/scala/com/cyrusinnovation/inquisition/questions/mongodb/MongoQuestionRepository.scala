@@ -12,7 +12,6 @@ import com.mongodb.{QueryBuilder, WriteResult}
 
 @Repository
 class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionRepository {
-
   val questions = db("questions")
   val tags = db("tags")
   tags.ensureIndex(MongoDBObject("_id" -> 1))
@@ -122,6 +121,10 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     mongoBlowsBuilder += "_id" -> regexString.r
 
     tags.find(mongoBlowsBuilder.result()).limit(limit).map(x => x.getAs[String]("_id").get).toList
+
+  }
+
+  def deleteTagFromQuestion(questionId: String, tagText: String) {
 
   }
 }
