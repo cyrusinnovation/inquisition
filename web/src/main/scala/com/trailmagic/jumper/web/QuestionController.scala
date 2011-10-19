@@ -15,16 +15,17 @@ import com.cyrusinnovation.inquisition.tags.TagRepository
 
 
 @Controller
+@RequestMapping(value = Array("/questions"))
 class QuestionController @Autowired()(questionRepository: QuestionRepository, timeSource: TimeSource,
                                       tagRepository: TagRepository) {
 
-    @RequestMapping(Array("/questions/new"))
+    @RequestMapping(value = Array("/new"))
     def showNewQuestionForm(): String = {
         "new-question"
     }
 
 
-    @RequestMapping(value = Array("/questions"), method = Array(RequestMethod.POST))
+    @RequestMapping(method = Array(RequestMethod.POST))
     def addQuestion(@ModelAttribute question: QuestionFormData) = {
         var q = question.toQuestion;
         val user = SecurityHelper.getMandatoryAuthenticatedUser
@@ -33,7 +34,7 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository, ti
         "redirect:/"
     }
 
-    @RequestMapping(value = Array("/questions/{questionId}"), method = Array(RequestMethod.GET))
+    @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.GET))
     def showQuestion(@PathVariable questionId: String) = {
         questionRepository.findById(questionId) match {
             case Some(question) => {
@@ -44,20 +45,20 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository, ti
         }
     }
 
-    @RequestMapping(value = Array("/questions/{questionId}"), method = Array(RequestMethod.DELETE))
+    @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.DELETE))
     def deleteQuestion(@PathVariable questionId: String) = {
         val user = SecurityHelper.getMandatoryAuthenticatedUser
         questionRepository.deleteQuestion(questionId, user.username)
         "redirect:/"
     }
 
-    @RequestMapping(Array("/questions/newResponse/{questionId}"))
+    @RequestMapping(value = Array("/newResponse/{questionId}"), method = Array(RequestMethod.GET))
     def showNewQuestionResponseForm(@PathVariable questionId: String) = {
         val model = Map("questionId" -> questionId)
         new ModelAndView("new-question-response", model.asJava)
     }
 
-    @RequestMapping(value = Array("/questions/newResponse"), method = Array(RequestMethod.POST))
+    @RequestMapping(value = Array("/newResponse"), method = Array(RequestMethod.POST))
     def addQuestionAnswer(@ModelAttribute questionAnswer: QuestionAnswerFormData) = {
         val question = questionRepository.findById(questionAnswer.getQuestionId())
         match {
