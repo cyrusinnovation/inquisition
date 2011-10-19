@@ -9,17 +9,19 @@ import com.trailmagic.jumper.core.{User, SavedUser, TimeSource}
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import org.joda.time.DateTime
+import com.cyrusinnovation.inquisition.tags.TagRepository
 
 class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   val currentUser = new SavedUser("userId", new User("a@example.com", "userName", "firstName", "lastName", "password", "salt", Set(), None))
   @Mock var timeSource: TimeSource = _
-  @Mock var repository: QuestionRepository = _
+  @Mock var questionRepository: QuestionRepository = _
+  @Mock var tagRepository: TagRepository = _
 
   var controller: HomePageController = _
 
   override def beforeEach() {
     MockitoAnnotations.initMocks(this)
-    controller = new HomePageController(repository, timeSource);
+    controller = new HomePageController(questionRepository, timeSource, tagRepository);
     SecurityHelper.setAuthenticatedUser(Some(currentUser))
   }
 
@@ -38,7 +40,7 @@ class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
   test("Canary") {
     timeSource should not be (null)
-    repository should not be (null)
+    questionRepository should not be (null)
     controller should not be (null)
   }
 
@@ -62,7 +64,7 @@ class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
   test("Verify view model has tags property") {
     val tags = List(("java", 4), ("spring", 1))
-    when(repository.findMostPopularTags(controller.DEFAULT_NUMBER_OF_TAGS_TO_RETRIEVE)).thenReturn(tags)
+    when(tagRepository.findMostPopularTags(controller.DEFAULT_NUMBER_OF_TAGS_TO_RETRIEVE)).thenReturn(tags)
     val mav = controller.showIndex()
     val model = mav.getModel
     model.containsKey("tags") should be(true)
@@ -76,7 +78,7 @@ class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     val questions = List(question)
     val now = new DateTime()
     when(timeSource.now).thenReturn(now)
-    when(repository.findRecent(now)).thenReturn(questions)
+    when(questionRepository.findRecent(now)).thenReturn(questions)
     val mav = controller.showIndex()
     val model = mav.getModel
     model.containsKey("questions") should be(true)

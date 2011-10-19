@@ -11,9 +11,12 @@ import util.SecurityHelper
 import org.springframework.web.servlet.ModelAndView
 import javax.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
+import com.cyrusinnovation.inquisition.tags.TagRepository
+
 
 @Controller
-class QuestionController @Autowired()(questionRepository: QuestionRepository, timeSource: TimeSource) {
+class QuestionController @Autowired()(questionRepository: QuestionRepository, timeSource: TimeSource,
+                                      tagRepository: TagRepository) {
 
   @RequestMapping(Array("/questions/new"))
   def showNewQuestionForm(): String = {
@@ -51,7 +54,7 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository, ti
   @RequestMapping(value = Array("/questions/search"), method = Array(RequestMethod.POST))
   def searchQuestions(@ModelAttribute tags: TagFormData) = {
     val tagList = tags.toTagList
-    val questions = questionRepository.findQuestionsByTags(tagList)
+    val questions = tagRepository.findQuestionsByTags(tagList)
     val model = Map("questions" -> questions,
       "searchTerms" -> tags.getTagQuery())
     new ModelAndView("search-results", model.asJava)
@@ -77,20 +80,20 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository, ti
 
   @RequestMapping(value = Array("/questions/tags/{prefix}"), method = Array(RequestMethod.GET))
   def tagCompletion(@PathVariable prefix: String) = {
-    val tags = questionRepository.findTagsByPrefix(prefix)
+    val tags = tagRepository.findTagsByPrefix(prefix)
     val model = Map("tags" -> tags.asJava)
     new ModelAndView("tags", model.asJava)
   }
 
   @RequestMapping(value = Array("/questions/{questionId}/tags/{tagText}"), method = Array(RequestMethod.DELETE))
   def tagRemoval(@PathVariable questionId: String, @PathVariable tagText: String, response: HttpServletResponse) {
-    questionRepository.deleteTagFromQuestion(questionId, tagText)
+    tagRepository.deleteTagFromQuestion(questionId, tagText)
     response.setStatus(HttpStatus.NO_CONTENT.value())
   }
 
   @RequestMapping(value = Array("/questions/{questionId}/tags/{tagText}"), method = Array(RequestMethod.POST))
   def tagAddition(@PathVariable questionId: String, @PathVariable tagText: String, response: HttpServletResponse) {
-    questionRepository.addTagToQuestion(questionId, tagText)
+    tagRepository.addTagToQuestion(questionId, tagText)
     response.setStatus(HttpStatus.NO_CONTENT.value())
   }
 }

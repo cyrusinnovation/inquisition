@@ -1,277 +1,155 @@
 package com.cyrusinnovation.inquisition.questions.mongodb
 
-import org.scalatest.matchers.{ShouldMatchers, MustMatchers}
-import org.scalatest.matchers.ShouldMatchers.produce
+import org.scalatest.matchers.ShouldMatchers
 import com.mongodb.casbah.MongoConnection
 import org.joda.time.DateTime
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import com.cyrusinnovation.inquisition.questions.{QuestionAnswer, Question}
-import java.io.FileNotFoundException
 import java.security.InvalidParameterException
 
 class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
-  val con = MongoConnection()
-  val TestDbName = "test_inquisition"
-  val db = con(TestDbName)
-  val repository = new MongoQuestionRepository(db)
+    val con = MongoConnection()
+    val TestDbName = "test_inquisition"
+    val db = con(TestDbName)
+    val repository = new MongoQuestionRepository(db)
 
-  override def beforeEach() {
-    db.dropDatabase()
-  }
+    override def beforeEach() {
+        db.dropDatabase()
+    }
 
-  def uniqueQuestion(title:String = "How do I use MongoDB?"): Question = {
-    Question(id = None, title = title + " " + System.nanoTime(), creatorUsername = "tester", body = "The question body.")
-  }
+    def uniqueQuestion(title: String = "How do I use MongoDB?"): Question = {
+        Question(id = None, title = title + " " + System.nanoTime(), creatorUsername = "tester", body = "The question body.")
+    }
 
-  test("should be able to save a question and get it back") {
-    val q = uniqueQuestion()
-    q.id should be (None)
-    val savedQuestion = repository.save(q)
-    savedQuestion.id should not be  (None)
-    savedQuestion.id should be ('defined)
-    val retrievedQuestion = repository.findById(savedQuestion.id.get).get
-    retrievedQuestion.id should be(savedQuestion.id)
-  }
+    test("should be able to save a question and get it back") {
+        val q = uniqueQuestion()
+        q.id should be(None)
+        val savedQuestion = repository.save(q)
+        savedQuestion.id should not be (None)
+        savedQuestion.id should be('defined)
+        val retrievedQuestion = repository.findById(savedQuestion.id.get).get
+        retrievedQuestion.id should be(savedQuestion.id)
+    }
 
-  test("should be able to count the number of questions") {
-    val q = uniqueQuestion()
-    repository.save(q)
-    repository.save(q)
-    repository.save(q)
+    test("should be able to count the number of questions") {
+        val q = uniqueQuestion()
+        repository.save(q)
+        repository.save(q)
+        repository.save(q)
 
-    val questionCount = repository.findQuestionCount()
-    questionCount should be(3)
-  }
+        val questionCount = repository.findQuestionCount()
+        questionCount should be(3)
+    }
 
-  test("should be able respond to a question with an anwser without creating a duplicate question.") {
-    val savedQuestion = repository.save(Question(None, "Title", "Tester","Body"))
+    test("should be able respond to a question with an anwser without creating a duplicate question.") {
+        val savedQuestion = repository.save(Question(None, "Title", "Tester", "Body"))
 
-    repository.saveQuestionAnswer(savedQuestion, new QuestionAnswer("Title", "Creator", "Body"))
-    val updatedQuestion = repository.findById(savedQuestion.id.get).get
-  }
+        repository.saveQuestionAnswer(savedQuestion, new QuestionAnswer("Title", "Creator", "Body"))
+        val updatedQuestion = repository.findById(savedQuestion.id.get).get
+        savedQuestion.id should be(updatedQuestion.id)
+    }
 
-  test("should be able to save a question with an existing id to update it")
-  {
-    val savedQuestion = repository.save(uniqueQuestion(title = "Original Title"));
+    test("should be able to save a question with an existing id to update it") {
+        val savedQuestion = repository.save(uniqueQuestion(title = "Original Title"));
 
-    val updatedQuestion = repository.save(savedQuestion.copy(title = "Updated Title"))
-    val questionCount = repository.findQuestionCount()
+        val updatedQuestion = repository.save(savedQuestion.copy(title = "Updated Title"))
+        val questionCount = repository.findQuestionCount()
 
-    questionCount should be(1)
-    updatedQuestion.id should be(savedQuestion.id)
-    updatedQuestion.title should  not be(savedQuestion.title)
+        questionCount should be(1)
+        updatedQuestion.id should be(savedQuestion.id)
+        updatedQuestion.title should not be (savedQuestion.title)
 
-    val updatedQuestionReturned = repository.findById(updatedQuestion.id.get).get
-    updatedQuestionReturned.title should be(updatedQuestion.title)
-  }
+        val updatedQuestionReturned = repository.findById(updatedQuestion.id.get).get
+        updatedQuestionReturned.title should be(updatedQuestion.title)
+    }
 
 
-  test("should return none if nothing has that id") {
-    val result = repository.findById(MongoTestConstants.DeadObjectIdString)
-    result should be(None)
-  }
+    test("should return none if nothing has that id") {
+        val result = repository.findById(MongoTestConstants.DeadObjectIdString)
+        result should be(None)
+    }
 
-  test("should find recent questions") {
-    val questions = List(uniqueQuestion(), uniqueQuestion("Why isn't IntelliJ working?"))
+    test("should find recent questions") {
+        val questions = List(uniqueQuestion(), uniqueQuestion("Why isn't IntelliJ working?"))
 
-    val savedQuestions = questions.map(repository.save(_))
+        val savedQuestions = questions.map(repository.save(_))
 
-    val results = repository.findRecent(new DateTime)
+        val results = repository.findRecent(new DateTime)
 
-    savedQuestions.foreach(results.contains(_) should be (true))
-  }
+        savedQuestions.foreach(results.contains(_) should be(true))
+    }
 
-  test("make sure we can add a list of tags to a question") {
-      var question = uniqueQuestion()
+    test("make sure we can add a list of tags to a question") {
+        var question = uniqueQuestion()
 
-      question = question.copy(tags = List("java", "spring"))
+        question = question.copy(tags = List("java", "spring"))
 
-      val savedQuestion = repository.save(question);
+        val savedQuestion = repository.save(question);
 
-      question = question.copy(id = savedQuestion.id)
+        question = question.copy(id = savedQuestion.id)
 
-      question should equal(savedQuestion)
-  }
+        question should equal(savedQuestion)
+    }
 
-  test("make sure we can get a list of tags to a question") {
-      var question = uniqueQuestion()
+    test("make sure we can get a list of tags to a question") {
+        var question = uniqueQuestion()
 
-      question = question.copy(tags = List("java", "spring"))
+        question = question.copy(tags = List("java", "spring"))
 
-      val savedQuestion = repository.save(question);
+        val savedQuestion = repository.save(question);
 
-      val returnedQuestion = repository.findById(savedQuestion.id.get)
+        val returnedQuestion = repository.findById(savedQuestion.id.get)
 
-      savedQuestion.tags should equal(returnedQuestion.get.tags)
-  }
+        savedQuestion.tags should equal(returnedQuestion.get.tags)
+    }
 
-  test("find all unqiue question tags") {
-    repository.save(uniqueQuestion().copy(tags = List("java", "spring")));
-    repository.save(uniqueQuestion().copy(tags = List("scala", "spring")));
-    repository.findQuestionCount() should equal(2)
-    val uniqueTags = repository.findUniqueTagNamesOrderedByTagName()
 
-    uniqueTags should equal(List("java", "scala", "spring"))
-  }
+    test("delete a question with a given object id") {
+        val savedQuestion = repository.save(uniqueQuestion())
+        val savedQuestionId = savedQuestion.id.get
 
-  test("find most popular tags") {
-    val correctQuestion = repository.save(uniqueQuestion().copy(tags = List("java", "spring")));
-    repository.save(uniqueQuestion().copy(tags = List("scala", "spring")));
+        repository.deleteQuestion(savedQuestionId, savedQuestion.creatorUsername)
 
-    val tags = repository.findMostPopularTags(1)
-
-    tags should have length(1)
-    tags.head should equal(("spring", 2))
-  }
-
-  test("find questions with given tag") {
-    val correctQuestion = repository.save(uniqueQuestion().copy(tags = List("java", "spring")));
-    repository.save(uniqueQuestion().copy(tags = List("scala", "spring")));
-    repository.findQuestionCount() should equal(2)
-    val question = repository.findQuestionsByTag("java")
+        val deletedQuestion = repository.findById(savedQuestionId)
+        deletedQuestion should be(None)
+    }
 
-    question.length should be(1)
-    question.head should equal(correctQuestion)
-  }
+    test("delete a question with a given object id, but not the correct username") {
+        val savedQuestion = repository.save(uniqueQuestion())
+        val savedQuestionId = savedQuestion.id.get
+        evaluating(repository.deleteQuestion(savedQuestionId, "invalidusername")) should (produce[InvalidParameterException])
 
-  test("delete a question with a given object id"){
-    val savedQuestion = repository.save(uniqueQuestion())
-    val savedQuestionId = savedQuestion.id.get
+    }
 
-    repository.deleteQuestion(savedQuestionId, savedQuestion.creatorUsername)
-
-    val deletedQuestion = repository.findById(savedQuestionId)
-    deletedQuestion should be(None)
-  }
+    test("deleting a non-existant question does not throw an exception") {
+        repository.deleteQuestion(MongoTestConstants.DeadObjectIdString, "")
+    }
 
-  test("delete a question with a given object id, but not the correct username"){
-    val savedQuestion = repository.save(uniqueQuestion())
-    val savedQuestionId = savedQuestion.id.get
-    evaluating(repository.deleteQuestion(savedQuestionId, "invalidusername")) should(produce[InvalidParameterException])
 
-  }
+    test("Can save a question with an answer") {
+        val answer = new QuestionAnswer("Answer", "creator", "body string")
+        val question: Question = uniqueQuestion().copy(answers = List(answer))
 
-  test("deleting a non-existant question does not throw an exception") {
-    repository.deleteQuestion(MongoTestConstants.DeadObjectIdString, "")
-  }
+        val savedQuestion = repository.save(question)
+        val retrievedQuestion = repository.findById(savedQuestion.id.get)
 
-  test("can do simple tag search") {
-    repository.save(uniqueQuestion().copy(tags = List("java")));
-    repository.save(uniqueQuestion().copy(tags = List("scala")));
-    repository.findQuestionCount() should equal(2)
+        val answers = retrievedQuestion.get.answers
+        answers should have length (1)
+        answers.head should equal(answer)
+    }
 
-    val results = repository.findQuestionsByTags(List("java", "scala"))
-    results.length should be(2)
-  }
+    test("Can update a question with an answer") {
+        val answer = new QuestionAnswer("Answer", "creator", "bodystring")
+        val question: Question = uniqueQuestion()
 
-  test("simple tag search only returns items with matching tags") {
-    val answer = repository.save(uniqueQuestion().copy(tags = List("java")));
-    repository.save(uniqueQuestion().copy(tags = List("scala")));
-    repository.findQuestionCount() should equal(2)
+        val savedQuestion = repository.saveQuestionAnswer(question, answer)
+        val retrievedQuestion = repository.findById(savedQuestion.id.get)
 
-    val results = repository.findQuestionsByTags(List("java"))
-    results.length should be(1)
-    results.head should equal(answer)
-  }
+        val answers = retrievedQuestion.get.answers
+        answers should have length (1)
+        answers.head should equal(answer)
 
-  test("Can save a question with an answer") {
-    val answer = new QuestionAnswer("Answer", "creator", "body string")
-    val question: Question = uniqueQuestion().copy(answers = List(answer))
+    }
 
-    val savedQuestion = repository.save(question)
-    val retrievedQuestion = repository.findById(savedQuestion.id.get)
 
-    val answers = retrievedQuestion.get.answers
-    answers should have length(1)
-    answers.head should equal(answer)
-  }
-
-  test("Can update a question with an answer") {
-    val answer = new QuestionAnswer("Answer", "creator", "bodystring")
-    val question: Question = uniqueQuestion()
-
-    val savedQuestion = repository.saveQuestionAnswer(question, answer)
-    val retrievedQuestion = repository.findById(savedQuestion.id.get)
-
-    val answers = retrievedQuestion.get.answers
-    answers should have length(1)
-    answers.head should equal(answer)
-
-  }
-
-  test("Can find tags matching a given prefix") {
-    val question = uniqueQuestion().copy(tags = List("abc", "def", "ghi", "atag"))
-    repository.save(question)
-    repository.findMostPopularTags(1)
-    val tags = repository.findTagsByPrefix("a", 10)
-
-    tags should have length(2)
-    tags.head should equal("abc")
-    tags.tail.head should equal("atag")
-  }
-
-  test("Can find tags matching a given prefix with a limit") {
-    val question = uniqueQuestion().copy(tags = List("abc", "def", "ghi", "atag"))
-    repository.save(question)
-    repository.findMostPopularTags(1)
-    val tags = repository.findTagsByPrefix("a", 1)
-
-    tags should have length(1)
-    tags.head should equal("abc")
-    tags should not contain("atag")
-  }
-
-  test("Can remove a tag from a given question") {
-    val tags = List("abc", "def", "ghi")
-    val question = uniqueQuestion().copy(tags = "atag" :: tags)
-    val savedQuestion = repository.save(question)
-
-    repository.deleteTagFromQuestion(savedQuestion.id.get, "atag")
-    val retrievedQuestion = repository.findById(savedQuestion.id.get)
-
-    retrievedQuestion.get.tags should equal(tags)
-  }
-
-  test("No exception is thrown if a non existant tag is removed from a question") {
-    val tags = List("abc", "def", "ghi")
-    val question = uniqueQuestion().copy(tags = tags)
-    val savedQuestion = repository.save(question)
-
-    repository.deleteTagFromQuestion(savedQuestion.id.get, "aNonExistant")
-    val retrievedQuestion = repository.findById(savedQuestion.id.get)
-
-    retrievedQuestion.get.tags should equal(tags)
-  }
-
-  test("Can add a tag to a given question") {
-    val question = uniqueQuestion()
-    val savedQuestion = repository.save(question)
-
-    repository.addTagToQuestion(savedQuestion.id.get, "atag")
-    val retrievedQuestion = repository.findById(savedQuestion.id.get)
-
-    retrievedQuestion.get.tags should contain("atag")
-  }
-
-  test("No exception is thrown if an existant tag is added to a question") {
-    val tags = List("abc", "def", "ghi")
-    val question = uniqueQuestion().copy(tags = tags)
-    val savedQuestion = repository.save(question)
-
-    repository.addTagToQuestion(savedQuestion.id.get, "abc")
-    val retrievedQuestion = repository.findById(savedQuestion.id.get)
-
-    retrievedQuestion.get.tags should equal(tags)
-  }
-
-  test("No duplicate tag is created if an existant tag is added to a question") {
-    val tags = List("abc", "def", "ghi")
-    val question = uniqueQuestion().copy(tags = tags)
-    val savedQuestion = repository.save(question)
-
-    repository.addTagToQuestion(savedQuestion.id.get, "abc")
-    val retrievedQuestion = repository.findById(savedQuestion.id.get)
-
-    retrievedQuestion.get.tags.count(x => x == "abc") should be(1)
-  }
 }

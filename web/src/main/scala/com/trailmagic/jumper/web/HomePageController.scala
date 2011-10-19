@@ -9,9 +9,11 @@ import com.cyrusinnovation.inquisition.questions.QuestionRepository
 import org.springframework.web.bind.annotation._
 import org.springframework.web.servlet.ModelAndView
 import org.slf4j._
+import com.cyrusinnovation.inquisition.tags.TagRepository
 
 @Controller
-class HomePageController @Autowired()(questionRepository: QuestionRepository, timeSource: TimeSource) {
+class HomePageController @Autowired()(questionRepository: QuestionRepository, timeSource: TimeSource,
+                                      tagRepository: TagRepository) {
   final val DEFAULT_NUMBER_OF_TAGS_TO_RETRIEVE: Int = 10
 
   @RequestMapping(Array("/"))
@@ -19,7 +21,7 @@ class HomePageController @Autowired()(questionRepository: QuestionRepository, ti
 
     val model = Map("currentUser" -> SecurityHelper.getAuthenticatedUser,
     "questions" -> questionRepository.findRecent(timeSource.now),
-    "tags" -> questionRepository.findMostPopularTags(DEFAULT_NUMBER_OF_TAGS_TO_RETRIEVE))
+    "tags" -> tagRepository.findMostPopularTags(DEFAULT_NUMBER_OF_TAGS_TO_RETRIEVE))
     new ModelAndView("index", model.asJava)
   }
 

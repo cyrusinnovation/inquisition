@@ -11,17 +11,19 @@ import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
 import javax.servlet.http.HttpServletResponse
 import org.mockito.{Mockito, MockitoAnnotations}
 import org.springframework.mock.web.MockHttpServletResponse
+import com.cyrusinnovation.inquisition.tags.TagRepository
 
 
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   @Mock var timeSource: TimeSource = _
-  @Mock var repository: QuestionRepository = _
+  @Mock var questionRepository: QuestionRepository = _
+  @Mock var tagRepository: TagRepository = _
 
   var controller: QuestionController = _
 
   override def beforeEach() {
     MockitoAnnotations.initMocks(this)
-    controller = new QuestionController(repository, timeSource);
+    controller = new QuestionController(questionRepository, timeSource, tagRepository);
     SecurityHelper.setAuthenticatedUser(Some(new SavedUser("userId", new User("a@example.com", "userName",
       "firstName", "lastName", "password", "salt", Set(), None))))
   }
@@ -50,14 +52,14 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
   test("create a new question returns calls the question repository") {
     val q = uniqueQuestionFormData();
-    when(repository.save(q.toQuestion)).thenReturn(null);
+    when(questionRepository.save(q.toQuestion)).thenReturn(null);
     controller.addQuestion(q) should be("redirect:/")
   }
 
   test("show question tests that the view is question") {
     val questionId = "questionId"
     val q = uniqueQuestionFormData();
-    when(repository.findById(questionId)).thenReturn(Some(q.toQuestion));
+    when(questionRepository.findById(questionId)).thenReturn(Some(q.toQuestion));
     val mav = controller.showQuestion(questionId)
     mav.getViewName should be("question")
   }
@@ -66,7 +68,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
   test("show question tests that the model contains the question") {
     val questionId = "questionId"
     val q = uniqueQuestionFormData();
-    when(repository.findById(questionId)).thenReturn(Some(q.toQuestion));
+    when(questionRepository.findById(questionId)).thenReturn(Some(q.toQuestion));
     val mav = controller.showQuestion(questionId)
     mav.getModel.containsKey("question") should be(true)
     mav.getModel.get("question") should be(q.toQuestion)
@@ -78,14 +80,14 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     val q = uniqueQuestionFormData();
 
     val viewName = controller.deleteQuestion(questionId)
-    verify(repository, times(1)).deleteQuestion(questionId, "userName")
+    verify(questionRepository, times(1)).deleteQuestion(questionId, "userName")
     viewName should be ("redirect:/")
   }
 
   test("throw a resource not found exception") {
     val questionId = "questionId"
     val q = uniqueQuestionFormData();
-    when(repository.findById(questionId)).thenReturn(None);
+    when(questionRepository.findById(questionId)).thenReturn(None);
     evaluating {
       controller.showQuestion(questionId)
     } should produce[ResourceNotFoundException]
@@ -95,7 +97,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     val questionReturn = List[Question]()
     val tagFormData = new TagFormData()
     tagFormData.setTagQuery("taga, tagb")
-    when(repository.findQuestionsByTags(tagFormData.toTagList)).thenReturn(questionReturn)
+    when(tagRepository.findQuestionsByTags(tagFormData.toTagList)).thenReturn(questionReturn)
 
     val mav = controller.searchQuestions(tagFormData)
     val model = mav.getModel
@@ -108,7 +110,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
   test("display new question form") {
     val questionId = "dead6bb0744e9d3695a7f810"
     val question = Some(new Question(None, "Title", "Creator"))
-    when(repository.findById(questionId)).thenReturn(question)
+    when(questionRepository.findById(questionId)).thenReturn(question)
 
     val mav = controller.showNewQuestionResponseForm(questionId)
 
@@ -124,8 +126,8 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     questionAnswerModel.setBody("Body text")
     val question = new Question(None, "Title", "Creator")
 
-    when(repository.findById(questionId)).thenReturn(Some(question))
-    when(repository.saveQuestionAnswer(question, questionAnswerModel.toQuestionAnswer)).thenReturn(question)
+    when(questionRepository.findById(questionId)).thenReturn(Some(question))
+    when(questionRepository.saveQuestionAnswer(question, questionAnswerModel.toQuestionAnswer)).thenReturn(question)
 
     val nextView = controller.addQuestionAnswer(questionAnswerModel)
     nextView should be("redirect:/")
@@ -137,7 +139,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     questionAnswerModel.setQuestionId(questionId)
     questionAnswerModel.setTitle("Title")
     questionAnswerModel.setBody("Body text")
-    when(repository.findById(questionId)).thenReturn(None)
+    when(questionRepository.findById(questionId)).thenReturn(None)
 
     evaluating {
       controller.addQuestionAnswer(questionAnswerModel)
@@ -145,7 +147,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
   }
 
     test("Can find tags by prefix") {
-      when(repository.findTagsByPrefix("a")).thenReturn(List("a1", "a2"))
+      when(tagRepository.findTagsByPrefix("a")).thenReturn(List("a1", "a2"))
       val mav = controller.tagCompletion("a")
       val tagList = mav.getModel.get("tags").asInstanceOf[java.util.List[String]]
       val viewName = mav.getViewName
@@ -157,7 +159,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     }
 
     test("Can find tags by prefix that does not exist") {
-      when(repository.findTagsByPrefix("a")).thenReturn(List())
+      when(tagRepository.findTagsByPrefix("a")).thenReturn(List())
       val mav = controller.tagCompletion("a")
       val tagList = mav.getModel.get("tags").asInstanceOf[java.util.List[String]]
       val viewName = mav.getViewName
@@ -170,7 +172,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
       val response = new MockHttpServletResponse()
 
       val mav = controller.tagRemoval("questionId", "tagText", response)
-      verify(repository, times(1)).deleteTagFromQuestion("questionId", "tagText")
+      verify(tagRepository, times(1)).deleteTagFromQuestion("questionId", "tagText")
 
       response.getStatus should equal(204)
     }
@@ -179,7 +181,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
       val response = new MockHttpServletResponse()
 
       val mav = controller.tagAddition("questionId", "tagText", response)
-      verify(repository, times(1)).addTagToQuestion("questionId", "tagText")
+      verify(tagRepository, times(1)).addTagToQuestion("questionId", "tagText")
 
       response.getStatus should equal(204)
     }
