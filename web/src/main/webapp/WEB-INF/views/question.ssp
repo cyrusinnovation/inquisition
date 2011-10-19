@@ -5,23 +5,23 @@
 
 <div class="content">
 <div class="row">
-    <div class="span14">
-    <h2>${question.title}</h2>
-    <h3>Asked by ${question.creatorUsername}</h3>
-    <pre>${question.body}</pre>
-    <hr>
-        #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
-            <p>
-                <a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink">Delete Question</a>
-                <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
-            </p>
-        #end
-        <p>
-            <a href="${contextPath}/questions/newResponse/${question.id}">Add Response</a>
-        </p>
-    <hr>
+        <div class="span12">
+            <h2>${question.title}</h2>
+            <h3>Asked by ${question.creatorUsername}</h3>
+            <pre>${question.body}</pre>
+            <hr>
+                #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
+                    <p>
+                        <a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink">Delete Question</a>
+                        <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
+                    </p>
+                #end
+                <p>
+                    <a href="${contextPath}/questions/newResponse/${question.id}">Add Response</a>
+                </p>
+            <hr>
         </div>
-            <div class="span2">
+            <div class="span4">
                 <h1>Tags</h1>
                 <hr>
                     #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
@@ -29,7 +29,7 @@
                             <div id="dialogDeleteTag" display="hidden" title="Confirmation Required">Are you sure about this?</div>
                         </p>
                     #end
-                <ul>
+                <ul id="questionTags">
                     #for (tag <- question.tags)
                        <li>
                            #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
