@@ -55,7 +55,10 @@
   <script type="text/javascript" src="/javascript/jquery-1.6.2.min.js"></script>
   <script type="text/javascript" src="/javascript/jquery-ui-1.8.16.custom.min.js"></script>
   <script type="text/javascript" src="/javascript/tag-it.js"></script>
+    <!-- if it's development do this -->
   <script type="text/javascript" src="/javascript/validation_helpers.js"></script>
+  <script type="text/javascript" src="/javascript/question.js"></script>
+   <!-- Otherwise do minimum version -->
   <script>
     $("body").bind("click", function (e) {
       $('.dropdown-toggle, .menu').parent("li").removeClass("open");
