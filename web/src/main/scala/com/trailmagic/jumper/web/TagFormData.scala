@@ -10,12 +10,3 @@ class TagFormData {
     tagQuery.split(" ").toList
   }
 }
-
-//class QuestionAnswerFormData {
-//  @BeanProperty var title = ""
-//  @BeanProperty var body = ""
-//  @BeanProperty var questionId = ""
-//  def toQuestionAnswer: QuestionAnswer = {
-//    QuestionAnswer(title, "tester", body)
-//  }
-//}

@@ -39,12 +39,6 @@ class TagController @Autowired()(tagRepository: TagRepository) {
 
     @RequestMapping(value = Array("/questions/{questionId}/tags"), method = Array(RequestMethod.POST))
     def tagAddition(@RequestParam tagsww: String, @PathVariable questionId: String) = {
-//      var tagFormData = new TagFormData()
-//      tagFormData.setTagQuery(tagsww)
-//      for (tag <- tagFormData.toTagList)
-//      {
-//        tagRepository.addTagToQuestion(questionId, tag)
-//      }
       tagRepository.addTagToQuestion(questionId, tagsww)
       new ModelAndView("redirect:/questions/" + questionId)
   }
