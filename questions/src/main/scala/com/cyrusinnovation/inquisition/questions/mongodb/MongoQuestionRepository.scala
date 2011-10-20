@@ -13,7 +13,8 @@ import com.mongodb.{QueryBuilder, WriteResult}
 @Repository
 class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionRepository {
   val questions = db("questions")
-  questions.ensureIndex(MongoDBObject("tags" -> 1))
+  questions.ensureIndex(MongoDBObject("responses.id" -> 1))
+  questions.ensureIndex(MongoDBObject("tags.name" -> 1))
 
   def save(question: Question): Question = {
     question.id match {

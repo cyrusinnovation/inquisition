@@ -40,29 +40,28 @@ class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAn
 
     test("can save new question response") {
         val questionId = "dead6bb0744e9d3695a7f810"
-        val questionAnswerModel = new QuestionAnswerFormData()
+        val questionAnswerModel = new ResponseFormData()
         questionAnswerModel.setQuestionId(questionId)
         questionAnswerModel.setTitle("Title")
         questionAnswerModel.setBody("Body text")
-        val question = new Question(None, "Title", "Creator")
+        val question = new Question(Some(questionId), "Title", "Creator")
 
         when(questionRepository.findById(questionId)).thenReturn(Some(question))
-        when(responseRepository.saveQuestionAnswer(question, questionAnswerModel.toQuestionAnswer)).thenReturn(question)
+        when(responseRepository.save(question.id.get, questionAnswerModel.toResponse)).thenReturn(questionAnswerModel.toResponse)
 
-        val nextView = controller.addQuestionAnswer(questionAnswerModel, questionId)
+        val nextView = controller.addResponse(questionAnswerModel, questionId)
         nextView should be("redirect:/questions/dead6bb0744e9d3695a7f810")
     }
 
     test("Exception thrown if a question response is added to a non-exstant questions") {
         val questionId = "dead6bb0744e9d3695a7f810"
-        val questionAnswerModel = new QuestionAnswerFormData()
+        val questionAnswerModel = new ResponseFormData()
         questionAnswerModel.setQuestionId(questionId)
         questionAnswerModel.setTitle("Title")
-        questionAnswerModel.setBody("Body text")
-        when(questionRepository.findById(questionId)).thenReturn(None)
+        when(responseRepository.save(questionId, questionAnswerModel.toResponse)).thenThrow(new IllegalArgumentException)
 
         evaluating {
-            controller.addQuestionAnswer(questionAnswerModel, questionId)
+            controller.addResponse(questionAnswerModel, questionId)
         } should produce[ResourceNotFoundException]
     }
 }

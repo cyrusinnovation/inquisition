@@ -122,14 +122,14 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
 
 
     test("Can save a question with an answer") {
-        val answer = new Response("Answer", "creator", "body string")
-        val question: Question = uniqueQuestion().copy(answers = List(answer))
+        val response = new Response(None, "Answer", "creator", "body string")
+        val question: Question = uniqueQuestion().copy(responses = List(response))
 
         val savedQuestion = repository.save(question)
         val retrievedQuestion = repository.findById(savedQuestion.id.get)
 
-        val answers = retrievedQuestion.get.answers
+        val answers = retrievedQuestion.get.responses
         answers should have length (1)
-        answers.head should equal(answer)
+        answers.head should equal(response)
     }
 }

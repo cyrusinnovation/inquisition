@@ -4,12 +4,12 @@ import com.cyrusinnovation.inquisition.response.Response
 import com.cyrusinnovation.inquisition.questions.Question
 import reflect.BeanProperty
 
-class QuestionAnswerFormData {
+class ResponseFormData {
   @BeanProperty var title = ""
   @BeanProperty var body = ""
   @BeanProperty var questionId = ""
 
-  def toQuestionAnswer: Response = {
-    Response(title, "tester", body)
+  def toResponse: Response = {
+    Response(None, title, "tester", body)
   }
 }

@@ -24,15 +24,17 @@ class ResponseController @Autowired()(questionRepository: QuestionRepository, re
     }
 
     @RequestMapping(value = Array("/response"), method = Array(RequestMethod.POST))
-    def addQuestionAnswer(@ModelAttribute questionAnswer: QuestionAnswerFormData, @PathVariable questionId: String) = {
-        val question = questionRepository.findById(questionId)
-        match {
-            case Some(question) => {
-                responseRepository.saveQuestionAnswer(question, questionAnswer.toQuestionAnswer)
-            }
-            case None => throw new ResourceNotFoundException
-        }
-        "redirect:/questions/" + questionId
+    def addResponse(@ModelAttribute qResponse: ResponseFormData, @PathVariable questionId: String) = {
+      try
+      {
+         responseRepository.save(questionId, qResponse.toResponse)
+      }
+      catch
+      {
+        case iae: IllegalArgumentException => throw new ResourceNotFoundException()
+      }
+
+      "redirect:/questions/" + questionId
     }
 
 }
