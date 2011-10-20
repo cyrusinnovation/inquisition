@@ -1,6 +1,6 @@
 package com.cyrusinnovation.inquisition.questions.mongodb
 
-import com.cyrusinnovation.inquisition.questions.{Question, QuestionAnswer, QuestionRepository}
+import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
 import org.springframework.beans.factory.annotation.Autowired
 import com.novus.salat._
 import com.novus.salat.global._
@@ -28,12 +28,6 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
         question.copy(id = Some(dbObj("id").toString))
       }
     }
-  }
-
-  def saveQuestionAnswer(question: Question, questionAnswer: QuestionAnswer): Question = {
-    val updatedQuestion = question.copy(answers = questionAnswer :: question.answers)
-    save(updatedQuestion)
-    //    Question(None,"Title","BS")
   }
 
   def db2question(dbObj: DBObject): Question = {

@@ -4,11 +4,12 @@ import org.scalatest.matchers.ShouldMatchers
 import com.mongodb.casbah.MongoConnection
 import org.joda.time.DateTime
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
-import com.cyrusinnovation.inquisition.questions.{QuestionAnswer, Question}
+import com.cyrusinnovation.inquisition.response.Response
+import com.cyrusinnovation.inquisition.questions.Question
 import java.security.InvalidParameterException
 import com.cyrusinnovation.inquisition.questions.mongodb.{MongoTestConstants, MongoQuestionRepository}
 
-class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
+class MongoTagsRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   val con = MongoConnection()
   val TestDbName = "test_inquisition"
   val db = con(TestDbName)

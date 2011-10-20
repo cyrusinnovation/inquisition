@@ -1,6 +1,7 @@
 package com.trailmagic.jumper.web
 
-import com.cyrusinnovation.inquisition.questions.QuestionAnswer
+import com.cyrusinnovation.inquisition.response.Response
+import com.cyrusinnovation.inquisition.questions.Question
 import reflect.BeanProperty
 
 class QuestionAnswerFormData {
@@ -8,7 +9,7 @@ class QuestionAnswerFormData {
   @BeanProperty var body = ""
   @BeanProperty var questionId = ""
 
-  def toQuestionAnswer: QuestionAnswer = {
-    QuestionAnswer(title, "tester", body)
+  def toQuestionAnswer: Response = {
+    Response(title, "tester", body)
   }
 }

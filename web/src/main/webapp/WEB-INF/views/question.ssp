@@ -17,7 +17,7 @@
                     </p>
                 #end
                 <p>
-                    <a href="${contextPath}/questions/newResponse/${question.id}">Add Response</a>
+                    <a href="${contextPath}/questions/${question.id}/response">Add Response</a>
                 </p>
             <hr>
         </div>

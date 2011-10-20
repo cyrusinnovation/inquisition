@@ -4,7 +4,8 @@ import org.scalatest.matchers.ShouldMatchers
 import com.mongodb.casbah.MongoConnection
 import org.joda.time.DateTime
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
-import com.cyrusinnovation.inquisition.questions.{QuestionAnswer, Question}
+import com.cyrusinnovation.inquisition.response.Response
+import com.cyrusinnovation.inquisition.questions.Question
 import java.security.InvalidParameterException
 
 class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
@@ -41,13 +42,7 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
         questionCount should be(3)
     }
 
-    test("should be able respond to a question with an anwser without creating a duplicate question.") {
-        val savedQuestion = repository.save(Question(None, "Title", "Tester", "Body"))
 
-        repository.saveQuestionAnswer(savedQuestion, new QuestionAnswer("Title", "Creator", "Body"))
-        val updatedQuestion = repository.findById(savedQuestion.id.get).get
-        savedQuestion.id should be(updatedQuestion.id)
-    }
 
     test("should be able to save a question with an existing id to update it") {
         val savedQuestion = repository.save(uniqueQuestion(title = "Original Title"));
@@ -127,7 +122,7 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
 
 
     test("Can save a question with an answer") {
-        val answer = new QuestionAnswer("Answer", "creator", "body string")
+        val answer = new Response("Answer", "creator", "body string")
         val question: Question = uniqueQuestion().copy(answers = List(answer))
 
         val savedQuestion = repository.save(question)
@@ -137,19 +132,4 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
         answers should have length (1)
         answers.head should equal(answer)
     }
-
-    test("Can update a question with an answer") {
-        val answer = new QuestionAnswer("Answer", "creator", "bodystring")
-        val question: Question = uniqueQuestion()
-
-        val savedQuestion = repository.saveQuestionAnswer(question, answer)
-        val retrievedQuestion = repository.findById(savedQuestion.id.get)
-
-        val answers = retrievedQuestion.get.answers
-        answers should have length (1)
-        answers.head should equal(answer)
-
-    }
-
-
 }

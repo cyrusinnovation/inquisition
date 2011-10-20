@@ -51,23 +51,4 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository, ti
         questionRepository.deleteQuestion(questionId, user.username)
         "redirect:/"
     }
-
-    @RequestMapping(value = Array("/newResponse/{questionId}"), method = Array(RequestMethod.GET))
-    def showNewQuestionResponseForm(@PathVariable questionId: String) = {
-        val model = Map("questionId" -> questionId)
-        new ModelAndView("new-question-response", model.asJava)
-    }
-
-    @RequestMapping(value = Array("/newResponse"), method = Array(RequestMethod.POST))
-    def addQuestionAnswer(@ModelAttribute questionAnswer: QuestionAnswerFormData) = {
-        val question = questionRepository.findById(questionAnswer.getQuestionId())
-        match {
-            case Some(question) => {
-                questionRepository.saveQuestionAnswer(question, questionAnswer.toQuestionAnswer)
-            }
-            case None => throw new ResourceNotFoundException
-        }
-        "redirect:/"
-    }
-
 }

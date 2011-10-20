@@ -1,7 +1,8 @@
 package com.trailmagic.jumper.web
 
 import reflect.BeanProperty
-import com.cyrusinnovation.inquisition.questions.{Question, QuestionAnswer}
+import com.cyrusinnovation.inquisition.response.Response
+import com.cyrusinnovation.inquisition.questions.Question
 import com.mongodb.MongoException.DuplicateKey
 
 class QuestionFormData {

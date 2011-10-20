@@ -90,44 +90,4 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
             controller.showQuestion(questionId)
         } should produce[ResourceNotFoundException]
     }
-
-    test("display new question form") {
-        val questionId = "dead6bb0744e9d3695a7f810"
-        val question = Some(new Question(None, "Title", "Creator"))
-        when(questionRepository.findById(questionId)).thenReturn(question)
-
-        val mav = controller.showNewQuestionResponseForm(questionId)
-
-        mav.getViewName() should be("new-question-response")
-        mav.getModelMap.get("questionId") should equal(questionId)
-    }
-
-    test("can save new question response") {
-        val questionId = "dead6bb0744e9d3695a7f810"
-        val questionAnswerModel = new QuestionAnswerFormData()
-        questionAnswerModel.setQuestionId(questionId)
-        questionAnswerModel.setTitle("Title")
-        questionAnswerModel.setBody("Body text")
-        val question = new Question(None, "Title", "Creator")
-
-        when(questionRepository.findById(questionId)).thenReturn(Some(question))
-        when(questionRepository.saveQuestionAnswer(question, questionAnswerModel.toQuestionAnswer)).thenReturn(question)
-
-        val nextView = controller.addQuestionAnswer(questionAnswerModel)
-        nextView should be("redirect:/")
-    }
-
-    test("Exception thrown if a question response is added to a non-exstant questions") {
-        val questionId = "dead6bb0744e9d3695a7f810"
-        val questionAnswerModel = new QuestionAnswerFormData()
-        questionAnswerModel.setQuestionId(questionId)
-        questionAnswerModel.setTitle("Title")
-        questionAnswerModel.setBody("Body text")
-        when(questionRepository.findById(questionId)).thenReturn(None)
-
-        evaluating {
-            controller.addQuestionAnswer(questionAnswerModel)
-        } should produce[ResourceNotFoundException]
-    }
-
 }

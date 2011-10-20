@@ -2,7 +2,7 @@
 <% attributes("title") = "Add Question Response" %>
 <%@ val questionId: String %>
 <div class="content">
-    <form method="post" action="${contextPath}/questions/newResponse">
+    <form method="post" action="${contextPath}/questions/${questionId}/response/">
         <div class="clearfix">
             <label for="title">Title</label>
 
