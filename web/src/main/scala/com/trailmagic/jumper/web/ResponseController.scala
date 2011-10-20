@@ -20,7 +20,7 @@ class ResponseController @Autowired()(questionRepository: QuestionRepository, re
     @RequestMapping(value = Array("/response"), method = Array(RequestMethod.GET))
     def showNewQuestionResponseForm(@PathVariable questionId: String) = {
         val model = Map("questionId" -> questionId)
-        new ModelAndView("new-question-response", model.asJava)
+        new ModelAndView("new-response", model.asJava)
     }
 
     @RequestMapping(value = Array("/response"), method = Array(RequestMethod.POST))

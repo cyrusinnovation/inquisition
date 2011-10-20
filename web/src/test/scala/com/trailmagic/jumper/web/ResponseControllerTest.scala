@@ -27,14 +27,14 @@ class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAn
     override def afterEach() {
         SecurityHelper.setAuthenticatedUser(None)
     }
-  test("display new question form") {
+  test("can display new response form") {
         val questionId = "dead6bb0744e9d3695a7f810"
         val question = Some(new Question(None, "Title", "Creator"))
         when(questionRepository.findById(questionId)).thenReturn(question)
 
         val mav = controller.showNewQuestionResponseForm(questionId)
 
-        mav.getViewName() should be("new-question-response")
+        mav.getViewName() should be("new-response")
         mav.getModelMap.get("questionId") should equal(questionId)
     }
 
