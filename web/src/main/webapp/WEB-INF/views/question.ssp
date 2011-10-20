@@ -40,8 +40,14 @@
                        </li>
                     #end
                 </ul>
+                <div class="">
+                    <form method="POST" action="/questions/${question.id}/tags" id="questionAddTagForm">
+                        <label for="tagsww">Tags</label>
+                        <input type="text" size="100" name="tagsww" id="tagsww" placeholder="Enter a tag to add to the question."/>
+                    </form>
+                </div>
             </div>
-    </div>  <!-- row end -->
+</div>  <!-- row end -->
     <hr>
     <h1>Question Responses</h1>
     <hr>

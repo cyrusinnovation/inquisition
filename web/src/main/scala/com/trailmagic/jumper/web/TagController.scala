@@ -1,15 +1,15 @@
 package com.trailmagic.jumper.web
 
-import org.springframework.web.bind.annotation.{ModelAttribute, RequestMethod, PathVariable, RequestMapping}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 
 import scala.collection.JavaConverters._
 
-import org.springframework.web.servlet.ModelAndView
 import javax.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import com.cyrusinnovation.inquisition.tags.TagRepository
+import org.springframework.web.servlet.ModelAndView
+import org.springframework.web.bind.annotation._
 
 
 @Controller
@@ -37,9 +37,15 @@ class TagController @Autowired()(tagRepository: TagRepository) {
     response.setStatus(HttpStatus.NO_CONTENT.value())
   }
 
-  @RequestMapping(value = Array("/questions/{questionId}/tags/{tagText}"), method = Array(RequestMethod.POST))
-  def tagAddition(@PathVariable questionId: String, @PathVariable tagText: String, response: HttpServletResponse) {
-    tagRepository.addTagToQuestion(questionId, tagText)
-    response.setStatus(HttpStatus.NO_CONTENT.value())
+    @RequestMapping(value = Array("/questions/{questionId}/tags"), method = Array(RequestMethod.POST))
+    def tagAddition(@RequestParam tagsww: String, @PathVariable questionId: String) = {
+//      var tagFormData = new TagFormData()
+//      tagFormData.setTagQuery(tagsww)
+//      for (tag <- tagFormData.toTagList)
+//      {
+//        tagRepository.addTagToQuestion(questionId, tag)
+//      }
+      tagRepository.addTagToQuestion(questionId, tagsww)
+      new ModelAndView("redirect:/questions/" + questionId)
   }
 }

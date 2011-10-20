@@ -81,3 +81,10 @@ $(document).ready(function() {
     }
     });
 });
+$(document).ready(function() {
+    $("#tagQuery").keydown(function(event) {
+        if (event.keyCode == 13) {
+            $("questionAddTagForm").submit();
+        }
+    });
+});
