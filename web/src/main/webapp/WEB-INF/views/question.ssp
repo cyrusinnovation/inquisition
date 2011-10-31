@@ -51,10 +51,10 @@
     <hr>
     <h1>Question Responses</h1>
     <hr>
-        #for (qa <- question.answers)
-            <h2>${qa.title}</h2>
-            <h3>Asked by ${qa.creatorUsername}</h3>
-            <p>${qa.body}</p>
+        #for (response <- question.responses)
+            <h2>${response.title}</h2>
+            <h3>Asked by ${response.creatorUsername}</h3>
+            <p>${response.body}</p>
         #end
     <hr>
 </div>
