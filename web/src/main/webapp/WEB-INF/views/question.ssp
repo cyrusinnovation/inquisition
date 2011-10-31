@@ -2,21 +2,29 @@
 #import(com.trailmagic.jumper.web.util.SecurityHelper)
 <% attributes("title") = "View Question" %>
 <%@ val question: Question %>
+<%@ val questionCreatorLoggedIn: Boolean = SecurityHelper.isUserCurrentlyAuthenticated(question.creatorUsername) %>
 
 <div class="content">
-<div class="row">
+    <div class="row">
         <div class="span12">
             <% render("partials/question.ssp", Map('question -> question)) %>
-            #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
-                <a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}"
-                   class="confirmLink btn large primary">Delete Question</a>
+            #if (questionCreatorLoggedIn)
+            <a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}"
+               class="confirmLink btn large primary">Delete Question</a>
 
-                <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
+            <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
             #end
             <a href="${contextPath}/questions/${question.id}/response" class="btn large primary">Add Response</a>
         </div>
         <div class="span4">
-            <% render("partials/tagList.ssp", Map('question -> question)) %>
+            <% render("partials/tagList.ssp", Map('tags -> question.tags, 'enableDelete -> questionCreatorLoggedIn, 'questionId -> question.id.get)) %>
+            <div class="">
+                <form method="POST" action="/questions/${question.id}/tags" id="questionAddTagForm">
+                    <label for="tagsww">Tags</label>
+                    <input type="text" size="100" name="tagsww" id="tagsww"
+                           placeholder="Enter a tag to add to the question."/>
+                </form>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -24,7 +32,7 @@
             <h1>Question Responses</h1>
             <hr>
             #for (response <- question.responses)
-                <% render("partials/response.ssp", Map('response -> response)) %>
+            <% render("partials/response.ssp", Map('response -> response)) %>
             #end
         </div>
     </div>

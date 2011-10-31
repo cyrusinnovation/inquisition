@@ -6,6 +6,7 @@
 <div class="content">
     <div class="row">
         <div class="span12">
+            <!-- test -->
             <a class="btn large primary" href="${contextPath}/questions/new">New Question</a>
 
             <h1>Recent Questions</h1>

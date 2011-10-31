@@ -1,10 +1,9 @@
 #import(com.trailmagic.jumper.web.util.SecurityHelper)
 <%@ val questionId: String %>
-<%@ val questionCreator: String %>
 <%@ val tag: String %>
+<%@ val enableDelete: Boolean = false %>
 
-#if (SecurityHelper.isUserCurrentlyAuthenticated(questionCreator))
-    <a class="deleteTag" href="/delete" value="/questions/${questionId}/tags/">${tag}</a>
-#else
-    ${tag}
+<a href="/questions/search" class="searchTag">${tag}</a>
+#if (enableDelete)
+<a class="deleteTag" href="/delete" value="/questions/${questionId}/tags/${tag}">delete</a>
 #end

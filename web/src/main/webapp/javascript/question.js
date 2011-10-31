@@ -46,7 +46,7 @@ $(document).ready(dialogTagFunction);
 $(".deleteTag").click(function(event) {
     event.preventDefault();
     var parentListItemNode = $(this).parent("li")
-    var targetUrl = $(this).attr("value") + $(this).text();
+    var targetUrl = $(this).attr("value");
 
     $("#dialogDeleteTag").dialog({
         buttons : {
@@ -81,10 +81,26 @@ $(document).ready(function() {
     }
     });
 });
+
 $(document).ready(function() {
     $("#tagQuery").keydown(function(event) {
         if (event.keyCode == 13) {
             $("questionAddTagForm").submit();
         }
+    });
+});
+
+$(document).ready(function() {
+    $(".searchTag").click(function(event) {
+        event.preventDefault();
+        var tag = $(this).text();
+        var target = $(this).attr('href');
+        var f = document.createElement('form');
+
+        $(this).after($(f).attr({
+            method: 'POST',
+            action: target
+        }).append('<input type="hidden" name="tagQuery" id="search-query" value="' + tag + '" />'));
+        $(f).submit();
     });
 });
