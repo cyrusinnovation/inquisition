@@ -19,12 +19,7 @@
             </ul>
         </div>
         <div class="span4">
-            <h1>Top Tags</h1>
-            <ul id="tagList">
-                #for (tag <- tags)
-                <li>${tag}</li>
-                #end
-            </ul>
+            <% render("partials/tagList.ssp", Map('tags -> tags, 'tagHeader -> "Top Tags")) %>
         </div>
     </div>
 </div>

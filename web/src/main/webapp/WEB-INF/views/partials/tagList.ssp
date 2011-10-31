@@ -1,9 +1,9 @@
 #import(com.trailmagic.jumper.web.util.SecurityHelper)
 #import(com.cyrusinnovation.inquisition.questions.Question)
-<%@ val questionId: String %>
 <%@ val tags: List[String] %>
 <%@ val tagHeader: String = "Tags" %>
 <%@ val enableDelete: Boolean = false %>
+<%@ val questionId: String = "" %>
 
 <h1>${tagHeader}</h1>
 <hr>
