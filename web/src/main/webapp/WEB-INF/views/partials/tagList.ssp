@@ -1,0 +1,27 @@
+#import(com.trailmagic.jumper.web.util.SecurityHelper)
+#import(com.cyrusinnovation.inquisition.questions.Question)
+<%@ val question: Question %>
+
+<h1>Tags</h1>
+<hr>
+#if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
+    <p>
+    <div id="dialogDeleteTag" display="hidden" title="Confirmation Required">Are you sure about this?</div>
+    </p>
+#end
+
+<ul id="questionTags">
+    #for (tag <- question.tags)
+        <li>
+            <% render("tag.ssp", Map('questionId -> question.id.get, 'questionCreator -> question.creatorUsername, 'tag -> tag)) %>
+        </li>
+    #end
+</ul>
+
+<div class="">
+    <form method="POST" action="/questions/${question.id}/tags" id="questionAddTagForm">
+        <label for="tagsww">Tags</label>
+        <input type="text" size="100" name="tagsww" id="tagsww"
+               placeholder="Enter a tag to add to the question."/>
+    </form>
+</div>

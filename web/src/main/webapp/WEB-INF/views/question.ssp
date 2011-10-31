@@ -6,55 +6,26 @@
 <div class="content">
 <div class="row">
         <div class="span12">
-            <h2>${question.title}</h2>
-            <h3>Asked by ${question.creatorUsername}</h3>
-            <pre>${question.body}</pre>
-            <hr>
-                #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
-                    <p>
-                        <a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink">Delete Question</a>
-                        <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
-                    </p>
-                #end
-                <p>
-                    <a href="${contextPath}/questions/${question.id}/response">Add Response</a>
-                </p>
-            <hr>
+            <% render("partials/question.ssp", Map('question -> question)) %>
+            #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
+                <a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}"
+                   class="confirmLink btn large primary">Delete Question</a>
+
+                <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
+            #end
+            <a href="${contextPath}/questions/${question.id}/response" class="btn large primary">Add Response</a>
         </div>
-            <div class="span4">
-                <h1>Tags</h1>
-                <hr>
-                    #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
-                        <p>
-                            <div id="dialogDeleteTag" display="hidden" title="Confirmation Required">Are you sure about this?</div>
-                        </p>
-                    #end
-                <ul id="questionTags">
-                    #for (tag <- question.tags)
-                       <li>
-                           #if (SecurityHelper.getMandatoryAuthenticatedUser.username == question.creatorUsername)
-                                <a class="deleteTag" href="/delete" value="/questions/${question.id}/tags/">${tag}</a>
-                            #else
-                                ${tag}
-                            #end
-                       </li>
-                    #end
-                </ul>
-                <div class="">
-                    <form method="POST" action="/questions/${question.id}/tags" id="questionAddTagForm">
-                        <label for="tagsww">Tags</label>
-                        <input type="text" size="100" name="tagsww" id="tagsww" placeholder="Enter a tag to add to the question."/>
-                    </form>
-                </div>
-            </div>
-</div>  <!-- row end -->
-    <hr>
-    <h1>Question Responses</h1>
-    <hr>
-        #for (response <- question.responses)
-            <h2>${response.title}</h2>
-            <h3>Asked by ${response.creatorUsername}</h3>
-            <p>${response.body}</p>
-        #end
-    <hr>
+        <div class="span4">
+            <% render("partials/tagList.ssp", Map('question -> question)) %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+            <h1>Question Responses</h1>
+            <hr>
+            #for (response <- question.responses)
+                <% render("partials/response.ssp", Map('response -> response)) %>
+            #end
+        </div>
+    </div>
 </div>

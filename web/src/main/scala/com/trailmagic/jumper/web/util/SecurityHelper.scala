@@ -45,4 +45,13 @@ object SecurityHelper {
       case None => false
     }
   }
+
+  def isUserCurrentlyAuthenticated(userName: String) : Boolean = {
+   getAuthenticatedUser match {
+     case None => false
+     case Some(x: SavedUser) => {
+       x.username == userName
+     }
+   }
+  }
 }
