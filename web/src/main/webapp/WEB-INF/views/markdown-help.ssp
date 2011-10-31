@@ -1,0 +1,119 @@
+<% attributes("title") = "Markdown Help" %>
+<div class="content">
+    <div class="exampleSection">
+        <h1>Block Elements</h1>
+        <div class="row exampleRow">
+            <h3>Paragraphs:</h3>
+            <div class="span8 rawText">
+                <pre><code>
+Paragraps are ...
+
+... separated by empty lines
+
+Blockquotes:
+> A Blockquote
+> is started with ">"
+
+> Blockquotes can be continued
+without leading ">"
+                                </code></pre>
+            </div>
+            <div class="span8 renderedText">
+            </div>
+        </div>
+        <div class="row exampleRow">
+            <h3>Code:</h3>
+            <div class="span8 rawText">
+                <pre><code>
+    //verbatim code must be indented
+    //by 4 spaces or one tab
+    def foo() = 42
+                                </code></pre>
+            </div>
+            <div class="span8 renderedText">
+            </div>
+        </div>
+        <div class="row exampleRow">
+            <h3>Lists:</h3>
+            <div class="span8 rawText">
+                <pre><code>
+* unordered Item A
+* unordered Item B
+
+1. ordered Item A
+2. ordered Item B
+
+* items separated by empty lines
+
+* are turned into
+
+* separate paragraphs
+
+1.  you can continue
+on the next line
+
+2.  or you can continue by
+    indenting four spaces or a tab
+                                </code></pre>
+            </div>
+            <div class="span8 renderedText">
+            </div>
+        </div>
+        <div class="row exampleRow">
+            <h3>Headings:</h3>
+            <div class="span8 rawText">
+                <pre><code>
+#Level 1 Heading#
+## Level 2 Heading ##
+### You can omit trailing hashes
+
+Also a Level 1 Heading
+======================
+
+Also a Level 2 Heading
+----------------------
+                                </code></pre>
+            </div>
+            <div class="span8 renderedText">
+            </div>
+        </div>
+        <div class="row exampleRow">
+            <h3>Rulers:</h3>
+            <div class="span8 rawText">
+                <pre><code>
+***
+
+* * *
+
+***********
+
+---
+
+- - -
+
+--------------
+                                </code></pre>
+            </div>
+            <div class="span8 renderedText">
+            </div>
+        </div>
+        <div class="row exampleRow">
+            <h3>Verbatim XML:</h3>
+            <div class="span8 rawText">
+                <pre><code>
+<div> If enabled, verbatim XML
+can be included. <span>It must
+start with an opening tag in
+the first colum (no leading
+white-space) and is ended by
+<em>any</em> closing tag on
+the first column of a
+following line.</span>
+</div>
+                                </code></pre>
+            </div>
+            <div class="span8 renderedText">
+            </div>
+        </div>
+    </div>
+</div>

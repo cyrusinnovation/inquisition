@@ -30,7 +30,11 @@
         </div>
         <div class="actions">
             <input type="submit" value="Create Question" class="btn primary">&nbsp;
+            <input type="button" id="generatePreview" value="Generate Question Text Preview" class="btn primary">
             <!--<button class="btn" type="reset">Cancel</button>-->
         </div>
     </form>
+    <div id="previewPane">
+        Stuff
+    </div>
 </div>

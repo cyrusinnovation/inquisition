@@ -18,7 +18,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <scala.version>2.9.1</scala.version>
-        <scala.dependency.version>2.9.0-1</scala.dependency.version>
+        <scala.dependency.version>2.9.1</scala.dependency.version>
     </properties>
 
     <repositories>
@@ -57,6 +57,19 @@
 
     <build>
         <plugins>
+            <plugin>
+              <groupId>org.zeroturnaround</groupId>
+              <artifactId>jrebel-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>generate-rebel-xml</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                    <goal>generate</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
@@ -255,11 +268,6 @@
                 <version>3.0.5.RELEASE</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.security.oauth</groupId>
-                <artifactId>spring-security-oauth</artifactId>
-                <version>1.0.0.M3</version>
-            </dependency>
-            <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-web</artifactId>
                 <version>3.0.5.RELEASE</version>
@@ -329,7 +337,7 @@
             <dependency>
                 <groupId>org.fusesource.scalate</groupId>
                 <artifactId>scalate-page</artifactId>
-                <version>1.5.1</version>
+                <version>1.5.2</version>
             </dependency>
             <dependency>
                 <groupId>org.fusesource.scalamd</groupId>
@@ -340,7 +348,7 @@
             <dependency>
                 <groupId>org.fusesource.scalate</groupId>
                 <artifactId>scalate-spring-mvc</artifactId>
-                <version>1.5.1</version>
+                <version>1.5.2</version>
             </dependency>
             <dependency>
                 <groupId>com.novus</groupId>
@@ -350,7 +358,7 @@
             <dependency>
                 <groupId>com.mongodb.casbah</groupId>
                 <artifactId>casbah_${scala.dependency.version}</artifactId>
-                <version>2.1.5.0</version>
+                <version>2.1.5-1</version>
                 <type>pom</type>
             </dependency>
             <dependency>
@@ -385,11 +393,6 @@
                 <version>0.8.5</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.amber</groupId>
-                <artifactId>oauth2-client</artifactId>
-                <version>0.2-SNAPSHOT</version>
-            </dependency>
-            <dependency>
                 <groupId>net.liftweb</groupId>
                 <artifactId>lift-json_${scala.version}</artifactId>
                 <version>2.4-M4</version>
@@ -404,11 +407,6 @@
                 <artifactId>scalatest_2.9.1</artifactId>
                 <version>1.6.1</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>se.scalablesolutions.akka</groupId>
-                <artifactId>akka-actor</artifactId>
-                <version>1.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -88,3 +88,21 @@ $(document).ready(function() {
         }
     });
 });
+
+$(document).ready(function(){
+    $("#generatePreview").click(function(event) {
+        event.preventDefault();
+        var markup = $("#bodyInput").val();
+        $.ajax({
+            'url' : "/preview/generate",
+            'data': { markupText: markup},
+            'dataType' : 'json',
+            'type' : 'POST',
+            'async' : true,
+            'success' : function (m) {
+                alert(m.previewText);
+                $("#previewPane").html(m.previewText);
+            }
+        });
+    });
+});

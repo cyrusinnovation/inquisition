@@ -49,6 +49,6 @@
             </list>
         </property>
     </bean>
-
+    <bean name="formattingService" class="com.trailmagic.jumper.web.service.MarkdownFormattingService"/>
     <bean name="json" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
 </beans>

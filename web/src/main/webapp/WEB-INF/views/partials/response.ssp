@@ -3,4 +3,4 @@
 
 <h2>${response.title}</h2>
 <h3>Asked by ${response.creatorUsername}</h3>
-<p>${response.body}</p>
+<pre>${response.body}</pre>

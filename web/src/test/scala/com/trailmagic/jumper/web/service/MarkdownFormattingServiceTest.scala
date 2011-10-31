@@ -1,15 +1,13 @@
 package com.trailmagic.jumper.web.service
 
 import org.scalatest.FunSuite
+import org.scalatest.matchers.ShouldMatchers
 
-/**
- * Created by IntelliJ IDEA.
- * User: Nicholas
- * Date: 10/21/11
- * Time: 11:48 AM
- * To change this template use File | Settings | File Templates.
- */
+class MarkdownFormattingServiceTest extends FunSuite with ShouldMatchers {
+  val formatter = new MarkdownFormattingService
 
-class MarkdownFormattingServiceTest extends FunSuite {
-
+  test("Can format simple markdown string") {
+    formatter.toActHtmlBlock("*test*") should equal("<p><em>test</em></p>")
+    formatter.toPegHtmlBlock("*test*") should equal("<p><em>test</em></p>")
+  }
 }

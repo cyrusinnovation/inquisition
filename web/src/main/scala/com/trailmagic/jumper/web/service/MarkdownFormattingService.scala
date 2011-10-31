@@ -1,13 +1,16 @@
 package com.trailmagic.jumper.web.service
+import com.tristanhunt.knockoff.DefaultDiscounter._
+import org.pegdown.PegDownProcessor
+import org.springframework.stereotype.Service
 
-/**
- * Created by IntelliJ IDEA.
- * User: Nicholas
- * Date: 10/21/11
- * Time: 11:47 AM
- * To change this template use File | Settings | File Templates.
- */
-
+@Service
 class MarkdownFormattingService {
+  val pegDownProcessor = new PegDownProcessor()
 
+  def toActHtmlBlock(markdown: String): String = {
+    toXHTML(knockoff(markdown)).toString()
+  }
+  def toPegHtmlBlock(markdown: String): String = {
+    pegDownProcessor.markdownToHtml(markdown)
+  }
 }

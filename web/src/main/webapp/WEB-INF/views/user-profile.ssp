@@ -1,10 +1,10 @@
 #import(com.trailmagic.jumper.core.SavedUser)
 <%@ val user: SavedUser %>
-<%@ val alert: String = None%>
+<%@ val alert: String = ""%>
 
 <% attributes("title") = "Jumper | " + user.firstName + " " + user.lastName %>
 
-#if (attributes("alert") != None)
+#if (attributes("alert") != "")
     <h1>Thank you for creating your account.</h1>
 #end
 <div class="content">

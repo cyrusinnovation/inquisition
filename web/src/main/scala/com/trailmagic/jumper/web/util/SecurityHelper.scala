@@ -1,11 +1,11 @@
 package com.trailmagic.jumper.web.util
 
 import org.springframework.security.access.AccessDeniedException
-import com.trailmagic.jumper.core.SavedUser
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import com.trailmagic.jumper.core.security.JumperUserDetails
+import com.trailmagic.jumper.core.SavedUser
 
 
 object SecurityHelper {
@@ -44,5 +44,14 @@ object SecurityHelper {
       case Some(user) => true
       case None => false
     }
+  }
+
+  def isUserCurrentlyAuthenticated(userName: String) : Boolean = {
+   getAuthenticatedUser match {
+     case None => false
+     case Some(x: SavedUser) => {
+       x.username == userName
+     }
+   }
   }
 }
