@@ -7,7 +7,7 @@
 <div class="content">
     <div class="row">
         <div class="span12">
-            <% render("partials/question.ssp", Map('question -> question)) %>
+            <% render("partials/_question.ssp", Map('question -> question)) %>
             #if (questionCreatorLoggedIn)
             <a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}"
                class="confirmLink btn large primary">Delete Question</a>
@@ -17,7 +17,8 @@
             <a href="${contextPath}/questions/${question.id}/response" class="btn large primary">Add Response</a>
         </div>
         <div class="span4">
-            <% render("partials/tagList.ssp", Map('tags -> question.tags, 'enableDelete -> questionCreatorLoggedIn, 'questionId -> question.id.get)) %>
+            <% render("partials/_tagList.ssp", Map('tags -> question.tags, 'enableDelete -> questionCreatorLoggedIn,
+            'questionId -> question.id.get)) %>
             <div class="">
                 <form method="POST" action="/questions/${question.id}/tags" id="questionAddTagForm">
                     <label for="tagsww">Tags</label>
@@ -32,7 +33,7 @@
             <h1>Question Responses</h1>
             <hr>
             #for (response <- question.responses)
-            <% render("partials/response.ssp", Map('response -> response)) %>
+            <% render("partials/_response.ssp", Map('response -> response)) %>
             #end
         </div>
     </div>
