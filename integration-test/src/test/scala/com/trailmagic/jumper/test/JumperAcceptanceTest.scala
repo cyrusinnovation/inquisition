@@ -30,7 +30,7 @@ class JumperAcceptanceTest {
     profile = new ProfilesIni().getProfile("WebDriver")
     driver = new FirefoxDriver(profile)
     helper = new WebDriverHelper(driver)
-
+    helper.ensureLoggedOut()
   }
 
   @After
