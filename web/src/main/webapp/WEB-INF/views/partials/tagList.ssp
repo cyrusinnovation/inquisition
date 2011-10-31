@@ -1,0 +1,9 @@
+<%@ val question: Question %>
+
+<ul id="questionTags">
+    #for (tag <- question.tags)
+        <li>
+
+        </li>
+    #end
+</ul>

@@ -1,0 +1,6 @@
+#import(com.cyrusinnovation.inquisition.response.Response)
+<%@ val response: Response %>
+
+<h2>${response.title}</h2>
+<h3>Asked by ${response.creatorUsername}</h3>
+<p>${response.body}</p>
