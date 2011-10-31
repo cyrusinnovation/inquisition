@@ -41,8 +41,31 @@ class MongoTagsRepositoryTest extends FunSuite with ShouldMatchers with BeforeAn
 
     val tags = tagRepository.findMostPopularTags(1)
 
-    tags should have length(1)
-    tags.head should equal(("spring", 2))
+    tags should have size(1)
+    tags.head should equal(("spring" -> 2))
+  }
+
+
+  test("find most popular tags in the right order") {
+    questionRepository.save(uniqueQuestion().copy(tags = List("java", "spring")));
+    questionRepository.save(uniqueQuestion().copy(tags = List("scala", "spring")));
+      questionRepository.save(uniqueQuestion().copy(tags = List("java", "spring")));
+      questionRepository.save(uniqueQuestion().copy(tags = List("java", "spring")));
+
+    val tags = tagRepository.findMostPopularTags(3)
+
+    tags should have size(3)
+    tags.head should equal(("spring" -> 4))
+      tags.get("java").get should equal(3.0)
+      tags.get("scala").get should equal(1.0)
+
+  }
+
+  test("find most popular tags with no tags in the system") {
+    val tags = tagRepository.findMostPopularTags(1)
+
+    tags should have size(0)
+
   }
 
   test("find questions with given tag") {
