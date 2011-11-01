@@ -28,7 +28,7 @@ class PreviewControllerTest extends FunSuite with ShouldMatchers with BeforeAndA
     val previewFormData = new PreviewFormData()
     previewFormData.setMarkupText("*test*")
 
-    when(formattingService.toPegHtmlBlock("*test*")).thenReturn("formatted")
+    when(formattingService.formatMarkdownAsHtmlBlock("*test*")).thenReturn("formatted")
     val mav = controller.generatePreview(previewFormData)
 
     mav.getViewName should equal("preview")

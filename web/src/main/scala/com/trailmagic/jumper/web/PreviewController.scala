@@ -14,7 +14,7 @@ class PreviewController @Autowired()(formattingService: MarkdownFormattingServic
 
   @RequestMapping(value = Array("/generate"), method = Array(RequestMethod.POST))
   def generatePreview(@ModelAttribute previewData: PreviewFormData): ModelAndView = {
-    val previewText = formattingService.toActHtmlBlock(previewData.getMarkupText())
+    val previewText = formattingService.formatMarkdownAsHtmlBlock(previewData.getMarkupText())
     new ModelAndView("preview", Map("previewText" -> previewText).asJava)
   }
 
