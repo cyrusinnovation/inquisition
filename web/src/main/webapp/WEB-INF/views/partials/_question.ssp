@@ -7,4 +7,6 @@
 #end</h2>
 <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
 <h3>Asked by ${question.creatorUsername}</h3>
-<pre>${question.body}</pre>
+<div>
+    ${unescape(question.body)}
+</div>

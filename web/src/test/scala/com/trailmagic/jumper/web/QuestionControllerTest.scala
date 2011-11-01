@@ -5,15 +5,18 @@ import org.scalatest.{BeforeAndAfterEach, FunSuite}
 
 import org.mockito.MockitoAnnotations.Mock
 import org.mockito.Mockito._
+import service.MarkdownFormattingService
 import util.SecurityHelper
 import com.trailmagic.jumper.core.{User, SavedUser, TimeSource}
 import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
 import org.mockito.MockitoAnnotations
 import org.springframework.mock.web.MockHttpServletResponse
 import com.cyrusinnovation.inquisition.tags.TagRepository
+import com.cyrusinnovation.inquisition.response.Response
 
 
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
+    val formattingService = new MarkdownFormattingService;
     @Mock var timeSource: TimeSource = _
     @Mock var questionRepository: QuestionRepository = _
     @Mock var tagRepository: TagRepository = _
@@ -22,7 +25,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
     override def beforeEach() {
         MockitoAnnotations.initMocks(this)
-        controller = new QuestionController(questionRepository, timeSource, tagRepository);
+        controller = new QuestionController(questionRepository, timeSource, tagRepository, formattingService);
         SecurityHelper.setAuthenticatedUser(Some(new SavedUser("userId", new User("a@example.com", "userName",
             "firstName", "lastName", "password", "salt", Set(), None))))
     }
@@ -66,11 +69,12 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
     test("show question tests that the model contains the question") {
         val questionId = "questionId"
-        val q = uniqueQuestionFormData();
-        when(questionRepository.findById(questionId)).thenReturn(Some(q.toQuestion));
+        val q = uniqueQuestionFormData().toQuestion;
+        when(questionRepository.findById(questionId)).thenReturn(Some(q));
         val mav = controller.showQuestion(questionId)
         mav.getModel.containsKey("question") should be(true)
-        mav.getModel.get("question") should be(q.toQuestion)
+      val expectedQuestion: Question = q.copy(body = formattingService.formatMarkdownAsHtmlBlock(q.body))
+      mav.getModel.get("question") should be(expectedQuestion)
     }
 
     test("delete a question") {
@@ -90,4 +94,46 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
             controller.showQuestion(questionId)
         } should produce[ResourceNotFoundException]
     }
+
+  test("question text is the same when no formatting present") {
+
+      val q = uniqueQuestionFormData();
+      val actual = controller.formatQuestion(q.toQuestion);
+      actual.body should equal(formattingService.formatMarkdownAsHtmlBlock( q.getBody()))
+  }
+
+  test("question text is the formatted when formatting present") {
+
+      val q = uniqueQuestionFormData(body = "*test*");
+    val expected = "<p><em>test</em></p>"
+      val actual = controller.formatQuestion(q.toQuestion);
+      actual.body should equal(expected)
+  }
+
+  test("question text is the formatted when html present") {
+
+      val q = uniqueQuestionFormData(body = "*test<html>*");
+    val expected = "<p><em>test&lt;html&gt;</em></p>"
+      val actual = controller.formatQuestion(q.toQuestion);
+      actual.body should equal(expected)
+  }
+
+//  test("unformatted question responses stay unformatted") {
+//    val responses = List(Response(None, creatorUsername = "user" , title="title" , body="text"),
+//                         Response(None, creatorUsername = "user" , title="title" , body="text2"))
+//    val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
+//
+//    controller.formatQuestion(q)
+//
+//    q should equal(q)
+//  }
+//
+//  test("unformatted question responses stay unformatted") {
+//    val responses = List(Response(None, creatorUsername = "user" , title="title" , body="*test*"),
+//                         Response(None, creatorUsername = "user" , title="title" , body="*test*"))
+//    val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
+//
+//    controller.formatQuestion(q)
+//
+//  }
 }

@@ -2,22 +2,25 @@ package com.trailmagic.jumper.web
 
 import org.springframework.web.bind.annotation.{ModelAttribute, RequestMethod, PathVariable, RequestMapping}
 import org.springframework.beans.factory.annotation.Autowired
-import com.cyrusinnovation.inquisition.questions.QuestionRepository
 import com.trailmagic.jumper.core.TimeSource
 import org.springframework.stereotype.Controller
 
 import scala.collection.JavaConverters._
+import service.MarkdownFormattingService
 import util.SecurityHelper
 import org.springframework.web.servlet.ModelAndView
 import javax.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import com.cyrusinnovation.inquisition.tags.TagRepository
+import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
 
 
 @Controller
 @RequestMapping(value = Array("/questions"))
-class QuestionController @Autowired()(questionRepository: QuestionRepository, timeSource: TimeSource,
-                                      tagRepository: TagRepository) {
+class QuestionController @Autowired()(questionRepository: QuestionRepository,
+                                      timeSource: TimeSource,
+                                      tagRepository: TagRepository,
+                                      formattingService: MarkdownFormattingService) {
 
     @RequestMapping(value = Array("/new"))
     def showNewQuestionForm(): String = {
@@ -34,11 +37,17 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository, ti
         "redirect:/"
     }
 
-    @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.GET))
+  def formatQuestion(question: Question): Question = {
+    val encodedBodyText = formattingService.encodeHtmlBrackets(question.body)
+    val formattedBodyText = formattingService.formatMarkdownAsHtmlBlock(encodedBodyText)
+    question.copy(body = formattedBodyText);
+  }
+
+  @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.GET))
     def showQuestion(@PathVariable questionId: String) = {
         questionRepository.findById(questionId) match {
             case Some(question) => {
-                val model = Map("question" -> question)
+                val model = Map("question" -> formatQuestion(question))
                 new ModelAndView("question", model.asJava)
             }
             case None => throw new ResourceNotFoundException

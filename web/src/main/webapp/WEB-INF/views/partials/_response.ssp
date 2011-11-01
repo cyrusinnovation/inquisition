@@ -3,4 +3,6 @@
 
 <h2>${response.title}</h2>
 <h3>Asked by ${response.creatorUsername}</h3>
-<pre>${response.body}</pre>
+<div>
+    ${unescape(response.body)}
+</div>
