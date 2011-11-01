@@ -16,10 +16,9 @@
             <div class="input">
                 <textarea class="xxlarge" name="body" id="bodyInput" rows="3"></textarea>
                 <span class="help-block">
-                    Sorry, we don't support fancy text formatting yet!
+                    Markdown text formatting supported. Click <a href="/preview/help" target="_blank">here</a> for help.
                 </span>
             </div>
-
         </div>
         <input type="hidden" name="questionId" value="${questionId}"/>
         <div class="actions">
@@ -27,4 +26,6 @@
             <!--<button class="btn" type="reset">Cancel</button>-->
         </div>
     </form>
+    <div id="previewPane">
+    </div>
 </div>

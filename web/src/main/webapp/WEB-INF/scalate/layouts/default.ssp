@@ -58,6 +58,7 @@
 
     <script type="text/javascript" src="/javascript/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="/javascript/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="/javascript/jquery.ba-throttle-debounce.js"></script>
     <script type="text/javascript" src="/javascript/tag-it.js"></script>
     <!-- if it's development do this -->
     <script type="text/javascript" src="/javascript/validation_helpers.js"></script>

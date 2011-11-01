@@ -16,7 +16,7 @@
             <div class="input">
                 <textarea class="xxlarge" name="body" id="bodyInput" rows="3"></textarea>
                 <span class="help-block">
-                    Sorry, we don't support fancy text formatting yet!
+                    Markdown text formatting supported. Click <a href="/preview/help" target="_blank">here</a> for help.
                 </span>
             </div>
 
@@ -24,17 +24,14 @@
         <div class="clearfix">
             <label for="tags">Tags</label>
 
-            <div class="input">
-                <input type="text" size="100" name="tags" id="tags"/>
+            <div class="input clearfix">
+                <input type="text" size="50" name="tags" id="tags"/>
             </div>
         </div>
         <div class="actions">
-            <input type="submit" value="Create Question" class="btn primary">&nbsp;
-            <input type="button" id="generatePreview" value="Generate Question Text Preview" class="btn primary">
-            <!--<button class="btn" type="reset">Cancel</button>-->
+            <input type="submit" value="Create Question" class="btn primary">
         </div>
     </form>
     <div id="previewPane">
-        Stuff
     </div>
 </div>
