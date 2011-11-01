@@ -138,4 +138,8 @@ class WebDriverHelper(driver: WebDriver) {
       case e: Exception => {}
     }
   }
+
+  def getDeleteQuestionElement() = {
+    driver.findElement(By xpath "//img[@alt='Delete Question']")
+  }
 }

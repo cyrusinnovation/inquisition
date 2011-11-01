@@ -55,7 +55,7 @@ class HomePageAcceptanceTest {
 
     helper.navigateToQuestionFormAndCreateQuestion(tagList = "")
 
-    val element = driver.findElement(By id "tagList")
+    val element = driver.findElement(By id "questionTags")
     assertTrue(element.getText, element.getText.isEmpty)
   }
 }

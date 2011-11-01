@@ -64,8 +64,7 @@ class QuestionAcceptanceTest {
 
     driver.findElement(By linkText questionTitleText).click()
 
-    driver.findElement(By linkText "Delete Question")
-
+    helper.getDeleteQuestionElement()
   }
 
 
@@ -76,8 +75,7 @@ class QuestionAcceptanceTest {
 
     driver.findElement(By linkText questionTitleText).click()
 
-    driver.findElement(By linkText "Delete Question").click()
-
+    helper.getDeleteQuestionElement().click()
 
     helper.clickDialogConfirmButton
 
