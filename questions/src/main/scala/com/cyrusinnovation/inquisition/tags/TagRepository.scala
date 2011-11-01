@@ -10,7 +10,7 @@ trait TagRepository {
 
     def findUniqueTagNamesOrderedByTagName(): List[String]
 
-    def findMostPopularTags(numberToRetreive: Int = 10): List[(String, Int)]
+    def findMostPopularTags(numberToRetreive: Int = 10): Map[String, Double]
 
     def findTagsByPrefix(tagPrefix: String, limit: Int = 10): List[String]
 

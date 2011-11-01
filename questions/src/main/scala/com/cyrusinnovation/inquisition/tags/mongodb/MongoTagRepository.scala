@@ -7,34 +7,36 @@ import com.novus.salat.global._
 import org.springframework.stereotype.Repository
 import com.mongodb.casbah.Imports._
 import com.cyrusinnovation.inquisition.questions.Question
+import collection.immutable.{ListMap, TreeMap}
+
 
 @Repository
 class MongoTagRepository @Autowired()(db: MongoDB) extends TagRepository {
-  val questions = db("questions")
-  val tags = db("tags")
-  tags.ensureIndex(MongoDBObject("_id" -> 1))
-  questions.ensureIndex(MongoDBObject("tags" -> 1))
+    val questions = db("questions")
+    val tags = db("tags")
+    tags.ensureIndex(MongoDBObject("_id" -> 1))
+    questions.ensureIndex(MongoDBObject("tags" -> 1))
 
-  def db2question(dbObj: DBObject): Question = {
-    val question = grater[Question].asObject(dbObj)
-    question.copy(id = Some(dbObj("_id").toString))
-  }
+    def db2question(dbObj: DBObject): Question = {
+        val question = grater[Question].asObject(dbObj)
+        question.copy(id = Some(dbObj("_id").toString))
+    }
 
-  def findUniqueTagNamesOrderedByTagName(): List[String] = {
-    questions.distinct("tags").map(x => x.toString).sortBy(x => x).toList
-  }
+    def findUniqueTagNamesOrderedByTagName(): List[String] = {
+        questions.distinct("tags").map(x => x.toString).sortBy(x => x).toList
+    }
 
-  def findQuestionsByTag(tag: String): List[Question] = {
-    val results = questions.find(MongoDBObject("tags" -> tag))
-    results.map(db2question).toList
-  }
+    def findQuestionsByTag(tag: String): List[Question] = {
+        val results = questions.find(MongoDBObject("tags" -> tag))
+        results.map(db2question).toList
+    }
 
-  def findQuestionsByTags(tags: List[String]): List[Question] = {
-    questions.find("tags" $in tags).map(db2question).toList
-  }
+    def findQuestionsByTags(tags: List[String]): List[Question] = {
+        questions.find("tags" $in tags).map(db2question).toList
+    }
 
-  def findMostPopularTags(numberToRetreive: Int): List[(String, Int)] = {
-    val mapFunction = """function() {
+    def findMostPopularTags(numberToRetreive: Int): Map[String, Double] = {
+        val mapFunction = """function() {
                            if (!this.tags) {
                              return;
                            }
@@ -44,7 +46,7 @@ class MongoTagRepository @Autowired()(db: MongoDB) extends TagRepository {
                            }
                          }"""
 
-    val reduceFunction = """function(previous, current) {
+        val reduceFunction = """function(previous, current) {
                               var count = 0;
 
                               for (index in current) {
@@ -54,35 +56,39 @@ class MongoTagRepository @Autowired()(db: MongoDB) extends TagRepository {
                               return count;
                             }"""
 
-    val commandBuilder = MongoDBObject.newBuilder
-    commandBuilder += "mapreduce" -> "questions"
-    commandBuilder += "map" -> mapFunction
-    commandBuilder += "reduce" -> reduceFunction
-    commandBuilder += "out" -> "tags"
-    db.command(commandBuilder.result())
+        val commandBuilder = MongoDBObject.newBuilder
+        commandBuilder += "mapreduce" -> "questions"
+        commandBuilder += "map" -> mapFunction
+        commandBuilder += "reduce" -> reduceFunction
+        commandBuilder += "out" -> "tags"
+        db.command(commandBuilder.result())
 
-    val tagList = tags.find().sort(MongoDBObject("value" ->  -1)).limit(numberToRetreive)
-    tagList.map(x => (x.getAs[String]("_id").get, x.getAs[Int]("value").get)).toList
-  }
+        val tagList = tags.find().sort(MongoDBObject("value" -> -1)).limit(numberToRetreive)
+        //    val map = tagList map { t => (t.getAs[String]("_id").get, t.getAs[Int]("value").get) } toMap
+        val map = tagList map { t => t.getAs[String]("_id").get -> t.getAs[Double]("value").get }
 
-  def findTagsByPrefix(tagPrefix: String, limit: Int = 10): List[String] = {
-    val mongoBlowsBuilder = MongoDBObject.newBuilder
-    val regexString = "^" +tagPrefix + ".*"
-    mongoBlowsBuilder += "_id" -> regexString.r
+        ListMap(map.toList:_*)
 
-    tags.find(mongoBlowsBuilder.result()).limit(limit).map(x => x.getAs[String]("_id").get).toList
+    }
 
-  }
+    def findTagsByPrefix(tagPrefix: String, limit: Int = 10): List[String] = {
+        val mongoBlowsBuilder = MongoDBObject.newBuilder
+        val regexString = "^" + tagPrefix + ".*"
+        mongoBlowsBuilder += "_id" -> regexString.r
 
-  def deleteTagFromQuestion(questionId: String, tagText: String) {
-    val updateQuery = $pull (MongoDBObject("tags"->tagText))
-    val query = MongoDBObject("_id" -> new ObjectId(questionId))
-    questions.update(query ,updateQuery)
-  }
+        tags.find(mongoBlowsBuilder.result()).limit(limit).map(x => x.getAs[String]("_id").get).toList
 
-  def addTagToQuestion(questionId: String, tagText: String) {
-    val updateQuery = $addToSet ("tags" -> tagText)
-    val query = MongoDBObject("_id" -> new ObjectId(questionId))
-    questions.update(query ,updateQuery)
-  }
+    }
+
+    def deleteTagFromQuestion(questionId: String, tagText: String) {
+        val updateQuery = $pull(MongoDBObject("tags" -> tagText))
+        val query = MongoDBObject("_id" -> new ObjectId(questionId))
+        questions.update(query, updateQuery)
+    }
+
+    def addTagToQuestion(questionId: String, tagText: String) {
+        val updateQuery = $addToSet("tags" -> tagText)
+        val query = MongoDBObject("_id" -> new ObjectId(questionId))
+        questions.update(query, updateQuery)
+    }
 }

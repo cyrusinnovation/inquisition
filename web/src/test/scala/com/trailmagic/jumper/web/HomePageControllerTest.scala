@@ -20,9 +20,13 @@ class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
   var controller: HomePageController = _
 
   override def beforeEach() {
+
     MockitoAnnotations.initMocks(this)
     controller = new HomePageController(questionRepository, timeSource, tagRepository);
     SecurityHelper.setAuthenticatedUser(Some(currentUser))
+
+      val tags = Map[String, Double]()
+    when(tagRepository.findMostPopularTags(controller.DEFAULT_NUMBER_OF_TAGS_TO_RETRIEVE)).thenReturn(tags)
   }
 
   override def afterEach() {
@@ -63,13 +67,31 @@ class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
   }
 
   test("Verify view model has tags property") {
-    val tags = List(("java", 4), ("spring", 1))
+    val tags = Map("java" -> 4.0, "spring" -> 1.0)
     when(tagRepository.findMostPopularTags(controller.DEFAULT_NUMBER_OF_TAGS_TO_RETRIEVE)).thenReturn(tags)
     val mav = controller.showIndex()
     val model = mav.getModel
     model.containsKey("tags") should be(true)
     model.get("tags") should not be (null)
-    model.get("tags") should equal(tags)
+    val actual = model.get("tags").asInstanceOf[List[String]]
+    actual.head should equal("java")
+      actual.tail.head should equal("spring")
+  }
+
+
+    test("Verify view model has tags property in right order") {
+    val tags = Map("java" -> 4.0, "scala" -> 3.0, "spring" -> 2.0)
+    when(tagRepository.findMostPopularTags(controller.DEFAULT_NUMBER_OF_TAGS_TO_RETRIEVE)).thenReturn(tags)
+    val mav = controller.showIndex()
+    val model = mav.getModel
+    model.containsKey("tags") should be(true)
+    model.get("tags") should not be (null)
+    val actual = model.get("tags").asInstanceOf[List[String]]
+
+        actual.indexOf("java") should equal(0);
+        actual.indexOf("scala") should equal(1);
+        actual.indexOf("spring") should equal(2);
+
   }
 
 

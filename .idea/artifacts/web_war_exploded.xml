@@ -64,16 +64,6 @@
           <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.8.0" />
           <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-core-asl:1.8.0" />
           <element id="library" level="project" name="Maven: com.tristanhunt:knockoff_2.9.1:0.8.0-16" />
-          <element id="library" level="project" name="Maven: org.pegdown:pegdown:1.0.2" />
-          <element id="library" level="project" name="Maven: org.parboiled:parboiled-core:1.0.1" />
-          <element id="library" level="project" name="Maven: org.parboiled:parboiled-java:1.0.1" />
-          <element id="library" level="project" name="Maven: asm:asm-tree:3.3.1" />
-          <element id="library" level="project" name="Maven: asm:asm:3.3.1" />
-          <element id="library" level="project" name="Maven: asm:asm-util:3.3.1" />
-          <element id="library" level="project" name="Maven: asm:asm-analysis:3.3.1" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-expression:3.0.4.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-core:3.0.4.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-asm:3.0.4.RELEASE" />
         </element>
       </element>
     </root>

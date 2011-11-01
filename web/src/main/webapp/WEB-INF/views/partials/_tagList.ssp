@@ -1,0 +1,25 @@
+#import(com.trailmagic.jumper.web.util.SecurityHelper)
+#import(com.cyrusinnovation.inquisition.questions.Question)
+<%@ val tags: List[String] %>
+<%@ val tagHeader: String = "Tags" %>
+<%@ val enableDelete: Boolean = false %>
+<%@ val questionId: String = "" %>
+
+<h1>${tagHeader}</h1>
+<hr>
+#if (enableDelete)
+    <p>
+        <div id="dialogDeleteTag" display="hidden" title="Confirmation Required">Are you sure about this?</div>
+    </p>
+#end
+
+<ul id="questionTags">
+    #for (tag <- tags)
+        <li>
+            <a href="/questions/search" class="searchTag">${tag}</a>
+            #if (enableDelete)
+                <a class="deleteTag" href="/delete" value="/questions/${questionId}/tags/${tag}"><img src="/images/icontrash.gif" alt="Delete Tag" width="12" height="12"></a>
+            #end
+        </li>
+    #end
+</ul>

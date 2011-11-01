@@ -2,6 +2,7 @@
 #import(com.trailmagic.jumper.web.util.SecurityHelper)
 <% attributes("title") = "View Question" %>
 <%@ val question: Question %>
+<%@ val questionCreatorLoggedIn: Boolean = SecurityHelper.isUserCurrentlyAuthenticated(question.creatorUsername) %>
 
 <div class="content">
     <div class="row">

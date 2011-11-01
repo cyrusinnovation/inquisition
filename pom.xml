@@ -41,11 +41,6 @@
             <name>Typesafe Repository</name>
             <url>http://repo.typesafe.com/typesafe/releases/</url>
         </repository>
-        <repository>
-            <id>Apache</id>
-            <name>Apache Snapshots Repository</name>
-            <url>http://repository.apache.org/snapshots</url>
-        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>

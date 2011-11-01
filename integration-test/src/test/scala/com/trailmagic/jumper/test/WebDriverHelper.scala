@@ -6,7 +6,6 @@ import scala.collection.JavaConverters._
 import org.openqa.selenium.support.ui.{ExpectedCondition, WebDriverWait}
 
 class WebDriverHelper(driver: WebDriver) {
-
   def answerQuestion(title: String = "Response Title", body: String = "responseBody", creator: String = "Creator") = {
     driver.findElement(By.linkText("Add Response")).click()
 
@@ -128,5 +127,15 @@ class WebDriverHelper(driver: WebDriver) {
   def clickDialogConfirmButton {
     val elements = driver.findElements(By className "ui-button-text")
     elements.get(0).click()
+  }
+
+  def ensureLoggedOut() {
+    try{
+      driver.get(WebConstants.LogoutUrl)
+      logout()
+    }
+    catch{
+      case e: Exception => {}
+    }
   }
 }
