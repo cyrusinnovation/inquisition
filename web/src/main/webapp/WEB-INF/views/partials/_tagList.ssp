@@ -18,7 +18,7 @@
         <li>
             <a href="/questions/search" class="searchTag">${tag}</a>
             #if (enableDelete)
-                <a class="deleteTag" href="/delete" value="/questions/${questionId}/tags/${tag}">delete</a>
+                <a class="deleteTag" href="/delete" value="/questions/${questionId}/tags/${tag}"><img src="/images/icontrash.gif" alt="Delete Tag" width="12" height="12"></a>
             #end
         </li>
     #end

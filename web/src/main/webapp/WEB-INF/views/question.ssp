@@ -7,13 +7,7 @@
 <div class="content">
     <div class="row">
         <div class="span12">
-            <% render("partials/_question.ssp", Map('question -> question)) %>
-            #if (questionCreatorLoggedIn)
-            <a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}"
-               class="confirmLink btn large primary">Delete Question</a>
-
-            <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
-            #end
+            <% render("partials/_question.ssp", Map('question -> question, 'enableDelete -> questionCreatorLoggedIn)) %>
             <a href="${contextPath}/questions/${question.id}/response" class="btn large primary">Add Response</a>
         </div>
         <div class="span4">
