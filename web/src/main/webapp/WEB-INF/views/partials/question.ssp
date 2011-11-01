@@ -1,6 +1,0 @@
-#import(com.cyrusinnovation.inquisition.questions.Question)
-<%@ val question: Question %>
-
-<h2>${question.title}</h2>
-<h3>Asked by ${question.creatorUsername}</h3>
-<pre>${question.body}</pre>
