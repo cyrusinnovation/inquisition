@@ -2,7 +2,7 @@
 <%@ val response: Response %>
 
 <h2>${response.title}</h2>
-<h3>Asked by ${response.creatorUsername}</h3>
+<h3>Response by ${response.creatorUsername}</h3>
 <div>
     ${unescape(response.body)}
 </div>

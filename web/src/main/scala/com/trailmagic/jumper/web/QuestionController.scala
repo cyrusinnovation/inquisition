@@ -37,10 +37,15 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository,
         "redirect:/"
     }
 
+  def formatText(text: String): String = {
+    val encodedBodyText = formattingService.encodeHtmlBrackets(text)
+    formattingService.formatMarkdownAsHtmlBlock(encodedBodyText)
+  }
+
   def formatQuestion(question: Question): Question = {
-    val encodedBodyText = formattingService.encodeHtmlBrackets(question.body)
-    val formattedBodyText = formattingService.formatMarkdownAsHtmlBlock(encodedBodyText)
-    question.copy(body = formattedBodyText);
+    val formattedBodyText: String = formatText(question.body)
+    val formattedResponses = question.responses.map(x => x.copy(body = formatText(x.body)))
+    question.copy(body = formattedBodyText, responses = formattedResponses);
   }
 
   @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.GET))

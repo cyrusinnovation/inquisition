@@ -39,6 +39,7 @@ class LoginAcceptanceTest {
 
   @Test
   def canaryTest() {
+    helper.fillAndSubmitLoginForm()
     assertNotNull(profile)
     assertNotNull(driver)
     assertNotNull(helper)

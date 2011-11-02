@@ -118,22 +118,34 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
       actual.body should equal(expected)
   }
 
-//  test("unformatted question responses stay unformatted") {
-//    val responses = List(Response(None, creatorUsername = "user" , title="title" , body="text"),
-//                         Response(None, creatorUsername = "user" , title="title" , body="text2"))
-//    val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
-//
-//    controller.formatQuestion(q)
-//
-//    q should equal(q)
-//  }
-//
-//  test("unformatted question responses stay unformatted") {
-//    val responses = List(Response(None, creatorUsername = "user" , title="title" , body="*test*"),
-//                         Response(None, creatorUsername = "user" , title="title" , body="*test*"))
-//    val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
-//
-//    controller.formatQuestion(q)
-//
-//  }
+  test("unformatted question responses stay unformatted") {
+    val responses = List(Response(None, creatorUsername = "user" , title="title" , body="text"),
+                         Response(None, creatorUsername = "user" , title="title" , body="text2"))
+    val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
+
+    controller.formatQuestion(q)
+
+    q should equal(q)
+  }
+
+  test("Formatted question responses has html entities encoded") {
+    val responses = List(Response(None, creatorUsername = "user" , title="title" , body="*<html>test*"),
+                         Response(None, creatorUsername = "user" , title="title" , body="*<html>test2*"))
+    val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
+
+    val formattedQuestions = controller.formatQuestion(q)
+    formattedQuestions.responses.head.body should equal("<p><em>&lt;html&gt;test</em></p>")
+    formattedQuestions.responses.last.body should equal("<p><em>&lt;html&gt;test2</em></p>")
+  }
+
+  test("Formatted question responses stay gets formatted") {
+    val responses = List(Response(None, creatorUsername = "user" , title="title" , body="*test*"),
+                         Response(None, creatorUsername = "user" , title="title" , body="*test2*"))
+
+    val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
+
+    val formattedQuestions = controller.formatQuestion(q)
+    formattedQuestions.responses.head.body should equal("<p><em>test</em></p>")
+    formattedQuestions.responses.last.body should equal("<p><em>test2</em></p>")
+  }
 }
