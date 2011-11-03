@@ -2,7 +2,10 @@ package com.trailmagic.jumper.web.service
 
 import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
+@RunWith(classOf[JUnitRunner])
 class MarkdownFormattingServiceTest extends FunSuite with ShouldMatchers {
   val formatter = new MarkdownFormattingService
 
@@ -45,31 +48,4 @@ class MarkdownFormattingServiceTest extends FunSuite with ShouldMatchers {
   }
 
 
-  test("enter text with no html involved") {
-    formatter.encodeHtmlBrackets("abcd") should equal("abcd");
-  }
-
-  test("enter text with blank string") {
-    formatter.encodeHtmlBrackets("") should equal("");
-  }
-
-  test("enter text with null string") {
-    formatter.encodeHtmlBrackets(null) should equal("");
-  }
-
-  test("enter text with less than html brackets involved") {
-    formatter.encodeHtmlBrackets("<abcd") should equal("&lt;abcd");
-  }
-
-  test("enter text with greater than html brackets involved") {
-    formatter.encodeHtmlBrackets("abcd>") should equal("abcd&gt;");
-  }
-
-  test("enter text with html brackets involved") {
-    formatter.encodeHtmlBrackets("<abcd>") should equal("&lt;abcd&gt;");
-  }
-
-  test("enter text with multiple html brackets involved") {
-    formatter.encodeHtmlBrackets("<ab<cd>") should equal("&lt;ab&lt;cd&gt;");
-  }
 }

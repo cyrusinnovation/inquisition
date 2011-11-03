@@ -2,7 +2,10 @@ package com.trailmagic.jumper.web
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
+@RunWith(classOf[JUnitRunner])
 class QuestionFormDataTest extends FunSuite with BeforeAndAfterEach with ShouldMatchers {
 
   override def beforeEach() {

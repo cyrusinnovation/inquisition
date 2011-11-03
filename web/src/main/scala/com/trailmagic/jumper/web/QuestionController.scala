@@ -38,8 +38,8 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository,
     }
 
   def formatText(text: String): String = {
-    val encodedBodyText = formattingService.encodeHtmlBrackets(text)
-    formattingService.formatMarkdownAsHtmlBlock(encodedBodyText)
+
+    formattingService.formatMarkdownAsHtmlBlock(text)
   }
 
   def formatQuestion(question: Question): Question = {

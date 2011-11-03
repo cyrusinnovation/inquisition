@@ -5,7 +5,10 @@ import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import service.MarkdownFormattingService
 import util.SecurityHelper
 import com.trailmagic.jumper.core.{User, SavedUser}
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
+@RunWith(classOf[JUnitRunner])
 class PreviewControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   var formattingService: MarkdownFormattingService = new MarkdownFormattingService
   var controller: PreviewController = _
@@ -33,7 +36,7 @@ class PreviewControllerTest extends FunSuite with ShouldMatchers with BeforeAndA
   test("Can properly generate a preview of markdown text with html encoded") {
     val previewFormData = new PreviewFormData()
     previewFormData.setMarkupText("*test<html>*")
-    val expectedOutput = "<p><em>test&lt;html&gt;</em></p>"
+    val expectedOutput = "<p><em>test<html></em></p>"
 
     val mav = controller.generatePreview(previewFormData)
 

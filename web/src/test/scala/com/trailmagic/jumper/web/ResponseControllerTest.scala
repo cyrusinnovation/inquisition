@@ -10,7 +10,10 @@ import com.trailmagic.jumper.core.{User, SavedUser, TimeSource}
 import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
 import org.mockito.Mockito._
 import com.cyrusinnovation.inquisition.response.ResponseRepository
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
+@RunWith(classOf[JUnitRunner])
 class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
     @Mock var timeSource: TimeSource = _
     @Mock var questionRepository: QuestionRepository = _

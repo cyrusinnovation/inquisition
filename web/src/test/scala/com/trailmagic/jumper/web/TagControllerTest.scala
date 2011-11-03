@@ -9,8 +9,10 @@ import com.cyrusinnovation.inquisition.questions.Question
 import org.mockito.MockitoAnnotations
 import org.springframework.mock.web.MockHttpServletResponse
 import com.cyrusinnovation.inquisition.tags.TagRepository
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
-
+@RunWith(classOf[JUnitRunner])
 class TagControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   @Mock var tagRepository: TagRepository = _
 

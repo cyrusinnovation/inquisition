@@ -13,8 +13,10 @@ import org.mockito.MockitoAnnotations
 import org.springframework.mock.web.MockHttpServletResponse
 import com.cyrusinnovation.inquisition.tags.TagRepository
 import com.cyrusinnovation.inquisition.response.Response
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
-
+@RunWith(classOf[JUnitRunner])
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
     val formattingService = new MarkdownFormattingService;
     @Mock var timeSource: TimeSource = _
@@ -113,7 +115,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
   test("question text is the formatted when html present") {
 
       val q = uniqueQuestionFormData(body = "*test<html>*");
-    val expected = "<p><em>test&lt;html&gt;</em></p>"
+    val expected = "<p><em>test<html></em></p>"
       val actual = controller.formatQuestion(q.toQuestion);
       actual.body should equal(expected)
   }
@@ -134,8 +136,8 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
 
     val formattedQuestions = controller.formatQuestion(q)
-    formattedQuestions.responses.head.body should equal("<p><em>&lt;html&gt;test</em></p>")
-    formattedQuestions.responses.last.body should equal("<p><em>&lt;html&gt;test2</em></p>")
+    formattedQuestions.responses.head.body should equal("<p><em><html>test</em></p>")
+    formattedQuestions.responses.last.body should equal("<p><em><html>test2</em></p>")
   }
 
   test("Formatted question responses stay gets formatted") {

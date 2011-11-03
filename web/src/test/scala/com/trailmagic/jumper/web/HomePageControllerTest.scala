@@ -10,7 +10,10 @@ import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import org.joda.time.DateTime
 import com.cyrusinnovation.inquisition.tags.TagRepository
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
+@RunWith(classOf[JUnitRunner])
 class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   val currentUser = new SavedUser("userId", new User("a@example.com", "userName", "firstName", "lastName", "password", "salt", Set(), None))
   @Mock var timeSource: TimeSource = _
