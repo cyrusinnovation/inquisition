@@ -1,7 +1,6 @@
-package com.trailmagic.jumper.web
+package com.trailmagic.jumper.web.model
 
 import com.cyrusinnovation.inquisition.response.Response
-import com.cyrusinnovation.inquisition.questions.Question
 import reflect.BeanProperty
 
 class ResponseFormData {

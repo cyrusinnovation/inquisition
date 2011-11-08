@@ -1,9 +1,7 @@
-package com.trailmagic.jumper.web
+package com.trailmagic.jumper.web.model
 
 import reflect.BeanProperty
-import com.cyrusinnovation.inquisition.response.Response
 import com.cyrusinnovation.inquisition.questions.Question
-import com.mongodb.MongoException.DuplicateKey
 
 class QuestionFormData {
   @BeanProperty var title = ""

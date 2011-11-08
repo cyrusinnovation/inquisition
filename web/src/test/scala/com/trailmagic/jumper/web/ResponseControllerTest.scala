@@ -1,5 +1,6 @@
 package com.trailmagic.jumper.web
 
+import model.ResponseFormData
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import org.mockito.MockitoAnnotations.Mock
@@ -15,14 +16,12 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
-    @Mock var timeSource: TimeSource = _
-    @Mock var questionRepository: QuestionRepository = _
     @Mock var responseRepository: ResponseRepository = _
     var controller: ResponseController = _
 
     override def beforeEach() {
         MockitoAnnotations.initMocks(this)
-        controller = new ResponseController(questionRepository, responseRepository, timeSource);
+        controller = new ResponseController(responseRepository);
         SecurityHelper.setAuthenticatedUser(Some(new SavedUser("userId", new User("a@example.com", "userName",
             "firstName", "lastName", "password", "salt", Set(), None))))
     }
@@ -33,7 +32,6 @@ class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAn
   test("can display new response form") {
         val questionId = "dead6bb0744e9d3695a7f810"
         val question = Some(new Question(None, "Title", "Creator"))
-        when(questionRepository.findById(questionId)).thenReturn(question)
 
         val mav = controller.showNewQuestionResponseForm(questionId)
 
@@ -49,7 +47,6 @@ class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAn
         questionAnswerModel.setBody("Body text")
         val question = new Question(Some(questionId), "Title", "Creator")
 
-        when(questionRepository.findById(questionId)).thenReturn(Some(question))
         when(responseRepository.save(question.id.get, questionAnswerModel.toResponse)).thenReturn(questionAnswerModel.toResponse)
 
         val nextView = controller.addResponse(questionAnswerModel, questionId)

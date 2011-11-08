@@ -1,5 +1,6 @@
 package com.trailmagic.jumper.web
 
+import model.ResponseFormData
 import org.springframework.web.bind.annotation.{ModelAttribute, RequestMethod, PathVariable, RequestMapping}
 import org.springframework.beans.factory.annotation.Autowired
 import com.cyrusinnovation.inquisition.questions.QuestionRepository
@@ -8,14 +9,12 @@ import com.trailmagic.jumper.core.TimeSource
 import org.springframework.stereotype.Controller
 
 import scala.collection.JavaConverters._
-import util.SecurityHelper
 import org.springframework.web.servlet.ModelAndView
-import com.cyrusinnovation.inquisition.tags.TagRepository
 
 
 @Controller
 @RequestMapping(value = Array("/questions/{questionId}"))
-class ResponseController @Autowired()(questionRepository: QuestionRepository, responseRepository: ResponseRepository, timeSource: TimeSource) {
+class ResponseController @Autowired()(responseRepository: ResponseRepository) {
 
     @RequestMapping(value = Array("/response"), method = Array(RequestMethod.GET))
     def showNewQuestionResponseForm(@PathVariable questionId: String) = {

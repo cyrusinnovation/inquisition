@@ -1,4 +1,4 @@
-package com.trailmagic.jumper.web
+package com.trailmagic.jumper.web.model
 
 import reflect.BeanProperty
 

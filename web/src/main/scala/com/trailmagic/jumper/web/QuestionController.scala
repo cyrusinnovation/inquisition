@@ -1,24 +1,21 @@
 package com.trailmagic.jumper.web
 
+import model.QuestionFormData
 import org.springframework.web.bind.annotation.{ModelAttribute, RequestMethod, PathVariable, RequestMapping}
 import org.springframework.beans.factory.annotation.Autowired
-import com.trailmagic.jumper.core.TimeSource
 import org.springframework.stereotype.Controller
 
 import scala.collection.JavaConverters._
 import service.MarkdownFormattingService
 import util.SecurityHelper
 import org.springframework.web.servlet.ModelAndView
-import com.cyrusinnovation.inquisition.tags.TagRepository
 
 import com.cyrusinnovation.inquisition.questions.{QuestionService, Question}
 
 
 @Controller
 @RequestMapping(value = Array("/questions"))
-class QuestionController @Autowired()(timeSource: TimeSource,
-                                      tagRepository: TagRepository,
-                                      formattingService: MarkdownFormattingService,
+class QuestionController @Autowired()(formattingService: MarkdownFormattingService,
                                       questionService: QuestionService) {
 
   @RequestMapping(value = Array("/new"))

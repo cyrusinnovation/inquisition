@@ -1,5 +1,6 @@
 package com.trailmagic.jumper.web
 
+import model.QuestionFormData
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 
@@ -19,15 +20,13 @@ import com.cyrusinnovation.inquisition.questions.mongodb._
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
     val authenticatedUser = new SavedUser("userId", new User("a@example.com", "userName", "firstName", "lastName", "password", "salt", Set(), None))
     val formattingService = new MarkdownFormattingService;
-    @Mock var timeSource: TimeSource = _
     @Mock var questionService: QuestionService = _
-    @Mock var tagRepository: TagRepository = _
 
     var controller: QuestionController = _
 
     override def beforeEach() {
         MockitoAnnotations.initMocks(this)
-        controller = new QuestionController(timeSource, tagRepository, formattingService, questionService);
+        controller = new QuestionController(formattingService, questionService);
         SecurityHelper.setAuthenticatedUser(Some(authenticatedUser))
     }
 

@@ -1,7 +1,6 @@
-package com.trailmagic.jumper.web
+package com.trailmagic.jumper.web.model
 
 import reflect.BeanProperty
-import com.cyrusinnovation.inquisition.questions.Question
 
 class TagFormData {
   @BeanProperty var tagQuery = ""

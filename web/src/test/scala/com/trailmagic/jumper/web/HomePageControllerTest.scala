@@ -1,6 +1,7 @@
 package com.trailmagic.jumper.web
 
 import com.cyrusinnovation.inquisition.questions.QuestionRepository
+import model.QuestionFormData
 import org.mockito.MockitoAnnotations.Mock
 import org.mockito.{MockitoAnnotations}
 import org.mockito.Mockito._

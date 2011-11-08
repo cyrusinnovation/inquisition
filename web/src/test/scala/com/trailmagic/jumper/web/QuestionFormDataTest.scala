@@ -1,5 +1,6 @@
 package com.trailmagic.jumper.web
 
+import model.QuestionFormData
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import org.junit.runner.RunWith

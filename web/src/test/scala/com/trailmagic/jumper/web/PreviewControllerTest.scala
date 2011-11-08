@@ -1,5 +1,6 @@
 package com.trailmagic.jumper.web
 
+import model.PreviewFormData
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import service.MarkdownFormattingService

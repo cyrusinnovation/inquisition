@@ -1,5 +1,6 @@
 package com.trailmagic.jumper.web
 
+import model.PreviewFormData
 import org.springframework.stereotype.Controller
 import org.springframework.beans.factory.annotation.Autowired
 import service.MarkdownFormattingService
