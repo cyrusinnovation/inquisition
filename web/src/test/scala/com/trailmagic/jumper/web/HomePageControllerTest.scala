@@ -103,7 +103,7 @@ class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     val questions = List(question)
     val now = new DateTime()
     when(timeSource.now).thenReturn(now)
-    when(questionRepository.findRecent(now)).thenReturn(questions)
+    when(questionRepository.findRecent()).thenReturn(questions)
     val mav = controller.showIndex()
     val model = mav.getModel
     model.containsKey("questions") should be(true)

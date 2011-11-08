@@ -8,9 +8,9 @@ trait QuestionRepository {
 
     def findById(id: String): Option[Question]
 
-    def findRecent(now: DateTime): List[Question]
+    def findRecent(limit: Int = 10): List[Question]
 
     def findQuestionCount(): Int
 
-    def deleteQuestion(id: String, usernameRequestingDelete: String)
+    def deleteQuestion(id: String)
 }

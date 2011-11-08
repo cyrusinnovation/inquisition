@@ -8,26 +8,28 @@ import org.mockito.Mockito._
 import service.MarkdownFormattingService
 import util.SecurityHelper
 import com.trailmagic.jumper.core.{User, SavedUser, TimeSource}
-import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
 import org.mockito.MockitoAnnotations
 import org.springframework.mock.web.MockHttpServletResponse
 import com.cyrusinnovation.inquisition.tags.TagRepository
 import com.cyrusinnovation.inquisition.response.Response
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import com.cyrusinnovation.inquisition.questions.{QuestionService, Question, QuestionRepository}
 
 @RunWith(classOf[JUnitRunner])
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
     val formattingService = new MarkdownFormattingService;
     @Mock var timeSource: TimeSource = _
     @Mock var questionRepository: QuestionRepository = _
+    @Mock var questionService: QuestionService = _
     @Mock var tagRepository: TagRepository = _
 
     var controller: QuestionController = _
 
     override def beforeEach() {
         MockitoAnnotations.initMocks(this)
-        controller = new QuestionController(questionRepository, timeSource, tagRepository, formattingService);
+        controller = new QuestionController(questionRepository, timeSource, tagRepository, formattingService,
+            questionService);
         SecurityHelper.setAuthenticatedUser(Some(new SavedUser("userId", new User("a@example.com", "userName",
             "firstName", "lastName", "password", "salt", Set(), None))))
     }
@@ -84,7 +86,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
         val q = uniqueQuestionFormData();
 
         val viewName = controller.deleteQuestion(questionId)
-        verify(questionRepository, times(1)).deleteQuestion(questionId, "userName")
+        verify(questionService, times(1)).deleteQuestion(questionId, "userName")
         viewName should be("redirect:/")
     }
 

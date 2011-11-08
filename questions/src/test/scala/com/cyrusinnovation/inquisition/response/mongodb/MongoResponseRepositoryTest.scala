@@ -1,16 +1,19 @@
 package com.cyrusinnovation.inquisition.response.mongodb
 
-import com.cyrusinnovation.inquisition.questions.Question._
+
 import com.cyrusinnovation.inquisition.response.Response
 import com.cyrusinnovation.inquisition.questions.Question
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
-import com.mongodb.casbah.MongoConnection._
 import com.mongodb.casbah.MongoConnection
 import org.bson.types.ObjectId
 import com.cyrusinnovation.inquisition.questions.mongodb.{MongoTestConstants, MongoQuestionRepository}
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+import com.mongodb.casbah.commons.MongoDBObject
+import com.mongodb.casbah.commons.MongoDBObject._
 
-
+@RunWith(classOf[JUnitRunner])
 class MongoResponseRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
   val con = MongoConnection()
   val TestDbName = "test_inquisition"
@@ -19,7 +22,7 @@ class MongoResponseRepositoryTest extends FunSuite with ShouldMatchers with Befo
   val responseRepository = new MongoResponseRepository(db, questionRepository)
 
   override def beforeEach() {
-    db.dropDatabase()
+    db("questions").remove(MongoDBObject())
   }
 
   def uniqueQuestion(title: String = "How do I use MongoDB?"): Question = {

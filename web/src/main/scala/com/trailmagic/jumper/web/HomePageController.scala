@@ -20,7 +20,7 @@ class HomePageController @Autowired()(questionRepository: QuestionRepository, ti
   def showIndex() = {
 
     val model = Map("currentUser" -> SecurityHelper.getAuthenticatedUser,
-    "questions" -> questionRepository.findRecent(timeSource.now),
+    "questions" -> questionRepository.findRecent(),
     "tags" -> tagRepository.findMostPopularTags(DEFAULT_NUMBER_OF_TAGS_TO_RETRIEVE).map(x=>x._1).toList)
     new ModelAndView("index", model.asJava)
   }

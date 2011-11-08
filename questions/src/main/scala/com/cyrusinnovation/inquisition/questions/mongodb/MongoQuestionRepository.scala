@@ -43,8 +43,8 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     }
   }
 
-  def findRecent(now: DateTime): List[Question] = {
-    val results = questions.find() map (db2question)
+  def findRecent(limit: Int): List[Question] = {
+    val results = questions.find().limit(limit) map (db2question)
     results.toList
   }
 
@@ -52,14 +52,7 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     questions.count(x => true)
   }
 
-  def deleteQuestion(id: String, usernameRequestingDelete: String) {
-    val question = findById(id)
-    if (question == None) {
-      return
-    }
-    if (!question.get.creatorUsername.equals(usernameRequestingDelete)) {
-      throw new InvalidParameterException("requesting user does not have the rights to delte this question")
-    }
+  def deleteQuestion(id: String) {
     questions.remove(MongoDBObject("_id" -> new ObjectId(id)), WriteConcern.Safe)
   }
 

@@ -9,10 +9,9 @@ import scala.collection.JavaConverters._
 import service.MarkdownFormattingService
 import util.SecurityHelper
 import org.springframework.web.servlet.ModelAndView
-import javax.servlet.http.HttpServletResponse
-import org.springframework.http.HttpStatus
 import com.cyrusinnovation.inquisition.tags.TagRepository
-import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
+
+import com.cyrusinnovation.inquisition.questions.{QuestionService, Question, QuestionRepository}
 
 
 @Controller
@@ -20,7 +19,8 @@ import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
 class QuestionController @Autowired()(questionRepository: QuestionRepository,
                                       timeSource: TimeSource,
                                       tagRepository: TagRepository,
-                                      formattingService: MarkdownFormattingService) {
+                                      formattingService: MarkdownFormattingService,
+                                      questionService: QuestionService) {
 
     @RequestMapping(value = Array("/new"))
     def showNewQuestionForm(): String = {
@@ -62,7 +62,7 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository,
     @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.DELETE))
     def deleteQuestion(@PathVariable questionId: String) = {
         val user = SecurityHelper.getMandatoryAuthenticatedUser
-        questionRepository.deleteQuestion(questionId, user.username)
+        questionService.deleteQuestion(questionId, user.username)
         "redirect:/"
     }
 }

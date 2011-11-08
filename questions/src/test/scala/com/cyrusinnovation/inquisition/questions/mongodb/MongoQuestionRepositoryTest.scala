@@ -7,7 +7,11 @@ import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import com.cyrusinnovation.inquisition.response.Response
 import com.cyrusinnovation.inquisition.questions.Question
 import java.security.InvalidParameterException
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+import com.mongodb.casbah.commons.MongoDBObject
 
+@RunWith(classOf[JUnitRunner])
 class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
     val con = MongoConnection()
     val TestDbName = "test_inquisition"
@@ -15,7 +19,7 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
     val repository = new MongoQuestionRepository(db)
 
     override def beforeEach() {
-        db.dropDatabase()
+        db("questions").remove(MongoDBObject())
     }
 
     def uniqueQuestion(title: String = "How do I use MongoDB?"): Question = {
@@ -69,9 +73,19 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
 
         val savedQuestions = questions.map(repository.save(_))
 
-        val results = repository.findRecent(new DateTime)
+        val results = repository.findRecent()
 
         savedQuestions.foreach(results.contains(_) should be(true))
+    }
+
+     test("should not be able to find recent questions") {
+        val questions = List(uniqueQuestion(), uniqueQuestion("Why isn't IntelliJ working?"))
+
+        questions.map(repository.save(_))
+
+        val results = repository.findRecent(1)
+
+        results.size should be(1)
     }
 
     test("make sure we can add a list of tags to a question") {
@@ -103,21 +117,14 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
         val savedQuestion = repository.save(uniqueQuestion())
         val savedQuestionId = savedQuestion.id.get
 
-        repository.deleteQuestion(savedQuestionId, savedQuestion.creatorUsername)
+        repository.deleteQuestion(savedQuestionId)
 
         val deletedQuestion = repository.findById(savedQuestionId)
         deletedQuestion should be(None)
     }
 
-    test("delete a question with a given object id, but not the correct username") {
-        val savedQuestion = repository.save(uniqueQuestion())
-        val savedQuestionId = savedQuestion.id.get
-        evaluating(repository.deleteQuestion(savedQuestionId, "invalidusername")) should (produce[InvalidParameterException])
-
-    }
-
     test("deleting a non-existant question does not throw an exception") {
-        repository.deleteQuestion(MongoTestConstants.DeadObjectIdString, "")
+        repository.deleteQuestion(MongoTestConstants.DeadObjectIdString)
     }
 
 
