@@ -9,18 +9,17 @@ import service.MarkdownFormattingService
 import util.SecurityHelper
 import com.trailmagic.jumper.core.{User, SavedUser, TimeSource}
 import org.mockito.MockitoAnnotations
-import org.springframework.mock.web.MockHttpServletResponse
 import com.cyrusinnovation.inquisition.tags.TagRepository
 import com.cyrusinnovation.inquisition.response.Response
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import com.cyrusinnovation.inquisition.questions.{QuestionService, Question, QuestionRepository}
-
+import com.cyrusinnovation.inquisition.questions.mongodb._
 @RunWith(classOf[JUnitRunner])
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
+    val authenticatedUser = new SavedUser("userId", new User("a@example.com", "userName", "firstName", "lastName", "password", "salt", Set(), None))
     val formattingService = new MarkdownFormattingService;
     @Mock var timeSource: TimeSource = _
-    @Mock var questionRepository: QuestionRepository = _
     @Mock var questionService: QuestionService = _
     @Mock var tagRepository: TagRepository = _
 
@@ -28,10 +27,8 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
     override def beforeEach() {
         MockitoAnnotations.initMocks(this)
-        controller = new QuestionController(questionRepository, timeSource, tagRepository, formattingService,
-            questionService);
-        SecurityHelper.setAuthenticatedUser(Some(new SavedUser("userId", new User("a@example.com", "userName",
-            "firstName", "lastName", "password", "salt", Set(), None))))
+        controller = new QuestionController(timeSource, tagRepository, formattingService, questionService);
+        SecurityHelper.setAuthenticatedUser(Some(authenticatedUser))
     }
 
     override def afterEach() {
@@ -53,19 +50,23 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
     test("create a new question returns to the home page") {
         val q = uniqueQuestionFormData();
-        controller.addQuestion(q) should be("redirect:/")
+        val question: Question = q.toQuestion.copy(creatorUsername = authenticatedUser.username)
+        when(questionService.createQuestion(question)).thenReturn(q.toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810")))
+        controller.addQuestion(q) should be("redirect:/questions/dead6bb0744e9d3695a7f810")
     }
 
     test("create a new question returns calls the question repository") {
         val q = uniqueQuestionFormData();
-        when(questionRepository.save(q.toQuestion)).thenReturn(null);
-        controller.addQuestion(q) should be("redirect:/")
+        val question: Question = q.toQuestion.copy(creatorUsername = authenticatedUser.username)
+        when(questionService.createQuestion(question)).thenReturn(q.toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810")))
+        controller.addQuestion(q)
+        verify(questionService).createQuestion(question);
     }
 
     test("show question tests that the view is question") {
         val questionId = "questionId"
         val q = uniqueQuestionFormData();
-        when(questionRepository.findById(questionId)).thenReturn(Some(q.toQuestion));
+        when(questionService.findById(questionId)).thenReturn(q.toQuestion);
         val mav = controller.showQuestion(questionId)
         mav.getViewName should be("question")
     }
@@ -74,7 +75,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     test("show question tests that the model contains the question") {
         val questionId = "questionId"
         val q = uniqueQuestionFormData().toQuestion;
-        when(questionRepository.findById(questionId)).thenReturn(Some(q));
+        when(questionService.findById(questionId)).thenReturn(q);
         val mav = controller.showQuestion(questionId)
         mav.getModel.containsKey("question") should be(true)
       val expectedQuestion: Question = q.copy(body = formattingService.formatMarkdownAsHtmlBlock(q.body))
@@ -103,7 +104,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     test("throw a resource not found exception") {
         val questionId = "questionId"
         val q = uniqueQuestionFormData();
-        when(questionRepository.findById(questionId)).thenReturn(None);
+        when(questionService.findById(questionId)).thenThrow(new IllegalArgumentException)
         evaluating {
             controller.showQuestion(questionId)
         } should produce[ResourceNotFoundException]

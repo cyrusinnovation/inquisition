@@ -11,34 +11,32 @@ import util.SecurityHelper
 import org.springframework.web.servlet.ModelAndView
 import com.cyrusinnovation.inquisition.tags.TagRepository
 
-import com.cyrusinnovation.inquisition.questions.{QuestionService, Question, QuestionRepository}
+import com.cyrusinnovation.inquisition.questions.{QuestionService, Question}
 
 
 @Controller
 @RequestMapping(value = Array("/questions"))
-class QuestionController @Autowired()(questionRepository: QuestionRepository,
-                                      timeSource: TimeSource,
+class QuestionController @Autowired()(timeSource: TimeSource,
                                       tagRepository: TagRepository,
                                       formattingService: MarkdownFormattingService,
                                       questionService: QuestionService) {
 
-    @RequestMapping(value = Array("/new"))
-    def showNewQuestionForm(): String = {
-        "new-question"
-    }
+  @RequestMapping(value = Array("/new"))
+  def showNewQuestionForm(): String = {
+    "new-question"
+  }
 
 
-    @RequestMapping(method = Array(RequestMethod.POST))
-    def addQuestion(@ModelAttribute question: QuestionFormData) = {
-        var q = question.toQuestion;
-        val user = SecurityHelper.getMandatoryAuthenticatedUser
-        q = q.copy(creatorUsername = user.username);
-        val newQuestion = questionRepository.save(q)
-        "redirect:/questions/" + newQuestion.id.get
-    }
+  @RequestMapping(method = Array(RequestMethod.POST))
+  def addQuestion(@ModelAttribute question: QuestionFormData) = {
+    var q = question.toQuestion;
+    val user = SecurityHelper.getMandatoryAuthenticatedUser
+    q = q.copy(creatorUsername = user.username);
+    val newQuestion = questionService.createQuestion(q)
+    "redirect:/questions/" + newQuestion.id.get
+  }
 
   def formatText(text: String): String = {
-
     formattingService.formatMarkdownAsHtmlBlock(text)
   }
 
@@ -49,33 +47,32 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository,
   }
 
   @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.GET))
-    def showQuestion(@PathVariable questionId: String) = {
-        questionRepository.findById(questionId) match {
-            case Some(question) => {
-                val model = Map("question" -> formatQuestion(question))
-                new ModelAndView("question", model.asJava)
-            }
-            case None => throw new ResourceNotFoundException
-        }
+  def showQuestion(@PathVariable questionId: String) = {
+    try {
+      val question = questionService.findById(questionId)
+      val model = Map("question" -> formatQuestion(question))
+      new ModelAndView("question", model.asJava)
     }
-
-    @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.PUT))
-    def updateQuestion(@ModelAttribute question: QuestionFormData, @PathVariable questionId: String) = {
-
-
-        var q = question.toQuestion;
-        if (!q.id.equals(questionId)) {
-            throw new IllegalArgumentException("the questionId did not match the request body's question.id")
-        }
-        val user = SecurityHelper.getMandatoryAuthenticatedUser
-        questionService.updateQuestion(q, user.username)
-
+    catch {
+      case e: IllegalArgumentException => throw new ResourceNotFoundException
     }
+  }
 
-    @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.DELETE))
-    def deleteQuestion(@PathVariable questionId: String) = {
-        val user = SecurityHelper.getMandatoryAuthenticatedUser
-        questionService.deleteQuestion(questionId, user.username)
-        "redirect:/"
+  @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.PUT))
+  def updateQuestion(@ModelAttribute question: QuestionFormData, @PathVariable questionId: String) = {
+    var q = question.toQuestion;
+    if (!q.id.equals(questionId)) {
+      throw new IllegalArgumentException("the questionId did not match the request body's question.id")
     }
+    val user = SecurityHelper.getMandatoryAuthenticatedUser
+    questionService.updateQuestion(q, user.username)
+
+  }
+
+  @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.DELETE))
+  def deleteQuestion(@PathVariable questionId: String) = {
+    val user = SecurityHelper.getMandatoryAuthenticatedUser
+    questionService.deleteQuestion(questionId, user.username)
+    "redirect:/"
+  }
 }

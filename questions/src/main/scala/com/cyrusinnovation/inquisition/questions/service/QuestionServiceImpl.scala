@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class QuestionServiceImpl @Autowired()(repository: MongoQuestionRepository) extends QuestionService {
-    def findQuestionById(questionId: String): Question = {
+    def findById(questionId: String): Question = {
         repository.findById(questionId) match {
             case None => {
                 throw new IllegalArgumentException(questionId + " not found")

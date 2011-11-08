@@ -34,13 +34,13 @@ class QuestionServiceImplTest extends FunSuite with ShouldMatchers with BeforeAn
         val savedQuestion = service.createQuestion(q)
         savedQuestion.id should not be (None)
         savedQuestion.id should be('defined)
-        val retrievedQuestion = service.findQuestionById(savedQuestion.id.get)
+        val retrievedQuestion = service.findById(savedQuestion.id.get)
         retrievedQuestion.id should be(savedQuestion.id)
     }
 
     test("should throw illegal argument exception if not found") {
         evaluating {
-            service.findQuestionById(MongoTestConstants.DeadObjectIdString)
+            service.findById(MongoTestConstants.DeadObjectIdString)
         } should produce[IllegalArgumentException]
 
     }
@@ -129,7 +129,7 @@ class QuestionServiceImplTest extends FunSuite with ShouldMatchers with BeforeAn
         q.id should be(None)
         val savedQuestion = service.createQuestion(q)
         service.updateQuestion(savedQuestion.copy(body = newBodyText), savedQuestion.creatorUsername)
-        val updatedQuestion = service.findQuestionById(savedQuestion.id.get)
+        val updatedQuestion = service.findById(savedQuestion.id.get)
 
         updatedQuestion.id should equal(savedQuestion.id)
         updatedQuestion.body should equal(newBodyText)

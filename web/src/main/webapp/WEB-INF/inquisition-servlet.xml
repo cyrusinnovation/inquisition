@@ -8,6 +8,7 @@
            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
     <context:component-scan base-package="com.trailmagic.jumper.web"/>
+    <context:component-scan base-package="com.cyrusinnovation.inquisition.questions"/>
     <mvc:annotation-driven/>
     <mvc:view-controller path="login"/>
 
@@ -50,5 +51,6 @@
         </property>
     </bean>
     <bean name="formattingService" class="com.trailmagic.jumper.web.service.MarkdownFormattingService"/>
+    <!--<bean name="questionService" class="com.cyrusinnovation.inquisition.questions.service.QuestionServiceImpl"/>-->
     <bean name="json" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
 </beans>
