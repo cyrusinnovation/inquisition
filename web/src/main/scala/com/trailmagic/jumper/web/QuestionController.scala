@@ -33,8 +33,8 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository,
         var q = question.toQuestion;
         val user = SecurityHelper.getMandatoryAuthenticatedUser
         q = q.copy(creatorUsername = user.username);
-        questionRepository.save(q)
-        "redirect:/"
+        val newQuestion = questionRepository.save(q)
+        "redirect:/questions/" + newQuestion.id.get
     }
 
   def formatText(text: String): String = {
@@ -57,6 +57,19 @@ class QuestionController @Autowired()(questionRepository: QuestionRepository,
             }
             case None => throw new ResourceNotFoundException
         }
+    }
+
+    @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.PUT))
+    def updateQuestion(@ModelAttribute question: QuestionFormData, @PathVariable questionId: String) = {
+
+
+        var q = question.toQuestion;
+        if (!q.id.equals(questionId)) {
+            throw new IllegalArgumentException("the questionId did not match the request body's question.id")
+        }
+        val user = SecurityHelper.getMandatoryAuthenticatedUser
+        questionService.updateQuestion(q, user.username)
+
     }
 
     @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.DELETE))

@@ -4,8 +4,8 @@ import com.cyrusinnovation.inquisition.questions.{Question, QuestionService}
 import org.springframework.beans.factory.annotation.Autowired
 import com.cyrusinnovation.inquisition.questions.mongodb.MongoQuestionRepository
 import java.security.InvalidParameterException
-import org.bson.types.ObjectId
-import org.springframework.stereotype.{Service, Component}
+import org.springframework.stereotype.Service
+
 
 @Service
 class QuestionServiceImpl @Autowired()(repository: MongoQuestionRepository) extends QuestionService {
@@ -29,18 +29,40 @@ class QuestionServiceImpl @Autowired()(repository: MongoQuestionRepository) exte
     }
 
     def deleteQuestion(id: String, usernameRequestingDelete: String) {
-        val question = repository.findById(id)
-        if (question == None) {
-            return
+        val question = repository.findById(id) match {
+            case None => return
+            case Some(q) => q
         }
-        if (!question.get.creatorUsername.equals(usernameRequestingDelete)) {
-            throw new InvalidParameterException("requesting user does not have the rights to delte this question")
-        }
+
+        verifyUserHasRights("delete", question.creatorUsername, usernameRequestingDelete)
         repository.deleteQuestion(id)
     }
 
-    def updateQuestion(question: Question): Question = {
+    def updateQuestion(question: Question, usernameRequestingDelete: String): Question = {
+        verifyUserHasRights("update", question.creatorUsername, usernameRequestingDelete)
         repository.save(question)
+    }
+
+    def verifyUserHasRights(method: String, questionUserName: String, requestingUserName: String) {
+        method match {
+
+            case "delete" => {
+                if (!questionUserName.equals(requestingUserName)) {
+                    throw new InvalidParameterException("requesting user does not have the rights to delete this question")
+                }
+
+            }
+            case "update" => {
+                if (!questionUserName.equals(requestingUserName)) {
+                    throw new InvalidParameterException("requesting user does not have the rights to update this question")
+                }
+
+            }
+            case _ => {
+                throw new InvalidParameterException("cannot verify what type of validation you're trying to do here")
+            }
+        }
+
     }
 
     def createQuestion(question: Question): Question = {

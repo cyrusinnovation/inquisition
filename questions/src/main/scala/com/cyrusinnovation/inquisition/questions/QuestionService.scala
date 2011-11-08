@@ -11,7 +11,7 @@ trait QuestionService {
 
     def deleteQuestion(id: String, usernameRequestingDelete: String)
 
-    def updateQuestion(question: Question): Question
+    def updateQuestion(question: Question, usernameRequestingDelete: String): Question
 
     def createQuestion(question: Question): Question
 }

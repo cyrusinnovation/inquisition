@@ -7,8 +7,6 @@ import com.mongodb.casbah.MongoConnection
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import com.cyrusinnovation.inquisition.questions.mongodb.{MongoTestConstants, MongoQuestionRepository}
-import org.joda.time.DateTime
-import com.mongodb.casbah.commons.MongoDBObject._
 import com.mongodb.casbah.commons.MongoDBObject
 import java.security.InvalidParameterException
 import java.lang.String
@@ -130,14 +128,25 @@ class QuestionServiceImplTest extends FunSuite with ShouldMatchers with BeforeAn
         val q = uniqueQuestion()
         q.id should be(None)
         val savedQuestion = service.createQuestion(q)
-        service.updateQuestion(savedQuestion.copy(body = newBodyText))
+        service.updateQuestion(savedQuestion.copy(body = newBodyText), savedQuestion.creatorUsername)
         val updatedQuestion = service.findQuestionById(savedQuestion.id.get)
 
-        updatedQuestion.id should  equal(savedQuestion.id)
-        updatedQuestion.body should  equal(newBodyText)
+        updatedQuestion.id should equal(savedQuestion.id)
+        updatedQuestion.body should equal(newBodyText)
 
     }
 
+
+    test("should be able to update a question body with illegal user creator") {
+        val newBodyText: String = "something else"
+        val q = uniqueQuestion()
+        q.id should be(None)
+        val savedQuestion = service.createQuestion(q)
+        evaluating {
+            service.updateQuestion(savedQuestion.copy(body = newBodyText), MongoTestConstants.InvalidUserName)
+        } should produce[IllegalArgumentException]
+
+    }
 
 
 }
