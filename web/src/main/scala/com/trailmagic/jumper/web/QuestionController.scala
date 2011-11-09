@@ -57,13 +57,14 @@ class QuestionController @Autowired()(formattingService: MarkdownFormattingServi
 
   @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.PUT))
   def updateQuestion(@ModelAttribute question: QuestionFormData, @PathVariable questionId: String) = {
-    var q = question.toQuestion;
-    if (!q.id.equals(questionId)) {
+    val q = question.toQuestion;
+    if (!q.id.equals(Some(questionId))) {
       throw new IllegalArgumentException("the questionId did not match the request body's question.id")
     }
+
     val user = SecurityHelper.getMandatoryAuthenticatedUser
     questionService.updateQuestion(q, user.username)
-
+    "redirect:/questions/" + questionId
   }
 
   @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.DELETE))

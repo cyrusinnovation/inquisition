@@ -162,4 +162,22 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     formattedQuestions.responses.head.body should equal("<p><em>test</em></p>")
     formattedQuestions.responses.last.body should equal("<p><em>test2</em></p>")
   }
+
+  test("Can update a question") {
+    val formData = uniqueQuestionFormData()
+    formData.setId("dead6bb0744e9d3695a7f810")
+    val q = formData.toQuestion
+    val updatedQuestion = uniqueQuestionFormData().toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810"))
+    when(questionService.updateQuestion(q, authenticatedUser.username)).thenReturn(updatedQuestion)
+    val viewName = controller.updateQuestion(formData, "dead6bb0744e9d3695a7f810")
+    viewName should be("redirect:/questions/dead6bb0744e9d3695a7f810")
+  }
+
+  test("If question id does not match url id an exception should be thrown") {
+    evaluating({
+      val formData = uniqueQuestionFormData()
+      formData.setId("")
+      val mav = controller.updateQuestion(formData, "dead6bb0744e9d3695a7f810")
+    }) should produce[IllegalArgumentException]
+  }
 }
