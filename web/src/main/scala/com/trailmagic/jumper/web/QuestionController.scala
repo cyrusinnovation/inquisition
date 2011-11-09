@@ -7,12 +7,12 @@ import org.springframework.stereotype.Controller
 
 import scala.collection.JavaConverters._
 import service.MarkdownFormattingService
-import util.SecurityHelper
-import org.springframework.web.servlet.ModelAndView
 
 import com.cyrusinnovation.inquisition.questions.{QuestionService, Question}
 import javax.validation.Valid
 import org.springframework.validation.BindingResult
+import util.{FormHelper, SecurityHelper}
+import org.springframework.web.servlet.ModelAndView
 
 
 @Controller
@@ -27,22 +27,24 @@ class QuestionController @Autowired()(formattingService: MarkdownFormattingServi
 
 
   @RequestMapping(method = Array(RequestMethod.POST))
-  def addQuestion(@Valid @ModelAttribute question: QuestionFormData, result: BindingResult): String = {
-    if (result.hasErrors()) {
-        return "new-question";
+  def addQuestion(@Valid @ModelAttribute question: QuestionFormData, bindingResult: BindingResult): ModelAndView = {
+    val errors = FormHelper.getAllErrors(bindingResult)
+    if (!errors.isEmpty) {
+      return new ModelAndView("new-question", "errors", errors).addObject("question", question)
+
     }
     var q = question.toQuestion;
     val user = SecurityHelper.getMandatoryAuthenticatedUser
     q = q.copy(creatorUsername = user.username);
     val newQuestion = questionService.createQuestion(q)
-    "redirect:/questions/" + newQuestion.id.get
+    new ModelAndView("redirect:/questions/" + newQuestion.id.get)
   }
 
   @RequestMapping(value = Array("/edit/{questionId}"))
   def showEditQuestionForm(@PathVariable questionId: String) = {
       try {
       val question = questionService.findById(questionId)
-      val model = Map("question" -> question)
+      val model = Map("question" -> new QuestionFormData(question))
       new ModelAndView("edit-question", model.asJava)
     }
     catch {
@@ -73,8 +75,14 @@ class QuestionController @Autowired()(formattingService: MarkdownFormattingServi
     }
   }
 
-  @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.PUT))
-  def updateQuestion(@ModelAttribute question: QuestionFormData, @PathVariable questionId: String) = {
+  @RequestMapping(value = Array("/edit/{questionId}"), method = Array(RequestMethod.PUT))
+  def updateQuestion(@Valid @ModelAttribute question: QuestionFormData,
+                     bindingResult: BindingResult, @PathVariable questionId: String): ModelAndView = {
+      val errors = FormHelper.getAllErrors(bindingResult)
+    if (!errors.isEmpty) {
+      return new ModelAndView("edit-question", "errors", errors).addObject("question", question)
+
+    }
     val q = question.toQuestion;
     if (!q.id.equals(Some(questionId))) {
       throw new IllegalArgumentException("the questionId did not match the request body's question.id")
@@ -82,7 +90,7 @@ class QuestionController @Autowired()(formattingService: MarkdownFormattingServi
 
     val user = SecurityHelper.getMandatoryAuthenticatedUser
     questionService.updateQuestion(q, user.username)
-    "redirect:/questions/" + questionId
+    new ModelAndView("redirect:/questions/" + questionId)
   }
 
   @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.DELETE))

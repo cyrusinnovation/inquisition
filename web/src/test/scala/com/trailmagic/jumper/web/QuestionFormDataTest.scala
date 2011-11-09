@@ -53,4 +53,22 @@ class QuestionFormDataTest extends FunSuite with BeforeAndAfterEach with ShouldM
     question.tags should have length(1)
     question.tags(0) should equal(tagList)
   }
+
+  test("constructor using a question") {
+           val tagList = "a,b,c"
+    val qfd = new QuestionFormData()
+      qfd.setBody("some body")
+      qfd.setId("some id")
+
+    qfd.setTags(tagList)
+      qfd.setTitle("some title")
+    val question = qfd.toQuestion
+
+   val questionUnderTest = new QuestionFormData(question)
+
+   questionUnderTest.getBody() should equal(qfd.getBody())
+      questionUnderTest.getId() should equal(qfd.getId())
+      questionUnderTest.getTags() should equal(qfd.getTags())
+      questionUnderTest.getTitle() should equal(qfd.getTitle())
+  }
 }

@@ -23,8 +23,6 @@ class UsersController @Autowired()(userRepository: UserRepository, userService: 
 
   @RequestMapping(value = Array("/new"), method = Array(RequestMethod.POST))
   def createNewUser(@ModelAttribute("user") @Valid userData: UserFormData, bindingResult: BindingResult): ModelAndView = {
-//    val fieldOrder = List("username", "firstName", "lastName", "email", "password")
-//    fieldOrder.flatMap(bindingResult.getFieldErrors(_).asScala.map(_.getDefaultMessage))
     val errors = FormHelper.getAllErrors(bindingResult)
     if (!errors.isEmpty) {
       new ModelAndView("new-user-form", "errors", errors).addObject("user",userData)

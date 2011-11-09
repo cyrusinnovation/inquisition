@@ -1,9 +1,20 @@
-#import (com.cyrusinnovation.inquisition.questions.Question)
-<%@ val question: Question %>
+#import (com.trailmagic.jumper.web.model.QuestionFormData)
 <% attributes("title") = "Edit Question" %>
+<%@ val question: QuestionFormData %>
+<%@ val errors: Iterable[String] = List() %>
 
 <div class="content">
-    <form method="post" action="${contextPath}/questions">
+    #if (!errors.isEmpty)
+        <div class="errors">
+            <ul>
+                #for(err <- errors)
+                    <li>${err}</li>
+                #end
+            </ul>
+        </div>
+        #end
+    <form method="post" action="${contextPath}/questions/edit/${question.id}">
+
         <div class="clearfix">
             <label for="title">Title</label>
 
@@ -22,14 +33,15 @@
             </div>
 
         </div>
-        <!--<div class="clearfix">-->
-            <!--<label for="tags">Tags</label>-->
+        <div class="clearfix">
+            <label for="tags">Tags</label>
 
-            <!--<div class="input clearfix">-->
-                <!--<input type="text" size="50" name="tags" id="tags"/>-->
-            <!--</div>-->
-        <!--</div>-->
+            <div class="input clearfix">
+                <input type="text" size="50" name="tags" id="tags"  value="${question.tags}"/>
+            </div>
+        </div>
         <input type="hidden" value="${question.id}" name="id"/>
+        <input type="hidden" value="PUT" name="_method"/>
         <div class="actions">
             <input type="submit" value="Update Question" class="btn primary">
             <a href="/questions/${question.id}">Cancel</a>

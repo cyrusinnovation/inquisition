@@ -55,7 +55,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
         val q = uniqueQuestionFormData();
         val question: Question = q.toQuestion.copy(creatorUsername = authenticatedUser.username)
         when(questionService.createQuestion(question)).thenReturn(q.toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810")))
-        controller.addQuestion(q, bindingResult) should be("redirect:/questions/dead6bb0744e9d3695a7f810")
+        controller.addQuestion(q, bindingResult).getViewName should be("redirect:/questions/dead6bb0744e9d3695a7f810")
     }
 
     test("create a new question returns calls the question repository") {
@@ -173,7 +173,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     val q = formData.toQuestion
     val updatedQuestion = uniqueQuestionFormData().toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810"))
     when(questionService.updateQuestion(q, authenticatedUser.username)).thenReturn(updatedQuestion)
-    val viewName = controller.updateQuestion(formData, "dead6bb0744e9d3695a7f810")
+    val viewName = controller.updateQuestion(formData, bindingResult, "dead6bb0744e9d3695a7f810").getViewName
     viewName should be("redirect:/questions/dead6bb0744e9d3695a7f810")
   }
 
@@ -181,7 +181,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     evaluating({
       val formData = uniqueQuestionFormData()
       formData.setId("")
-      val mav = controller.updateQuestion(formData, "dead6bb0744e9d3695a7f810")
+      val mav = controller.updateQuestion(formData, bindingResult, "dead6bb0744e9d3695a7f810").getViewName
     }) should produce[IllegalArgumentException]
   }
 
