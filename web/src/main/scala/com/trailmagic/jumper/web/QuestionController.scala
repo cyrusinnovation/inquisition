@@ -11,6 +11,8 @@ import util.SecurityHelper
 import org.springframework.web.servlet.ModelAndView
 
 import com.cyrusinnovation.inquisition.questions.{QuestionService, Question}
+import javax.validation.Valid
+import org.springframework.validation.BindingResult
 
 
 @Controller
@@ -25,7 +27,10 @@ class QuestionController @Autowired()(formattingService: MarkdownFormattingServi
 
 
   @RequestMapping(method = Array(RequestMethod.POST))
-  def addQuestion(@ModelAttribute question: QuestionFormData) = {
+  def addQuestion(@Valid @ModelAttribute question: QuestionFormData, result: BindingResult): String = {
+    if (result.hasErrors()) {
+        return "new-question";
+    }
     var q = question.toQuestion;
     val user = SecurityHelper.getMandatoryAuthenticatedUser
     q = q.copy(creatorUsername = user.username);

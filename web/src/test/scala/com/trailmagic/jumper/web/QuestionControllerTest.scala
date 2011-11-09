@@ -16,11 +16,15 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import com.cyrusinnovation.inquisition.questions.{QuestionService, Question, QuestionRepository}
 import com.cyrusinnovation.inquisition.questions.mongodb._
+import java.lang.{Class, String}
+import org.springframework.validation.{ObjectError, Errors, BindingResult}
+
 @RunWith(classOf[JUnitRunner])
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
     val authenticatedUser = new SavedUser("userId", new User("a@example.com", "userName", "firstName", "lastName", "password", "salt", Set(), None))
     val formattingService = new MarkdownFormattingService;
     @Mock var questionService: QuestionService = _
+    @Mock var bindingResult: BindingResult = _
 
     var controller: QuestionController = _
 
@@ -47,18 +51,18 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
         controller.showNewQuestionForm() should be("new-question")
     }
 
-    test("create a new question returns to the home page") {
+    test("create a new question returns to the question page") {
         val q = uniqueQuestionFormData();
         val question: Question = q.toQuestion.copy(creatorUsername = authenticatedUser.username)
         when(questionService.createQuestion(question)).thenReturn(q.toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810")))
-        controller.addQuestion(q) should be("redirect:/questions/dead6bb0744e9d3695a7f810")
+        controller.addQuestion(q, bindingResult) should be("redirect:/questions/dead6bb0744e9d3695a7f810")
     }
 
     test("create a new question returns calls the question repository") {
         val q = uniqueQuestionFormData();
         val question: Question = q.toQuestion.copy(creatorUsername = authenticatedUser.username)
         when(questionService.createQuestion(question)).thenReturn(q.toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810")))
-        controller.addQuestion(q)
+        controller.addQuestion(q, bindingResult)
         verify(questionService).createQuestion(question);
     }
 

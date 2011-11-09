@@ -2,8 +2,11 @@ package com.trailmagic.jumper.web.model
 
 import reflect.BeanProperty
 import com.cyrusinnovation.inquisition.questions.Question
+import org.hibernate.validator.constraints.NotEmpty
 
 class QuestionFormData {
+
+  @NotEmpty(message = "Question title cannot be empty")
   @BeanProperty var title = ""
   @BeanProperty var body = ""
   @BeanProperty var tags = ""
