@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import com.novus.salat._
 import com.novus.salat.global._
 import org.springframework.stereotype.Repository
-import org.joda.time.DateTime
 import com.mongodb.casbah.Imports._
-import java.security.InvalidParameterException
-import com.mongodb.{QueryBuilder, WriteResult}
+
 
 @Repository
 class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionRepository {
@@ -20,12 +18,12 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     question.id match {
       case None => {
         val dbObj = grater[Question].asDBObject(question)
-        val result = questions.insert(dbObj, WriteConcern.Safe)
+        questions.insert(dbObj, WriteConcern.Safe)
         question.copy(id = Some(dbObj("_id").toString))
       }
       case Some(id: String) => {
         val dbObj = grater[Question].asDBObject(question)
-        val res = questions.update(MongoDBObject("_id" -> new ObjectId(id)), dbObj, false, false, WriteConcern.Safe)
+        questions.update(MongoDBObject("_id" -> new ObjectId(id)), dbObj, false, false, WriteConcern.Safe)
         question.copy(id = Some(dbObj("id").toString))
       }
     }

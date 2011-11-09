@@ -10,6 +10,7 @@ import com.cyrusinnovation.inquisition.questions.mongodb.{MongoTestConstants, Mo
 import com.mongodb.casbah.commons.MongoDBObject
 import java.security.InvalidParameterException
 import java.lang.String
+import com.cyrusinnovation.inquisition.response.Response
 
 
 @RunWith(classOf[JUnitRunner])
@@ -148,5 +149,26 @@ class QuestionServiceImplTest extends FunSuite with ShouldMatchers with BeforeAn
 
     }
 
+  test("Should be able to update a question without removing all responses") {
+    val r1: Response = new Response(None, title = "Title 1", creatorUsername = "42", body = "body text 1")
+    val r2: Response = new Response(None, title = "Title 2", creatorUsername = "42", body = "body text 2")
+    val q = uniqueQuestion().copy(responses = List(r1, r2))
+    val savedQuestion = repository.save(q)
+    savedQuestion.responses should equal(q.responses)
+    val updatedQuestion = new Question(id = q.id, body = q.body, title = "Update Title", creatorUsername = q.creatorUsername)
+    service.updateQuestion(updatedQuestion, updatedQuestion.creatorUsername)
+    val actualQ = service.findById(savedQuestion.id.get)
+    actualQ.responses should equal(savedQuestion.responses)
+  }
 
+  test("Should be able to update a question without removing all tags") {
+    val tags = List("taga", "tagb", "tagc")
+    val q = uniqueQuestion().copy(tags = tags)
+    val savedQuestion = repository.save(q)
+    savedQuestion.tags should equal(tags)
+    val updatedQuestion = new Question(id = q.id, body = q.body, title = "Update Title", creatorUsername = q.creatorUsername)
+    service.updateQuestion(updatedQuestion, updatedQuestion.creatorUsername)
+    val actualQ = service.findById(savedQuestion.id.get)
+    actualQ.tags should equal(savedQuestion.tags)
+  }
 }

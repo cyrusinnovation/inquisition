@@ -3,8 +3,15 @@
 <%@ val enableDelete: Boolean = false %>
 
 <h2>${question.title}#if (enableDelete)
-<a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink"><img src="/images/icontrash.gif" alt="Delete Question" width="24" height="24" style="display: inline;"></a>
-#end</h2>
+    <br/>
+    <a href="delete" id="questionDelete" value="${contextPath}/questions/${question.id}" class="confirmLink">
+        <img src="/images/icontrash.gif" alt="Delete Question" width="24" height="24" style="display: inline;">
+    </a>
+    <a href="${contextPath}/questions/edit/${question.id}" id="questionEdit">
+        <img src="/images/iconedit.jpg" alt="Edit Question" width="24" height="24" style="display: inline;">
+    </a>
+#end
+</h2>
 <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
 <h3>Asked by ${question.creatorUsername}</h3>
 <div>

@@ -180,4 +180,12 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
       val mav = controller.updateQuestion(formData, "dead6bb0744e9d3695a7f810")
     }) should produce[IllegalArgumentException]
   }
+
+  test("Controller returns edit view for a question id") {
+    val question = uniqueQuestionFormData().toQuestion
+    when(questionService.findById("dead6bb0744e9d3695a7f810")).thenReturn(question)
+    val mav = controller.showEditQuestionForm("dead6bb0744e9d3695a7f810")
+    mav.getViewName should equal("edit-question")
+    mav.getModel().get("question") should equal(question)
+  }
 }

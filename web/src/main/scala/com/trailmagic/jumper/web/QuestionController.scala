@@ -33,6 +33,19 @@ class QuestionController @Autowired()(formattingService: MarkdownFormattingServi
     "redirect:/questions/" + newQuestion.id.get
   }
 
+  @RequestMapping(value = Array("/edit/{questionId}"))
+  def showEditQuestionForm(@PathVariable questionId: String) = {
+      try {
+      val question = questionService.findById(questionId)
+      val model = Map("question" -> question)
+      new ModelAndView("edit-question", model.asJava)
+    }
+    catch {
+      case e: IllegalArgumentException => throw new ResourceNotFoundException
+    }
+
+  }
+
   def formatText(text: String): String = {
     formattingService.formatMarkdownAsHtmlBlock(text)
   }

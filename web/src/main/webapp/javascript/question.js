@@ -103,6 +103,13 @@ $(document).ready(function() {
         }).append('<input type="hidden" name="tagQuery" id="search-query" value="' + tag + '" />'));
         $(f).submit();
     });
+
+    if($("#bodyInput") != undefined){
+        if($("#bodyInput").val() != "")
+        {
+            updateBodyPreview();
+        }
+    }
 });
 
 function updateBodyPreview() {
