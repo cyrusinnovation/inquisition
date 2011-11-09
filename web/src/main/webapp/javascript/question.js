@@ -124,6 +124,15 @@ function updateBodyPreview() {
             $("#previewPane").html(m.previewText);
         }
     });
-}
+};
 
 $('#bodyInput').keyup( $.debounce( 250, updateBodyPreview ) ); // This is the line you want!
+
+$(document).ready(function() {
+
+  $.each($(".searchTag"), function(x, y){
+
+      $('.highlightable').highlight(y.text);
+  })
+
+});

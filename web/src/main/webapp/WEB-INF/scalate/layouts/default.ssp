@@ -60,6 +60,7 @@
     <script type="text/javascript" src="/javascript/jquery-ui-1.8.16.custom.min.js"></script>
     <script type="text/javascript" src="/javascript/jquery.ba-throttle-debounce.js"></script>
     <script type="text/javascript" src="/javascript/tag-it.js"></script>
+    <script type="text/javascript" src="/javascript/jquery.highlight-3.js"></script>
     <!-- if it's development do this -->
     <script type="text/javascript" src="/javascript/validation_helpers.js"></script>
     <script type="text/javascript" src="/javascript/question.js"></script>
