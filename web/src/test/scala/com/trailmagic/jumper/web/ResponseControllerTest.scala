@@ -13,6 +13,7 @@ import org.mockito.Mockito._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import com.cyrusinnovation.inquisition.response.{Response, ResponseRepository}
+import java.lang.String
 
 @RunWith(classOf[JUnitRunner])
 class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
@@ -81,7 +82,10 @@ class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAn
         mav.getModel.get("questionId") should be("dead6bb0744e9d3695a7f810")
     }
     test("Can submit and save an edited response") {
-        controller.updateResponse(new ResponseFormData(),"questionid", "responseid")
+        val responseId: String = "responseid"
+        val responseForm: ResponseFormData = new ResponseFormData()
+        responseForm.setId(responseId)
+        controller.updateResponse(responseForm,"questionid", responseId)
 
     }
     def compareResponseFormData(rfda: ResponseFormData, rfdb: ResponseFormData): Boolean = {

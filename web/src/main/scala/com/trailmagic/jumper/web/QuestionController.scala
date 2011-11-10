@@ -45,7 +45,8 @@ class QuestionController @Autowired()(formattingService: MarkdownFormattingServi
     def showEditQuestionForm(@PathVariable questionId: String) = {
         try {
             val question = questionService.findById(questionId)
-            val model = Map("question" -> new QuestionFormData(question))
+            val model = Map("question" -> new QuestionFormData(question), "clients" -> questionService.getClientList
+            (limit = 0))
             new ModelAndView("edit-question", model.asJava)
         }
         catch {

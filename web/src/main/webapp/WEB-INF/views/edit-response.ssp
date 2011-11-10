@@ -1,0 +1,33 @@
+#import (com.trailmagic.jumper.web.model.ResponseFormData)
+<% attributes("title") = "Edit Question Response" %>
+<%@ val response: ResponseFormData %>
+<%@ val questionId: String %>
+<div class="content">
+    <form method="post" action="${contextPath}/questions/${questionId}/edit/response/${response.getId}">
+        <div class="clearfix">
+            <label for="title">Title</label>
+
+            <div class="input">
+                <input type="text" size="100" name="title" id="title" value="${response.getTitle()}"/>
+            </div>
+        </div>
+        <div class="clearfix">
+            <label for="bodyInput">Body</label>
+
+            <div class="input">
+                <textarea class="xxlarge" name="body" id="bodyInput" rows="3">${response.getBody()}</textarea>
+                <span class="help-block">
+                    Markdown text formatting supported. Click <a href="/preview/help" target="_blank">here</a> for help.
+                </span>
+            </div>
+        </div>
+        <input type="hidden" name="id" value="${response.getId}"/>
+        <input type="hidden" value="PUT" name="_method"/>
+        <div class="actions">
+            <input type="submit" value="Update Question Response" class="btn primary">
+            <a href="/questions/${questionId}">Cancel</a>
+        </div>
+    </form>
+    <div id="previewPane">
+    </div>
+</div>

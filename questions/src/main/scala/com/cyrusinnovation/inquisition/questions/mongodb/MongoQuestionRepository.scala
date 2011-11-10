@@ -57,21 +57,20 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
 
 
     def getClientList(startsWith: String, limit: Int): List[String] = {
-
-        questions.distinct("client")
-                .map(x => x.toString)
-                .filter(_.toLowerCase.startsWith(startsWith.toLowerCase))
-                .sortBy(x => x)
-                .take(limit)
-                .toList
-
+        val clients = questions.distinct("client")
+                 .map(x => x.toString)
+                 .filter(_.toLowerCase.startsWith(startsWith.toLowerCase))
+                 .sortBy(x => x).toList
+        if (limit <= 0) {
+            return clients
+        }
+        clients.take(limit)
     }
 
     def findResponseQuestion(responseId: String): Option[Question] = {
         questions.findOne(MongoDBObject("responses.id" -> responseId))
-                 .map(db2question(_))
-                 .toList
-                 .headOption
-
+                .map(db2question(_))
+                .toList
+                .headOption
     }
 }
