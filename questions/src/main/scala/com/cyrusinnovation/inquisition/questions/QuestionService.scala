@@ -14,4 +14,6 @@ trait QuestionService {
     def updateQuestion(question: Question, usernameRequestingDelete: String): Question
 
     def createQuestion(question: Question): Question
+
+    def getClientList(startsWith: String = "", limit: Int = 10): List[String]
 }

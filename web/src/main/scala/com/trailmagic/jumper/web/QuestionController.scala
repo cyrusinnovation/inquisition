@@ -20,83 +20,91 @@ import org.springframework.web.servlet.ModelAndView
 class QuestionController @Autowired()(formattingService: MarkdownFormattingService,
                                       questionService: QuestionService) {
 
-  @RequestMapping(value = Array("/new"))
-  def showNewQuestionForm(): String = {
-    "new-question"
-  }
 
-
-  @RequestMapping(method = Array(RequestMethod.POST))
-  def addQuestion(@Valid @ModelAttribute question: QuestionFormData, bindingResult: BindingResult): ModelAndView = {
-    val errors = FormHelper.getAllErrors(bindingResult)
-    if (!errors.isEmpty) {
-      return new ModelAndView("new-question", "errors", errors).addObject("question", question)
-
-    }
-    var q = question.toQuestion;
-    val user = SecurityHelper.getMandatoryAuthenticatedUser
-    q = q.copy(creatorUsername = user.username);
-    val newQuestion = questionService.createQuestion(q)
-    new ModelAndView("redirect:/questions/" + newQuestion.id.get)
-  }
-
-  @RequestMapping(value = Array("/edit/{questionId}"))
-  def showEditQuestionForm(@PathVariable questionId: String) = {
-      try {
-      val question = questionService.findById(questionId)
-      val model = Map("question" -> new QuestionFormData(question))
-      new ModelAndView("edit-question", model.asJava)
-    }
-    catch {
-      case e: IllegalArgumentException => throw new ResourceNotFoundException
+    @RequestMapping(value = Array("/new"))
+    def showNewQuestionForm(): String = {
+        "new-question"
     }
 
-  }
 
-  def formatText(text: String): String = {
-    formattingService.formatMarkdownAsHtmlBlock(text)
-  }
+    @RequestMapping(method = Array(RequestMethod.POST))
+    def addQuestion(@Valid @ModelAttribute question: QuestionFormData, bindingResult: BindingResult): ModelAndView = {
+        val errors = FormHelper.getAllErrors(bindingResult)
+        if (!errors.isEmpty) {
+            return new ModelAndView("new-question", "errors", errors).addObject("question", question)
 
-  def formatQuestion(question: Question): Question = {
-    val formattedBodyText: String = formatText(question.body)
-    val formattedResponses = question.responses.map(x => x.copy(body = formatText(x.body)))
-    question.copy(body = formattedBodyText, responses = formattedResponses);
-  }
-
-  @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.GET))
-  def showQuestion(@PathVariable questionId: String) = {
-    try {
-      val question = questionService.findById(questionId)
-      val model = Map("question" -> formatQuestion(question))
-      new ModelAndView("question", model.asJava)
-    }
-    catch {
-      case e: IllegalArgumentException => throw new ResourceNotFoundException
-    }
-  }
-
-  @RequestMapping(value = Array("/edit/{questionId}"), method = Array(RequestMethod.PUT))
-  def updateQuestion(@Valid @ModelAttribute question: QuestionFormData,
-                     bindingResult: BindingResult, @PathVariable questionId: String): ModelAndView = {
-      val errors = FormHelper.getAllErrors(bindingResult)
-    if (!errors.isEmpty) {
-      return new ModelAndView("edit-question", "errors", errors).addObject("question", question)
-
-    }
-    val q = question.toQuestion;
-    if (!q.id.equals(Some(questionId))) {
-      throw new IllegalArgumentException("the questionId did not match the request body's question.id")
+        }
+        var q = question.toQuestion;
+        val user = SecurityHelper.getMandatoryAuthenticatedUser
+        q = q.copy(creatorUsername = user.username);
+        val newQuestion = questionService.createQuestion(q)
+        new ModelAndView("redirect:/questions/" + newQuestion.id.get)
     }
 
-    val user = SecurityHelper.getMandatoryAuthenticatedUser
-    questionService.updateQuestion(q, user.username)
-    new ModelAndView("redirect:/questions/" + questionId)
-  }
+    @RequestMapping(value = Array("/edit/{questionId}"))
+    def showEditQuestionForm(@PathVariable questionId: String) = {
+        try {
+            val question = questionService.findById(questionId)
+            val model = Map("question" -> new QuestionFormData(question))
+            new ModelAndView("edit-question", model.asJava)
+        }
+        catch {
+            case e: IllegalArgumentException => throw new ResourceNotFoundException
+        }
 
-  @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.DELETE))
-  def deleteQuestion(@PathVariable questionId: String) = {
-    val user = SecurityHelper.getMandatoryAuthenticatedUser
-    questionService.deleteQuestion(questionId, user.username)
-    "redirect:/"
-  }
+    }
+
+    def formatText(text: String): String = {
+        formattingService.formatMarkdownAsHtmlBlock(text)
+    }
+
+    def formatQuestion(question: Question): Question = {
+        val formattedBodyText: String = formatText(question.body)
+        val formattedResponses = question.responses.map(x => x.copy(body = formatText(x.body)))
+        question.copy(body = formattedBodyText, responses = formattedResponses);
+    }
+
+    @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.GET))
+    def showQuestion(@PathVariable questionId: String) = {
+        try {
+            val question = questionService.findById(questionId)
+            val model = Map("question" -> formatQuestion(question))
+            new ModelAndView("question", model.asJava)
+        }
+        catch {
+            case e: IllegalArgumentException => throw new ResourceNotFoundException
+        }
+    }
+
+    @RequestMapping(value = Array("/edit/{questionId}"), method = Array(RequestMethod.PUT))
+    def updateQuestion(@Valid @ModelAttribute question: QuestionFormData,
+                       bindingResult: BindingResult, @PathVariable questionId: String): ModelAndView = {
+        val errors = FormHelper.getAllErrors(bindingResult)
+        if (!errors.isEmpty) {
+            return new ModelAndView("edit-question", "errors", errors).addObject("question", question)
+
+        }
+        val q = question.toQuestion;
+        if (!q.id.equals(Some(questionId))) {
+            throw new IllegalArgumentException("the questionId did not match the request body's question.id")
+        }
+
+        val user = SecurityHelper.getMandatoryAuthenticatedUser
+        questionService.updateQuestion(q, user.username)
+        new ModelAndView("redirect:/questions/" + questionId)
+    }
+
+    @RequestMapping(value = Array("/{questionId}"), method = Array(RequestMethod.DELETE))
+    def deleteQuestion(@PathVariable questionId: String) = {
+        val user = SecurityHelper.getMandatoryAuthenticatedUser
+        questionService.deleteQuestion(questionId, user.username)
+        "redirect:/"
+    }
+
+    @RequestMapping(value = Array("/questions/clients/{prefix}"), method = Array(RequestMethod.GET))
+    def clientCompletion(@PathVariable prefix: String) = {
+        val clients = questionService.getClientList(prefix)
+        val model = Map("clients" -> clients.asJava)
+        new ModelAndView("clients", model.asJava)
+    }
 }

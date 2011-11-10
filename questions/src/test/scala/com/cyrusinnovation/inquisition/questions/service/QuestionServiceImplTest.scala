@@ -149,26 +149,42 @@ class QuestionServiceImplTest extends FunSuite with ShouldMatchers with BeforeAn
 
     }
 
-  test("Should be able to update a question without removing all responses") {
-    val r1: Response = new Response(None, title = "Title 1", creatorUsername = "42", body = "body text 1")
-    val r2: Response = new Response(None, title = "Title 2", creatorUsername = "42", body = "body text 2")
-    val q = uniqueQuestion().copy(responses = List(r1, r2))
-    val savedQuestion = repository.save(q)
-    savedQuestion.responses should equal(q.responses)
-    val updatedQuestion = new Question(id = q.id, body = q.body, title = "Update Title", creatorUsername = q.creatorUsername)
-    service.updateQuestion(updatedQuestion, updatedQuestion.creatorUsername)
-    val actualQ = service.findById(savedQuestion.id.get)
-    actualQ.responses should equal(savedQuestion.responses)
-  }
+    test("Should be able to update a question without removing all responses") {
+        val r1: Response = new Response(None, title = "Title 1", creatorUsername = "42", body = "body text 1")
+        val r2: Response = new Response(None, title = "Title 2", creatorUsername = "42", body = "body text 2")
+        val q = uniqueQuestion().copy(responses = List(r1, r2))
+        val savedQuestion = repository.save(q)
+        savedQuestion.responses should equal(q.responses)
+        val updatedQuestion = new Question(id = q.id, body = q.body, title = "Update Title", creatorUsername = q.creatorUsername)
+        service.updateQuestion(updatedQuestion, updatedQuestion.creatorUsername)
+        val actualQ = service.findById(savedQuestion.id.get)
+        actualQ.responses should equal(savedQuestion.responses)
+    }
 
-  test("Should be able to update a question without removing all tags") {
-    val tags = List("taga", "tagb", "tagc")
-    val q = uniqueQuestion().copy(tags = tags)
-    val savedQuestion = repository.save(q)
-    savedQuestion.tags should equal(tags)
-    val updatedQuestion = new Question(id = q.id, body = q.body, title = "Update Title", creatorUsername = q.creatorUsername)
-    service.updateQuestion(updatedQuestion, updatedQuestion.creatorUsername)
-    val actualQ = service.findById(savedQuestion.id.get)
-    actualQ.tags should equal(savedQuestion.tags)
-  }
+    test("Should be able to update a question without removing all tags") {
+        val tags = List("taga", "tagb", "tagc")
+        val q = uniqueQuestion().copy(tags = tags)
+        val savedQuestion = repository.save(q)
+        savedQuestion.tags should equal(tags)
+        val updatedQuestion = new Question(id = q.id, body = q.body, title = "Update Title", creatorUsername = q.creatorUsername)
+        service.updateQuestion(updatedQuestion, updatedQuestion.creatorUsername)
+        val actualQ = service.findById(savedQuestion.id.get)
+        actualQ.tags should equal(savedQuestion.tags)
+    }
+
+    test("get a list of clients") {
+        val client1 = "Boston Capital"
+        val client2 = "NFL"
+        val client3 = "Nordstroms"
+
+        val questions = List(uniqueQuestion().copy(client = client1), uniqueQuestion().copy(client = client2),
+            uniqueQuestion().copy(client = client3))
+
+        questions.map(repository.save(_))
+
+        val clientList = service.getClientList("n")
+        clientList.size should be(2)
+        clientList(0) should equal(client2)
+        clientList(1) should equal(client3)
+    }
 }

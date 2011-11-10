@@ -68,4 +68,8 @@ class QuestionServiceImpl @Autowired()(repository: MongoQuestionRepository) exte
     def createQuestion(question: Question): Question = {
         repository.save(question)
     }
+
+    def getClientList(startsWith: String, limit: Int): List[String] = {
+        repository.getClientList(startsWith, limit)
+    }
 }

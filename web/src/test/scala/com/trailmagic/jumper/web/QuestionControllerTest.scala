@@ -8,16 +8,14 @@ import org.mockito.MockitoAnnotations.Mock
 import org.mockito.Mockito._
 import service.MarkdownFormattingService
 import util.SecurityHelper
-import com.trailmagic.jumper.core.{User, SavedUser, TimeSource}
+import com.trailmagic.jumper.core.{User, SavedUser}
 import org.mockito.MockitoAnnotations
-import com.cyrusinnovation.inquisition.tags.TagRepository
 import com.cyrusinnovation.inquisition.response.Response
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import com.cyrusinnovation.inquisition.questions.{QuestionService, Question, QuestionRepository}
-import com.cyrusinnovation.inquisition.questions.mongodb._
-import java.lang.{Class, String}
-import org.springframework.validation.{ObjectError, Errors, BindingResult}
+import com.cyrusinnovation.inquisition.questions.{QuestionService, Question}
+import java.lang.String
+import org.springframework.validation.BindingResult
 
 @RunWith(classOf[JUnitRunner])
 class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
@@ -81,8 +79,8 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
         when(questionService.findById(questionId)).thenReturn(q);
         val mav = controller.showQuestion(questionId)
         mav.getModel.containsKey("question") should be(true)
-      val expectedQuestion: Question = q.copy(body = formattingService.formatMarkdownAsHtmlBlock(q.body))
-      mav.getModel.get("question") should be(expectedQuestion)
+        val expectedQuestion: Question = q.copy(body = formattingService.formatMarkdownAsHtmlBlock(q.body))
+        mav.getModel.get("question") should be(expectedQuestion)
     }
 
     test("delete a question") {
@@ -113,83 +111,94 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
         } should produce[ResourceNotFoundException]
     }
 
-  test("question text is the same when no formatting present") {
+    test("question text is the same when no formatting present") {
 
-      val q = uniqueQuestionFormData();
-      val actual = controller.formatQuestion(q.toQuestion);
-      actual.body should equal(formattingService.formatMarkdownAsHtmlBlock( q.getBody()))
-  }
+        val q = uniqueQuestionFormData();
+        val actual = controller.formatQuestion(q.toQuestion);
+        actual.body should equal(formattingService.formatMarkdownAsHtmlBlock(q.getBody()))
+    }
 
-  test("question text is the formatted when formatting present") {
+    test("question text is the formatted when formatting present") {
 
-      val q = uniqueQuestionFormData(body = "*test*");
-    val expected = "<p><em>test</em></p>"
-      val actual = controller.formatQuestion(q.toQuestion);
-      actual.body should equal(expected)
-  }
+        val q = uniqueQuestionFormData(body = "*test*");
+        val expected = "<p><em>test</em></p>"
+        val actual = controller.formatQuestion(q.toQuestion);
+        actual.body should equal(expected)
+    }
 
-  test("question text is the formatted when html present") {
+    test("question text is the formatted when html present") {
 
-      val q = uniqueQuestionFormData(body = "*test<html>*");
-    val expected = "<p><em>test<html></em></p>"
-      val actual = controller.formatQuestion(q.toQuestion);
-      actual.body should equal(expected)
-  }
+        val q = uniqueQuestionFormData(body = "*test<html>*");
+        val expected = "<p><em>test<html></em></p>"
+        val actual = controller.formatQuestion(q.toQuestion);
+        actual.body should equal(expected)
+    }
 
-  test("unformatted question responses stay unformatted") {
-    val responses = List(Response(None, creatorUsername = "user" , title="title" , body="text"),
-                         Response(None, creatorUsername = "user" , title="title" , body="text2"))
-    val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
+    test("unformatted question responses stay unformatted") {
+        val responses = List(Response(None, creatorUsername = "user", title = "title", body = "text"),
+            Response(None, creatorUsername = "user", title = "title", body = "text2"))
+        val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
 
-    controller.formatQuestion(q)
+        controller.formatQuestion(q)
 
-    q should equal(q)
-  }
+        q should equal(q)
+    }
 
-  test("Formatted question responses has html entities encoded") {
-    val responses = List(Response(None, creatorUsername = "user" , title="title" , body="*<html>test*"),
-                         Response(None, creatorUsername = "user" , title="title" , body="*<html>test2*"))
-    val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
+    test("Formatted question responses has html entities encoded") {
+        val responses = List(Response(None, creatorUsername = "user", title = "title", body = "*<html>test*"),
+            Response(None, creatorUsername = "user", title = "title", body = "*<html>test2*"))
+        val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
 
-    val formattedQuestions = controller.formatQuestion(q)
-    formattedQuestions.responses.head.body should equal("<p><em><html>test</em></p>")
-    formattedQuestions.responses.last.body should equal("<p><em><html>test2</em></p>")
-  }
+        val formattedQuestions = controller.formatQuestion(q)
+        formattedQuestions.responses.head.body should equal("<p><em><html>test</em></p>")
+        formattedQuestions.responses.last.body should equal("<p><em><html>test2</em></p>")
+    }
 
-  test("Formatted question responses stay gets formatted") {
-    val responses = List(Response(None, creatorUsername = "user" , title="title" , body="*test*"),
-                         Response(None, creatorUsername = "user" , title="title" , body="*test2*"))
+    test("Formatted question responses stay gets formatted") {
+        val responses = List(Response(None, creatorUsername = "user", title = "title", body = "*test*"),
+            Response(None, creatorUsername = "user", title = "title", body = "*test2*"))
 
-    val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
+        val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
 
-    val formattedQuestions = controller.formatQuestion(q)
-    formattedQuestions.responses.head.body should equal("<p><em>test</em></p>")
-    formattedQuestions.responses.last.body should equal("<p><em>test2</em></p>")
-  }
+        val formattedQuestions = controller.formatQuestion(q)
+        formattedQuestions.responses.head.body should equal("<p><em>test</em></p>")
+        formattedQuestions.responses.last.body should equal("<p><em>test2</em></p>")
+    }
 
-  test("Can update a question") {
-    val formData = uniqueQuestionFormData()
-    formData.setId("dead6bb0744e9d3695a7f810")
-    val q = formData.toQuestion
-    val updatedQuestion = uniqueQuestionFormData().toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810"))
-    when(questionService.updateQuestion(q, authenticatedUser.username)).thenReturn(updatedQuestion)
-    val viewName = controller.updateQuestion(formData, bindingResult, "dead6bb0744e9d3695a7f810").getViewName
-    viewName should be("redirect:/questions/dead6bb0744e9d3695a7f810")
-  }
+    test("Can update a question") {
+        val formData = uniqueQuestionFormData()
+        formData.setId("dead6bb0744e9d3695a7f810")
+        val q = formData.toQuestion
+        val updatedQuestion = uniqueQuestionFormData().toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810"))
+        when(questionService.updateQuestion(q, authenticatedUser.username)).thenReturn(updatedQuestion)
+        val viewName = controller.updateQuestion(formData, bindingResult, "dead6bb0744e9d3695a7f810").getViewName
+        viewName should be("redirect:/questions/dead6bb0744e9d3695a7f810")
+    }
 
-  test("If question id does not match url id an exception should be thrown") {
-    evaluating({
-      val formData = uniqueQuestionFormData()
-      formData.setId("")
-      val mav = controller.updateQuestion(formData, bindingResult, "dead6bb0744e9d3695a7f810").getViewName
-    }) should produce[IllegalArgumentException]
-  }
+    test("If question id does not match url id an exception should be thrown") {
+        evaluating({
+            val formData = uniqueQuestionFormData()
+            formData.setId("")
+            val mav = controller.updateQuestion(formData, bindingResult, "dead6bb0744e9d3695a7f810").getViewName
+        }) should produce[IllegalArgumentException]
+    }
 
-  test("Controller returns edit view for a question id") {
-    val question = uniqueQuestionFormData()
-    when(questionService.findById("dead6bb0744e9d3695a7f810")).thenReturn(question.toQuestion)
-    val mav = controller.showEditQuestionForm("dead6bb0744e9d3695a7f810")
-    mav.getViewName should equal("edit-question")
-    mav.getModel().get("question").asInstanceOf[QuestionFormData].getId() should equal(question.getId())
-  }
+    test("Controller returns edit view for a question id") {
+        val question = uniqueQuestionFormData()
+        when(questionService.findById("dead6bb0744e9d3695a7f810")).thenReturn(question.toQuestion)
+        val mav = controller.showEditQuestionForm("dead6bb0744e9d3695a7f810")
+        mav.getViewName should equal("edit-question")
+        mav.getModel().get("question").asInstanceOf[QuestionFormData].getId() should equal(question.getId())
+    }
+
+    test("Controller can get a list of clients") {
+        when(questionService.getClientList ("a")).thenReturn(List("Abc", "Age", "astronoaut"))
+        val mav = controller.clientCompletion("a")
+
+        mav should not be(null)
+        mav.getModel should not be(null)
+        mav.getModel.get("clients") should not be(null)
+        val clients = mav.getModel.get("clients").asInstanceOf[java.util.List[String]]
+        clients should contain("Abc")
+    }
 }

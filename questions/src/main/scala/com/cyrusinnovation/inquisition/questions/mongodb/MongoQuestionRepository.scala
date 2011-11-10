@@ -55,7 +55,7 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     }
 
 
-    def getClientList(startsWith: String = "", limit: Int): List[String] = {
+    def getClientList(startsWith: String, limit: Int): List[String] = {
 
         questions.distinct("client")
                  .map(x => x.toString)
