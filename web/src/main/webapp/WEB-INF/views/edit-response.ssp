@@ -2,7 +2,17 @@
 <% attributes("title") = "Edit Question Response" %>
 <%@ val response: ResponseFormData %>
 <%@ val questionId: String %>
+<%@ val errors: Iterable[String] = List() %>
 <div class="content">
+    #if (!errors.isEmpty)
+        <div class="errors">
+            <ul>
+                #for(err <- errors)
+                    <li>${err}</li>
+                #end
+            </ul>
+        </div>
+        #end
     <form method="post" action="${contextPath}/questions/${questionId}/edit/response/${response.getId}">
         <div class="clearfix">
             <label for="title">Title</label>

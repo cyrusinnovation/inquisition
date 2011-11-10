@@ -3,7 +3,7 @@
 <%@ val questionId: String %>
 <h2>${response.title}</h2>
 <h3>Response by ${response.creatorUsername}</h3>
-<a href="${contextPath}/questions/${questionId}/edit/response/${response.id.get}">Edit Question</a>
+<a href="${contextPath}/questions/${questionId}/edit/response/${response.id.get}">Edit Response</a>
 <div class="highlightable">
     ${unescape(response.body)}
 </div>
