@@ -1,6 +1,7 @@
 #import (com.trailmagic.jumper.web.model.QuestionFormData)
 <% attributes("title") = "Edit Question" %>
 <%@ val question: QuestionFormData %>
+<%@ val clients: Iterable[String] = List() %>
 <%@ val errors: Iterable[String] = List() %>
 
 <div class="content">
@@ -38,6 +39,13 @@
 
             <div class="input">
                 <input type="text" size="100" name="client" id="client" value="${question.client}"/>
+                <script>
+                    var availableClients = [
+                    #for(client <- clients)
+                        "${client}",
+                    #end
+                    ];
+                 </script>
             </div>
         </div>
         <div class="clearfix">
