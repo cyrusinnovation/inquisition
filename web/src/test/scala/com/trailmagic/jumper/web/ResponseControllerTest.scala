@@ -10,9 +10,9 @@ import util.SecurityHelper
 import com.trailmagic.jumper.core.{User, SavedUser, TimeSource}
 import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
 import org.mockito.Mockito._
-import com.cyrusinnovation.inquisition.response.ResponseRepository
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import com.cyrusinnovation.inquisition.response.{Response, ResponseRepository}
 
 @RunWith(classOf[JUnitRunner])
 class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
@@ -42,7 +42,7 @@ class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAn
     test("can save new question response") {
         val questionId = "dead6bb0744e9d3695a7f810"
         val questionAnswerModel = new ResponseFormData()
-        questionAnswerModel.setQuestionId(questionId)
+        questionAnswerModel.setId(questionId)
         questionAnswerModel.setTitle("Title")
         questionAnswerModel.setBody("Body text")
         val question = new Question(Some(questionId), "Title", "Creator")
@@ -56,12 +56,42 @@ class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAn
     test("Exception thrown if a question response is added to a non-exstant questions") {
         val questionId = "dead6bb0744e9d3695a7f810"
         val questionAnswerModel = new ResponseFormData()
-        questionAnswerModel.setQuestionId(questionId)
+        questionAnswerModel.setId(questionId)
         questionAnswerModel.setTitle("Title")
         when(responseRepository.save(questionId, questionAnswerModel.toResponse)).thenThrow(new IllegalArgumentException)
 
         evaluating {
             controller.addResponse(questionAnswerModel, questionId)
         } should produce[ResourceNotFoundException]
+    }
+
+    test("Exception is thrown if trying to edit non-existant response") {
+        when(responseRepository.getResponse("0")).thenReturn(Option.empty)
+        evaluating {
+            controller.editResponse("0")
+        } should produce[ResourceNotFoundException]
+    }
+    test("Can edit a response") {
+        val response = Response(None, "Title", "username", "Body")
+        val question = Question(Some("dead6bb0744e9d3695a7f810"), creatorUsername = "tester", title="Title")
+        when(responseRepository.getResponse("dead6bb0744e9d3695a7f810")).thenReturn(Some(question, response))
+        val mav = controller.editResponse("dead6bb0744e9d3695a7f810")
+        val expectedResponse = mav.getModel.get("response").asInstanceOf[ResponseFormData]
+        compareResponseFormData(expectedResponse, new ResponseFormData(response)) should be(true)
+        mav.getModel.get("questionId") should be("dead6bb0744e9d3695a7f810")
+    }
+    test("Can submit and save an edited response") {
+        controller.updateResponse(new ResponseFormData(),"questionid", "responseid")
+
+    }
+    def compareResponseFormData(rfda: ResponseFormData, rfdb: ResponseFormData): Boolean = {
+        if (rfda == null || rfdb == null) {
+            return rfda == rfdb;
+        }
+        if (rfda.getBody() != rfdb.getBody()) return false;
+        if (rfda.getTitle() != rfdb.getTitle()) return false;
+        if (rfda.getId() != rfdb.getId()) return false;
+
+        return true;
     }
 }

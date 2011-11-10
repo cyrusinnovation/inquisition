@@ -9,6 +9,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import com.mongodb.casbah.commons.MongoDBObject
 import java.lang.String
+import org.bson.types.ObjectId
 
 @RunWith(classOf[JUnitRunner])
 class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
@@ -230,5 +231,18 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
         clientList.size should be(2)
         clientList(0) should equal(client2)
         clientList(1) should equal(client3)
+    }
+
+    test("Can find the question that a response belongs to") {
+        val responseId: String = new ObjectId().toStringMongod
+        val response = new Response(Some(responseId), "Title", creatorUsername = "tester", body = "body")
+        val expectedQuestion = repository.save(uniqueQuestion().copy(responses = List(response)))
+        val retrievedQuestion = repository.findResponseQuestion(responseId).get
+        retrievedQuestion should equal(expectedQuestion)
+    }
+
+    test("No question returned for non-existant response id") {
+        val retrievedQuestion = repository.findResponseQuestion(MongoTestConstants.DeadObjectIdString)
+        retrievedQuestion should not be('defined)
     }
 }

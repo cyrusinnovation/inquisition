@@ -6,6 +6,7 @@ import com.novus.salat._
 import com.novus.salat.global._
 import org.springframework.stereotype.Repository
 import com.mongodb.casbah.Imports._
+import com.cyrusinnovation.inquisition.response.Response
 
 
 @Repository
@@ -58,11 +59,19 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
     def getClientList(startsWith: String, limit: Int): List[String] = {
 
         questions.distinct("client")
-                 .map(x => x.toString)
-                 .filter(_.toLowerCase.startsWith(startsWith.toLowerCase))
-                 .sortBy(x => x)
-                 .take(limit)
+                .map(x => x.toString)
+                .filter(_.toLowerCase.startsWith(startsWith.toLowerCase))
+                .sortBy(x => x)
+                .take(limit)
+                .toList
+
+    }
+
+    def findResponseQuestion(responseId: String): Option[Question] = {
+        questions.findOne(MongoDBObject("responses.id" -> responseId))
+                 .map(db2question(_))
                  .toList
+                 .headOption
 
     }
 }

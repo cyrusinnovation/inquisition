@@ -1,6 +1,6 @@
-#import (com.trailmagic.jumper.web.model.QuestionFormData)
-<% attributes("title") = "Edit Question" %>
-<%@ val question: QuestionFormData %>
+#import (com.trailmagic.jumper.web.model.ResponseFormData)
+<% attributes("title") = "Edit Question Response" %>
+<%@ val question: ResponseFormData %>
 <%@ val errors: Iterable[String] = List() %>
 
 <div class="content">
@@ -13,7 +13,7 @@
             </ul>
         </div>
         #end
-    <form method="post" action="${contextPath}/questions/edit/${question.id}">
+    <form method="post" action="${contextPath}/questions/edit/${question.id}/response/${responseId}">
 
         <div class="clearfix">
             <label for="title">Title</label>
