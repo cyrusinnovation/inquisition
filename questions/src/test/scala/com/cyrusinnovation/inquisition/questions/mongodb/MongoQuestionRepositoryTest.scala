@@ -140,21 +140,35 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
     }
 
     test("can get list of all clients") {
-        val client1 = "Boston Capital"
-        val client2 = "NFL"
-        val questions = List(uniqueQuestion().copy(client = client1), uniqueQuestion().copy(client = client2))
-
-        questions.map(repository.save(_))
 
 
-        val clientList = repository.getClientList()
+        val client1 = "ABC"
+        val client2 = "Boston Capital"
+        val client3 = "DEF"
+        val client4 = "GHI"
+        val client5 = "JKL"
+        val client6 = "MNO"
+        val client7 = "NFL"
+        val client8 = "PQR"
+        val client9 = "STU"
+        val client10 = "VWX"
+        val client11 = "YZ"
+
+        val expectedList = List(client1, client2, client3, client4, client5, client6, client7, client8, client9,
+            client10, client11)
+
+        for(client <- expectedList) {
+            repository.save(uniqueQuestion().copy(client = client))
+        }
+
+        val clientList = repository.getClientList(limit = 0)
         clientList should not be (null)
         clientList.isEmpty should be(false)
-        clientList.size should be(2)
-        clientList.contains(client1) should be(true)
-        clientList.contains(client2) should be(true)
-        clientList(0) should equal(client1)
+        clientList.size should be(11)
+        clientList.corresponds(expectedList){_ == _} should be(true)
     }
+
+
 
     test("can get list of all clients in the correct order") {
         val client1 = "Boston Capital"

@@ -137,7 +137,7 @@ $(document).ready(function() {
 
 });
 $(document).ready(function() {
-    if ("#client") {
+    if ($("#client").length > 0) {
         $("#client").autocomplete({
             source: availableClients
         })
