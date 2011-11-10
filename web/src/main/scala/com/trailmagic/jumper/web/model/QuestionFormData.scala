@@ -13,6 +13,7 @@ class QuestionFormData {
 
   @BeanProperty var tags = ""
   @BeanProperty var id = ""
+  @BeanProperty var client = ""
 
     def this(question: Question) = {
         this()
@@ -20,6 +21,7 @@ class QuestionFormData {
         this.body = question.body
         this.tags = question.tags mkString ","
         this.id = question.id.getOrElse("")
+        this.client = question.client
     }
 
     def toQuestion: Question = {
@@ -34,7 +36,7 @@ class QuestionFormData {
         case (x) if !x.isEmpty  => Some(x)
       case _ => None
     }
-      Question(questionId, title, "tester", body, tagList)
+      Question(questionId, title, "tester", body, tagList, client = client)
   }
 
 }

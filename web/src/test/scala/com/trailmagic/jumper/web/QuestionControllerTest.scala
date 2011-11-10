@@ -186,10 +186,10 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
   }
 
   test("Controller returns edit view for a question id") {
-    val question = uniqueQuestionFormData().toQuestion
-    when(questionService.findById("dead6bb0744e9d3695a7f810")).thenReturn(question)
+    val question = uniqueQuestionFormData()
+    when(questionService.findById("dead6bb0744e9d3695a7f810")).thenReturn(question.toQuestion)
     val mav = controller.showEditQuestionForm("dead6bb0744e9d3695a7f810")
     mav.getViewName should equal("edit-question")
-    mav.getModel().get("question") should equal(question)
+    mav.getModel().get("question").asInstanceOf[QuestionFormData].getId() should equal(question.getId())
   }
 }
