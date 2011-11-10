@@ -46,10 +46,17 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     }
 
     test("new question should put us on the new question view") {
-        controller.showNewQuestionForm() should be("new-question")
+        controller.showNewQuestionForm().getViewName should be("new-question")
     }
 
-    test("create a new question returns to the question page") {
+    test("new question should contain all clients") {
+        val modelAndView = controller.showNewQuestionForm()
+        modelAndView.getModel should not be(null)
+        modelAndView.getModel.size() should be(1)
+        modelAndView.getModel.containsKey("clients") should be(true)
+    }
+
+    test("add a question returns to the question page") {
         val q = uniqueQuestionFormData();
         val question: Question = q.toQuestion.copy(creatorUsername = authenticatedUser.username)
         when(questionService.createQuestion(question)).thenReturn(q.toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810")))

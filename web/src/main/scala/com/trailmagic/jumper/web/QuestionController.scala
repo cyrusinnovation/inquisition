@@ -22,8 +22,8 @@ class QuestionController @Autowired()(formattingService: MarkdownFormattingServi
 
 
     @RequestMapping(value = Array("/new"))
-    def showNewQuestionForm(): String = {
-        "new-question"
+    def showNewQuestionForm(): ModelAndView = {
+        new ModelAndView("new-question", "clients", questionService.getClientList(limit = 0))
     }
 
 
