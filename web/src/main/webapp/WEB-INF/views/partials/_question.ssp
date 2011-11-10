@@ -13,7 +13,11 @@
 #end
 </h2>
 <div id="dialog" title="Confirmation Required">Are you sure about this?</div>
-<h3>Asked by ${question.creatorUsername}</h3>
+<h3>Asked by: ${question.creatorUsername}</h3>
+#if (question.client != null && question.client.isEmpty == false)
+ <h5>About Client: ${question.client}</h5>
+#end
+
 <div class="highlightable">
     ${unescape(question.body)}
 </div>

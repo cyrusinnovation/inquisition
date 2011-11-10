@@ -177,14 +177,15 @@ class QuestionServiceImplTest extends FunSuite with ShouldMatchers with BeforeAn
         val client2 = "NFL"
         val client3 = "Nordstroms"
 
+        val expectedList = List(client2, client3)
+
         val questions = List(uniqueQuestion().copy(client = client1), uniqueQuestion().copy(client = client2),
             uniqueQuestion().copy(client = client3))
 
         questions.map(repository.save(_))
 
         val clientList = service.getClientList("n")
-        clientList.size should be(2)
-        clientList(0) should equal(client2)
-        clientList(1) should equal(client3)
+        clientList.corresponds(expectedList){_ == _} should be(true)
+        clientList should equal(expectedList)
     }
 }
