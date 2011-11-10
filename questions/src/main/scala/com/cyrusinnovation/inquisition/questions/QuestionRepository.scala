@@ -1,8 +1,5 @@
 package com.cyrusinnovation.inquisition.questions
 
-import org.joda.time.DateTime
-import com.cyrusinnovation.inquisition.response.Response
-
 trait QuestionRepository {
     def save(question: Question): Question
 
@@ -13,4 +10,6 @@ trait QuestionRepository {
     def findQuestionCount(): Int
 
     def deleteQuestion(id: String)
+
+    def getClientList(startsWith: String = "", limit: Int = 10): List[String]
 }

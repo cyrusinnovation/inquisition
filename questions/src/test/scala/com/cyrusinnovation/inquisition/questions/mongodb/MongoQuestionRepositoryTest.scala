@@ -2,14 +2,13 @@ package com.cyrusinnovation.inquisition.questions.mongodb
 
 import org.scalatest.matchers.ShouldMatchers
 import com.mongodb.casbah.MongoConnection
-import org.joda.time.DateTime
 import org.scalatest.{BeforeAndAfterEach, FunSuite}
 import com.cyrusinnovation.inquisition.response.Response
 import com.cyrusinnovation.inquisition.questions.Question
-import java.security.InvalidParameterException
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import com.mongodb.casbah.commons.MongoDBObject
+import java.lang.String
 
 @RunWith(classOf[JUnitRunner])
 class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
@@ -78,7 +77,7 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
         savedQuestions.foreach(results.contains(_) should be(true))
     }
 
-     test("should not be able to find recent questions") {
+    test("should not be able to find recent questions") {
         val questions = List(uniqueQuestion(), uniqueQuestion("Why isn't IntelliJ working?"))
 
         questions.map(repository.save(_))
@@ -138,5 +137,98 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
         val answers = retrievedQuestion.get.responses
         answers should have length (1)
         answers.head should equal(response)
+    }
+
+    test("can get list of all clients") {
+        val client1 = "Boston Capital"
+        val client2 = "NFL"
+        val questions = List(uniqueQuestion().copy(client = client1), uniqueQuestion().copy(client = client2))
+
+        questions.map(repository.save(_))
+
+
+        val clientList = repository.getClientList()
+        clientList should not be (null)
+        clientList.isEmpty should be(false)
+        clientList.size should be(2)
+        clientList.contains(client1) should be(true)
+        clientList.contains(client2) should be(true)
+        clientList(0) should equal(client1)
+    }
+
+    test("can get list of all clients in the correct order") {
+        val client1 = "Boston Capital"
+        val client2 = "NFL"
+        val client3 = "Akami"
+
+        val questions = List(uniqueQuestion().copy(client = client1), uniqueQuestion().copy(client = client2),
+            uniqueQuestion().copy(client = client3))
+
+        questions.map(repository.save(_))
+
+        val clientList = repository.getClientList()
+        clientList(0) should equal(client3)
+    }
+
+    test("can limit list of clients and in the correct order") {
+        val client1 = "Boston Capital"
+        val client2 = "NFL"
+        val client3 = "Akami"
+
+        val questions = List(uniqueQuestion().copy(client = client1), uniqueQuestion().copy(client = client2),
+            uniqueQuestion().copy(client = client3))
+
+        questions.map(repository.save(_))
+
+        val clientList = repository.getClientList(limit = 1)
+        clientList.size should be(1)
+        clientList(0) should equal(client3)
+    }
+
+    test("Do Starts with list of clients") {
+        val client1 = "Boston Capital"
+        val client2 = "NFL"
+        val client3 = "Akami"
+
+        val questions = List(uniqueQuestion().copy(client = client1), uniqueQuestion().copy(client = client2),
+            uniqueQuestion().copy(client = client3))
+
+        questions.map(repository.save(_))
+
+        val clientList = repository.getClientList("N")
+        clientList.size should be(1)
+        clientList(0) should equal(client2)
+    }
+
+    test("Do Starts with list of clients with multiple results") {
+        val client1 = "Boston Capital"
+        val client2 = "NFL"
+        val client3 = "Nordstroms"
+
+        val questions = List(uniqueQuestion().copy(client = client1), uniqueQuestion().copy(client = client2),
+            uniqueQuestion().copy(client = client3))
+
+        questions.map(repository.save(_))
+
+        val clientList = repository.getClientList("N")
+        clientList.size should be(2)
+        clientList(0) should equal(client2)
+        clientList(1) should equal(client3)
+    }
+
+    test("Do Starts with list of clients with multiple results case insenitive") {
+        val client1 = "Boston Capital"
+        val client2 = "NFL"
+        val client3 = "Nordstroms"
+
+        val questions = List(uniqueQuestion().copy(client = client1), uniqueQuestion().copy(client = client2),
+            uniqueQuestion().copy(client = client3))
+
+        questions.map(repository.save(_))
+
+        val clientList = repository.getClientList("n")
+        clientList.size should be(2)
+        clientList(0) should equal(client2)
+        clientList(1) should equal(client3)
     }
 }
