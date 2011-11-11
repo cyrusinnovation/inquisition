@@ -86,7 +86,7 @@ class ResponseController @Autowired()(responseRepository: ResponseRepository) {
         {
             throw new InvalidParameterException("requesting user does not have the rights to update this question")
         }
-        responseRepository.updateResponse(r)
+        responseRepository.updateResponse(r.copy(creatorUsername = currentUser))
 
         new ModelAndView("redirect:/questions/" + questionId)
     }

@@ -14,7 +14,7 @@
             </ul>
         </div>
     #end
-    <form method="post" action="${contextPath}/questions/edit/${question.id}/response/${responseId}">
+    <form method="post" action="${contextPath}/questions/edit/${question.id}">
 
         <div class="clearfix">
             <label for="title">Title</label>

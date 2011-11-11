@@ -19,14 +19,14 @@
             <label for="title">Title</label>
 
             <div class="input">
-                <input type="text" size="100" name="title" id="title"/>
+                <input type="text" size="100" name="title" id="title" value="${response.getTitle()}"/>
             </div>
         </div>
         <div class="clearfix">
             <label for="bodyInput">Body</label>
 
             <div class="input">
-                <textarea class="xxlarge" name="body" id="bodyInput" rows="3"></textarea>
+                <textarea class="xxlarge" name="body" id="bodyInput" rows="3">${response.getBody()}</textarea>
                 <span class="help-block">
                     Markdown text formatting supported. Click <a href="/preview/help" target="_blank">here</a> for help.
                 </span>
