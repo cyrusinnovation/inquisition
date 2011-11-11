@@ -1,19 +1,18 @@
 package com.trailmagic.jumper.web
 
-import model.{QuestionFormData, ResponseFormData}
+import model.ResponseFormData
 import org.springframework.web.bind.annotation.{ModelAttribute, RequestMethod, PathVariable, RequestMapping}
 import org.springframework.beans.factory.annotation.Autowired
-import com.trailmagic.jumper.core.TimeSource
 import org.springframework.stereotype.Controller
 
 import scala.collection.JavaConverters._
 import com.cyrusinnovation.inquisition.response.{Response, ResponseRepository}
-import com.cyrusinnovation.inquisition.questions.{Question, QuestionRepository}
-import javax.validation.Valid
+import com.cyrusinnovation.inquisition.questions.Question
 import org.springframework.validation.BindingResult
 import util.{SecurityHelper, FormHelper}
 import org.springframework.web.servlet.ModelAndView
 import java.security.InvalidParameterException
+import javax.validation.Valid
 
 
 @Controller
@@ -45,17 +44,16 @@ class ResponseController @Autowired()(responseRepository: ResponseRepository) {
         catch {
             case iae: IllegalArgumentException => throw new ResourceNotFoundException()
         }
-
         new ModelAndView("redirect:/questions/" + questionId)
     }
 
     @RequestMapping(value = Array("/edit/response/{responseId}"), method = Array(RequestMethod.GET))
     def editResponse(@PathVariable responseId: String) = {
         responseRepository.getResponse(responseId) match {
-            case Some((x: Question, y: Response)) => {
+            case Some((question: Question, response: Response)) => {
                 val mav = new ModelAndView("edit-response")
-                mav.addObject("response", new ResponseFormData(y))
-                mav.addObject("questionId", x.id.get)
+                mav.addObject("response", new ResponseFormData(response))
+                mav.addObject("questionId", question.id.get)
                 mav
             }
             case None => {

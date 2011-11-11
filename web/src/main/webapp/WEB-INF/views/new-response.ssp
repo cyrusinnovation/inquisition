@@ -1,7 +1,9 @@
-#import (com.cyrusinnovation.inquisition.questions.Question)
+#import (com.trailmagic.jumper.web.model.ResponseFormData)
 <% attributes("title") = "Add Question Response" %>
 <%@ val errors: Iterable[String] = List() %>
 <%@ val questionId: String %>
+<%@ val response: ResponseFormData = new ResponseFormData() %>
+<%@ val errors: Iterable[String] = List() %>
 <div class="content">
     #if (!errors.isEmpty)
         <div class="errors">
@@ -33,7 +35,7 @@
         <input type="hidden" name="questionId" value="${questionId}"/>
         <div class="actions">
             <input type="submit" value="Respond To Question" class="btn primary">&nbsp;
-            <!--<button class="btn" type="reset">Cancel</button>-->
+            <a href="/questions/${questionId}">Cancel</a>
         </div>
     </form>
     <div id="previewPane">
