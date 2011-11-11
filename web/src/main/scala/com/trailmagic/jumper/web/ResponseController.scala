@@ -5,61 +5,40 @@ import org.springframework.web.bind.annotation.{ModelAttribute, RequestMethod, P
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 
-import scala.collection.JavaConverters._
-import com.cyrusinnovation.inquisition.response.{Response, ResponseRepository}
-import com.cyrusinnovation.inquisition.questions.Question
 import org.springframework.validation.BindingResult
 import util.{SecurityHelper, FormHelper}
-import org.springframework.web.servlet.ModelAndView
-import java.security.InvalidParameterException
 import javax.validation.Valid
+import com.cyrusinnovation.inquisition.response.ResponseService
+import org.springframework.web.servlet.ModelAndView
 
 
 @Controller
 @RequestMapping(value = Array("/questions/{questionId}"))
-class ResponseController @Autowired()(responseRepository: ResponseRepository) {
+class ResponseController @Autowired()(responseService: ResponseService) {
 
     @RequestMapping(value = Array("/response"), method = Array(RequestMethod.GET))
     def showNewQuestionResponseForm(@PathVariable questionId: String) = {
-        val model = Map("questionId" -> questionId)
-        new ModelAndView("new-response", model.asJava)
+        buildResponseFormModelAndView("new-response", new ResponseFormData(), questionId)
     }
 
     @RequestMapping(value = Array("/response"), method = Array(RequestMethod.POST))
-    def addResponse(@Valid @ModelAttribute qResponse: ResponseFormData,
+    def addResponse(@Valid @ModelAttribute response: ResponseFormData,
                     bindingResult: BindingResult,
                     @PathVariable questionId: String): ModelAndView = {
         val errors = FormHelper.getAllErrors(bindingResult)
         if (!errors.isEmpty) {
-            val mav = new ModelAndView("new-response", "errors", errors)
-            mav.addObject("response", qResponse)
-            mav.addObject("questionId", questionId)
-            return mav
+            return buildResponseFormModelAndView("new-response", response, questionId, errors)
         }
+
         try {
             val user = SecurityHelper.getMandatoryAuthenticatedUser
-            val response: Response = qResponse.toResponse.copy(creatorUsername = user.username)
-            responseRepository.save(questionId, response)
+            responseService.save(response.toResponse(user.username), questionId, user.username)
         }
         catch {
             case iae: IllegalArgumentException => throw new ResourceNotFoundException()
         }
-        new ModelAndView("redirect:/questions/" + questionId)
-    }
 
-    @RequestMapping(value = Array("/edit/response/{responseId}"), method = Array(RequestMethod.GET))
-    def editResponse(@PathVariable responseId: String) = {
-        responseRepository.getResponse(responseId) match {
-            case Some((question: Question, response: Response)) => {
-                val mav = new ModelAndView("edit-response")
-                mav.addObject("response", new ResponseFormData(response))
-                mav.addObject("questionId", question.id.get)
-                mav
-            }
-            case None => {
-                throw new ResourceNotFoundException()
-            }
-        }
+        new ModelAndView("redirect:/questions/" + questionId)
     }
 
     @RequestMapping(value = Array("/edit/response/{responseId}"), method = Array(RequestMethod.PUT))
@@ -68,27 +47,35 @@ class ResponseController @Autowired()(responseRepository: ResponseRepository) {
                        @PathVariable questionId: String,
                        @PathVariable responseId: String): ModelAndView = {
         val errors = FormHelper.getAllErrors(bindingResult)
-        if (!errors.isEmpty) {
-            val mav = new ModelAndView("edit-response", "errors", errors)
-            mav.addObject("response", response)
-            mav.addObject("questionId", questionId)
-            return mav
-        }
 
-        val r = response.toResponse;
-        if (!r.id.equals(Some(responseId))) {
-            throw new IllegalArgumentException("the responseId did not match the request body's response.id")
+        if (!errors.isEmpty) {
+            return buildResponseFormModelAndView("edit-response", response, questionId, errors)
         }
-        val originalResponse = responseRepository.getResponse(r.id.get)
-        val responseCreator: String = originalResponse.get._2.creatorUsername
-        val currentUser: String = SecurityHelper.getMandatoryAuthenticatedUser.username
-        if (responseCreator != currentUser)
-        {
-            throw new InvalidParameterException("requesting user does not have the rights to update this question")
-        }
-        responseRepository.updateResponse(r.copy(creatorUsername = currentUser))
+        val user = SecurityHelper.getMandatoryAuthenticatedUser
+        responseService.update(response.toResponse(user.username), SecurityHelper.getMandatoryAuthenticatedUser.username)
 
         new ModelAndView("redirect:/questions/" + questionId)
     }
 
+    @RequestMapping(value = Array("/edit/response/{responseId}"), method = Array(RequestMethod.GET))
+    def showEditResponseForm(@PathVariable responseId: String) = {
+        try {
+            val response = responseService.findById(responseId)
+            val question = responseService.findResponseQuestion(responseId)
+            buildResponseFormModelAndView("edit-response", new ResponseFormData(response), question.id.get)
+        }
+        catch {
+            case e: IllegalArgumentException => throw new ResourceNotFoundException
+        }
+    }
+
+    def buildResponseFormModelAndView(viewName: String, responseFormData: ResponseFormData, questionId: String, errors: Iterable[String] = null): ModelAndView = {
+        val mav = new ModelAndView(viewName)
+        if (errors != null) {
+            mav.addObject("errors", errors)
+        }
+        mav.addObject("response", responseFormData)
+        mav.addObject("questionId", questionId)
+        mav
+    }
 }

@@ -17,11 +17,15 @@ class ResponseFormData {
     @BeanProperty var body = ""
     @BeanProperty var id = ""
 
-    def toResponse: Response = {
+    def toResponse(user: String): Response = {
+        if (user == null || user.isEmpty)
+        {
+            throw new IllegalArgumentException
+        }
         val responseId = id match {
             case (x) if !x.isEmpty => Some(x)
             case _ => None
         }
-        Response(responseId, title, "tester", body)
+        Response(responseId, title, user, body)
     }
 }

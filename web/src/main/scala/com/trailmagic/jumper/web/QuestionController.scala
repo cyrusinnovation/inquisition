@@ -34,9 +34,8 @@ class QuestionController @Autowired()(formattingService: MarkdownFormattingServi
             return new ModelAndView("new-question", "errors", errors).addObject("question", question)
 
         }
-        var q = question.toQuestion;
         val user = SecurityHelper.getMandatoryAuthenticatedUser
-        q = q.copy(creatorUsername = user.username);
+        val q = question.toQuestion(user.username);
         val newQuestion = questionService.createQuestion(q)
         new ModelAndView("redirect:/questions/" + newQuestion.id.get)
     }
@@ -85,12 +84,12 @@ class QuestionController @Autowired()(formattingService: MarkdownFormattingServi
             return new ModelAndView("edit-question", "errors", errors).addObject("question", question)
 
         }
-        val q = question.toQuestion;
+        val user = SecurityHelper.getMandatoryAuthenticatedUser
+        val q = question.toQuestion(user.username);
         if (!q.id.equals(Some(questionId))) {
             throw new IllegalArgumentException("the questionId did not match the request body's question.id")
         }
 
-        val user = SecurityHelper.getMandatoryAuthenticatedUser
         questionService.updateQuestion(q, user.username)
         new ModelAndView("redirect:/questions/" + questionId)
     }

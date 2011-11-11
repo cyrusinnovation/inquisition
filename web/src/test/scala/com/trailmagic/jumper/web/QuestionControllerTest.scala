@@ -58,15 +58,15 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
     test("add a question returns to the question page") {
         val q = uniqueQuestionFormData();
-        val question: Question = q.toQuestion.copy(creatorUsername = authenticatedUser.username)
-        when(questionService.createQuestion(question)).thenReturn(q.toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810")))
+        val question: Question = q.toQuestion(authenticatedUser.username)
+        when(questionService.createQuestion(question)).thenReturn(question.copy(id = Some("dead6bb0744e9d3695a7f810")))
         controller.addQuestion(q, bindingResult).getViewName should be("redirect:/questions/dead6bb0744e9d3695a7f810")
     }
 
     test("create a new question returns calls the question repository") {
         val q = uniqueQuestionFormData();
-        val question: Question = q.toQuestion.copy(creatorUsername = authenticatedUser.username)
-        when(questionService.createQuestion(question)).thenReturn(q.toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810")))
+        val question: Question = q.toQuestion(authenticatedUser.username)
+        when(questionService.createQuestion(question)).thenReturn(question.copy(id = Some("dead6bb0744e9d3695a7f810")))
         controller.addQuestion(q, bindingResult)
         verify(questionService).createQuestion(question);
     }
@@ -74,7 +74,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     test("show question tests that the view is question") {
         val questionId = "questionId"
         val q = uniqueQuestionFormData();
-        when(questionService.findById(questionId)).thenReturn(q.toQuestion);
+        when(questionService.findById(questionId)).thenReturn(q.toQuestion(authenticatedUser.username));
         val mav = controller.showQuestion(questionId)
         mav.getViewName should be("question")
     }
@@ -82,7 +82,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
     test("show question tests that the model contains the question") {
         val questionId = "questionId"
-        val q = uniqueQuestionFormData().toQuestion;
+        val q = uniqueQuestionFormData().toQuestion(authenticatedUser.username);
         when(questionService.findById(questionId)).thenReturn(q);
         val mav = controller.showQuestion(questionId)
         mav.getModel.containsKey("question") should be(true)
@@ -121,7 +121,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     test("question text is the same when no formatting present") {
 
         val q = uniqueQuestionFormData();
-        val actual = controller.formatQuestion(q.toQuestion);
+        val actual = controller.formatQuestion(q.toQuestion(authenticatedUser.username));
         actual.body should equal(formattingService.formatMarkdownAsHtmlBlock(q.getBody()))
     }
 
@@ -129,7 +129,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
         val q = uniqueQuestionFormData(body = "*test*");
         val expected = "<p><em>test</em></p>"
-        val actual = controller.formatQuestion(q.toQuestion);
+        val actual = controller.formatQuestion(q.toQuestion(authenticatedUser.username));
         actual.body should equal(expected)
     }
 
@@ -137,14 +137,14 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
         val q = uniqueQuestionFormData(body = "*test<html>*");
         val expected = "<p><em>test<html></em></p>"
-        val actual = controller.formatQuestion(q.toQuestion);
+        val actual = controller.formatQuestion(q.toQuestion(authenticatedUser.username));
         actual.body should equal(expected)
     }
 
     test("unformatted question responses stay unformatted") {
         val responses = List(Response(None, creatorUsername = "user", title = "title", body = "text"),
             Response(None, creatorUsername = "user", title = "title", body = "text2"))
-        val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
+        val q = uniqueQuestionFormData().toQuestion(authenticatedUser.username).copy(responses = responses)
 
         controller.formatQuestion(q)
 
@@ -154,7 +154,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     test("Formatted question responses has html entities encoded") {
         val responses = List(Response(None, creatorUsername = "user", title = "title", body = "*<html>test*"),
             Response(None, creatorUsername = "user", title = "title", body = "*<html>test2*"))
-        val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
+        val q = uniqueQuestionFormData().toQuestion(authenticatedUser.username).copy(responses = responses)
 
         val formattedQuestions = controller.formatQuestion(q)
         formattedQuestions.responses.head.body should equal("<p><em><html>test</em></p>")
@@ -165,7 +165,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
         val responses = List(Response(None, creatorUsername = "user", title = "title", body = "*test*"),
             Response(None, creatorUsername = "user", title = "title", body = "*test2*"))
 
-        val q = uniqueQuestionFormData().toQuestion.copy(responses = responses)
+        val q = uniqueQuestionFormData().toQuestion(authenticatedUser.username).copy(responses = responses)
 
         val formattedQuestions = controller.formatQuestion(q)
         formattedQuestions.responses.head.body should equal("<p><em>test</em></p>")
@@ -175,8 +175,8 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     test("Can update a question") {
         val formData = uniqueQuestionFormData()
         formData.setId("dead6bb0744e9d3695a7f810")
-        val q = formData.toQuestion
-        val updatedQuestion = uniqueQuestionFormData().toQuestion.copy(id = Some("dead6bb0744e9d3695a7f810"))
+        val q = formData.toQuestion(authenticatedUser.username)
+        val updatedQuestion = uniqueQuestionFormData().toQuestion(authenticatedUser.username).copy(id = Some("dead6bb0744e9d3695a7f810"))
         when(questionService.updateQuestion(q, authenticatedUser.username)).thenReturn(updatedQuestion)
         val viewName = controller.updateQuestion(formData, bindingResult, "dead6bb0744e9d3695a7f810").getViewName
         viewName should be("redirect:/questions/dead6bb0744e9d3695a7f810")
@@ -192,7 +192,7 @@ class QuestionControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
     test("Controller returns edit view for a question id") {
         val question = uniqueQuestionFormData()
-        when(questionService.findById("dead6bb0744e9d3695a7f810")).thenReturn(question.toQuestion)
+        when(questionService.findById("dead6bb0744e9d3695a7f810")).thenReturn(question.toQuestion(authenticatedUser.username))
         val mav = controller.showEditQuestionForm("dead6bb0744e9d3695a7f810")
         mav.getViewName should equal("edit-question")
         mav.getModel().get("question").asInstanceOf[QuestionFormData].getId() should equal(question.getId())

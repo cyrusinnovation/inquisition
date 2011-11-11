@@ -24,7 +24,11 @@ class QuestionFormData {
         this.client = question.client
     }
 
-    def toQuestion: Question = {
+    def toQuestion(user: String): Question = {
+        if (user == null || user.isEmpty) {
+            throw new IllegalArgumentException
+        }
+
         val tagList = Option(tags)
                 .getOrElse("")
                 .split(",")
@@ -35,7 +39,7 @@ class QuestionFormData {
             case (x) if !x.isEmpty => Some(x)
             case _ => None
         }
-        Question(questionId, title, "tester", body, tagList, client = client)
+        Question(questionId, title, user, body, tagList, client = client)
     }
 
 }

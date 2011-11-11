@@ -20,7 +20,7 @@ class QuestionFormDataTest extends FunSuite with BeforeAndAfterEach with ShouldM
     test("When passed a null tag string an empty tag list is returned") {
         val qfd = new QuestionFormData()
         qfd.setTags(null)
-        val question = qfd.toQuestion
+        val question = qfd.toQuestion("user")
         question.tags should not be (null)
         question.tags should have length (0)
     }
@@ -28,7 +28,7 @@ class QuestionFormDataTest extends FunSuite with BeforeAndAfterEach with ShouldM
     test("When passed an empty tag string an empty tag list is returned") {
         val qfd = new QuestionFormData()
         qfd.setTags("")
-        val question = qfd.toQuestion
+        val question = qfd.toQuestion("user")
         question.tags should not be (null)
         question.tags should have length (0)
     }
@@ -37,7 +37,7 @@ class QuestionFormDataTest extends FunSuite with BeforeAndAfterEach with ShouldM
         val tagList = "a,b,c"
         val qfd = new QuestionFormData()
         qfd.setTags(tagList)
-        val question = qfd.toQuestion
+        val question = qfd.toQuestion("user")
         question.tags should not be (null)
         question.tags should have length (3)
         question.tags(0) should equal("a")
@@ -49,7 +49,7 @@ class QuestionFormDataTest extends FunSuite with BeforeAndAfterEach with ShouldM
         val tagList = "aTag"
         val qfd = new QuestionFormData()
         qfd.setTags(tagList)
-        val question = qfd.toQuestion
+        val question = qfd.toQuestion("user")
         question.tags should not be (null)
         question.tags should have length (1)
         question.tags(0) should equal(tagList)
@@ -64,7 +64,7 @@ class QuestionFormDataTest extends FunSuite with BeforeAndAfterEach with ShouldM
         qfd.setTags(tagList)
         qfd.setTitle("some title")
         qfd.setClient("Boston Capital")
-        val question = qfd.toQuestion
+        val question = qfd.toQuestion("user")
 
         val questionUnderTest = new QuestionFormData(question)
 
