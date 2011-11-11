@@ -13,7 +13,7 @@
                 #end
             </ul>
         </div>
-        #end
+    #end
     <form method="post" action="${contextPath}/questions/edit/${question.id}/response/${responseId}">
 
         <div class="clearfix">

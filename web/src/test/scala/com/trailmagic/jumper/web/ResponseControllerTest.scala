@@ -14,10 +14,12 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import com.cyrusinnovation.inquisition.response.{Response, ResponseRepository}
 import java.lang.String
+import org.springframework.validation.BindingResult
 
 @RunWith(classOf[JUnitRunner])
 class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
     @Mock var responseRepository: ResponseRepository = _
+    @Mock var bindingResult: BindingResult = _
     var controller: ResponseController = _
 
     override def beforeEach() {
@@ -50,8 +52,8 @@ class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAn
 
         when(responseRepository.save(question.id.get, questionAnswerModel.toResponse)).thenReturn(questionAnswerModel.toResponse)
 
-        val nextView = controller.addResponse(questionAnswerModel, questionId)
-        nextView should be("redirect:/questions/dead6bb0744e9d3695a7f810")
+        val nextView = controller.addResponse(questionAnswerModel, bindingResult, questionId)
+        nextView.getViewName should be("redirect:/questions/dead6bb0744e9d3695a7f810")
     }
 
     test("Exception thrown if a question response is added to a non-exstant questions") {
@@ -59,10 +61,11 @@ class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAn
         val questionAnswerModel = new ResponseFormData()
         questionAnswerModel.setId(questionId)
         questionAnswerModel.setTitle("Title")
-        when(responseRepository.save(questionId, questionAnswerModel.toResponse)).thenThrow(new IllegalArgumentException)
+
+        when(responseRepository.save(questionId, questionAnswerModel.toResponse.copy(creatorUsername = "userName"))).thenThrow(new IllegalArgumentException)
 
         evaluating {
-            controller.addResponse(questionAnswerModel, questionId)
+            controller.addResponse(questionAnswerModel, bindingResult, questionId)
         } should produce[ResourceNotFoundException]
     }
 
@@ -85,16 +88,19 @@ class ResponseControllerTest  extends FunSuite with ShouldMatchers with BeforeAn
         val responseId: String = "responseid"
         val responseForm: ResponseFormData = new ResponseFormData()
         responseForm.setId(responseId)
-        controller.updateResponse(responseForm,"questionid", responseId)
+        val responseTuple = Some((null, responseForm.toResponse.copy(creatorUsername = "userName")))
+        when(responseRepository.getResponse(responseId)).thenReturn(responseTuple)
+        controller.updateResponse(responseForm, bindingResult, "questionid", responseId)
 
     }
-    def compareResponseFormData(rfda: ResponseFormData, rfdb: ResponseFormData): Boolean = {
-        if (rfda == null || rfdb == null) {
-            return rfda == rfdb;
+
+    def compareResponseFormData(leftResponse: ResponseFormData, rightResponse: ResponseFormData): Boolean = {
+        if (leftResponse == null || rightResponse == null) {
+            return leftResponse == rightResponse;
         }
-        if (rfda.getBody() != rfdb.getBody()) return false;
-        if (rfda.getTitle() != rfdb.getTitle()) return false;
-        if (rfda.getId() != rfdb.getId()) return false;
+        if (leftResponse.getBody() != rightResponse.getBody()) return false;
+        if (leftResponse.getTitle() != rightResponse.getTitle()) return false;
+        if (leftResponse.getId() != rightResponse.getId()) return false;
 
         return true;
     }

@@ -1,9 +1,12 @@
 #import(com.cyrusinnovation.inquisition.response.Response)
 <%@ val response: Response %>
 <%@ val questionId: String %>
+<%@ val enableDelete: Boolean = false %>
 <h2>${response.title}</h2>
 <h3>Response by ${response.creatorUsername}</h3>
-<a href="${contextPath}/questions/${questionId}/edit/response/${response.id.get}">Edit Question</a>
+#if (enableDelete)
+<a href="${contextPath}/questions/${questionId}/edit/response/${response.id.get}">Edit Response</a>
+#end
 <div class="highlightable">
     ${unescape(response.body)}
 </div>

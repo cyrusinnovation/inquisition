@@ -27,7 +27,7 @@
            <h1>Question Responses</h1>
            <hr>
            #for (response <- question.responses)
-           <% render("partials/_response.ssp", Map('response -> response, 'questionId -> question.id.get)) %>
+                <% render("partials/_response.ssp", Map('response -> response, 'questionId -> question.id.get, 'enableDelete -> SecurityHelper.isUserCurrentlyAuthenticated(response.creatorUsername))) %>
            #end
        </div>
    </div>

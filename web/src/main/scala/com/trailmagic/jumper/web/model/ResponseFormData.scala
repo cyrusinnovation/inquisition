@@ -2,6 +2,8 @@ package com.trailmagic.jumper.web.model
 
 import com.cyrusinnovation.inquisition.response.Response
 import reflect.BeanProperty
+import org.hibernate.validator.constraints.NotEmpty
+import org.hibernate.validator.constraints.NotEmpty._
 
 class ResponseFormData {
   def this(response: Response) = {
@@ -12,6 +14,8 @@ class ResponseFormData {
   }
 
   @BeanProperty var title = ""
+
+  @NotEmpty(message = "Question body cannot be empty")
   @BeanProperty var body = ""
   @BeanProperty var id = ""
 

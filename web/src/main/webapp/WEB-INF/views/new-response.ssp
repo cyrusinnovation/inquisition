@@ -1,7 +1,17 @@
 #import (com.cyrusinnovation.inquisition.questions.Question)
 <% attributes("title") = "Add Question Response" %>
+<%@ val errors: Iterable[String] = List() %>
 <%@ val questionId: String %>
 <div class="content">
+    #if (!errors.isEmpty)
+        <div class="errors">
+            <ul>
+                #for(err <- errors)
+                    <li>${err}</li>
+                #end
+            </ul>
+        </div>
+    #end
     <form method="post" action="${contextPath}/questions/${questionId}/response/">
         <div class="clearfix">
             <label for="title">Title</label>
