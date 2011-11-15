@@ -64,7 +64,6 @@ class MongoTagRepository @Autowired()(db: MongoDB) extends TagRepository {
         db.command(commandBuilder.result())
 
         val tagList = tags.find().sort(MongoDBObject("value" -> -1)).limit(numberToRetreive)
-        //    val map = tagList map { t => (t.getAs[String]("_id").get, t.getAs[Int]("value").get) } toMap
         val map = tagList map { t => t.getAs[String]("_id").get -> t.getAs[Double]("value").get }
 
         ListMap(map.toList:_*)

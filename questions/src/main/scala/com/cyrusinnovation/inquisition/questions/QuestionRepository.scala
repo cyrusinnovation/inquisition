@@ -12,4 +12,8 @@ trait QuestionRepository {
     def deleteQuestion(id: String)
 
     def getClientList(startsWith: String = "", limit: Int = 10): List[String]
+
+    def findResponseQuestion(responseId: String): Option[Question]
+
+    def findQuestionsWithoutResponses(limit: Int = 10): List[Question]
 }

@@ -1,6 +1,7 @@
 #import (com.cyrusinnovation.inquisition.questions.Question)
 <% attributes("title") = "Inquisition" %>
 <%@ val questions: List[Question] %>
+<%@ val unanswered: List[Question] %>
 <%@ val tags: List[String] %>
 
 <div class="content">
@@ -17,6 +18,16 @@
                 <li><a href="${contextPath}/questions/${q.id}">${q.title}</a> : ${q.body.take(10)}...</li>
                 #end
             </ul>
+
+            <h1>Unanswered Questions</h1>
+
+
+            <ul>
+                #for (q <- unanswered)
+                <li><a href="${contextPath}/questions/${q.id}">${q.title}</a> : ${q.body.take(10)}...</li>
+                #end
+            </ul>
+
         </div>
         <div class="span4">
             <% render("partials/_tagList.ssp", Map('tags -> tags, 'tagHeader -> "Top Tags")) %>

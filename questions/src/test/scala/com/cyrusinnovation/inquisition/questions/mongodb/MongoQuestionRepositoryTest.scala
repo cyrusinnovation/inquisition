@@ -259,4 +259,66 @@ class MongoQuestionRepositoryTest extends FunSuite with ShouldMatchers with Befo
         val retrievedQuestion = repository.findResponseQuestion(MongoTestConstants.DeadObjectIdString)
         retrievedQuestion should not be('defined)
     }
+
+    test("get a list of questions without responses basic") {
+
+        var question = uniqueQuestion()
+
+        question = question.copy(tags = List("java", "spring"))
+
+        val savedQuestion = repository.save(question);
+
+        val retrievedQuestions = repository.findQuestionsWithoutResponses()
+        retrievedQuestions should not be(null)
+        retrievedQuestions.isEmpty should be(false)
+        retrievedQuestions should contain(savedQuestion)
+    }
+
+    test("don't get a question with a response") {
+        val response = new Response(id = None, title = "def", body = "abc", creatorUsername = "someUser")
+
+        val questions = List(uniqueQuestion().copy(responses = List(response)))
+
+        questions.map(repository.save(_))
+        val retrievedQuestions = repository.findQuestionsWithoutResponses()
+        retrievedQuestions should not be(null)
+        retrievedQuestions.isEmpty should be(true)
+
+    }
+
+    test("get a list of questions without a response") {
+        val questions = List(uniqueQuestion(), uniqueQuestion(), uniqueQuestion())
+
+        val expectedList = questions.map(repository.save(_))
+        val retrievedQuestions = repository.findQuestionsWithoutResponses()
+        retrievedQuestions should not be(null)
+        retrievedQuestions.isEmpty should be(false)
+
+        retrievedQuestions.corresponds(expectedList){_ == _} should be(true)
+
+    }
+
+    test("get a limited list of questions without a response") {
+        val questions = List(uniqueQuestion(), uniqueQuestion(), uniqueQuestion())
+
+        val expectedList = questions.map(repository.save(_))
+        val retrievedQuestions = repository.findQuestionsWithoutResponses(1)
+        retrievedQuestions should not be(null)
+        retrievedQuestions.isEmpty should be(false)
+        retrievedQuestions.size should be(1)
+
+
+    }
+
+    test("get a limit of 0 of questions without a response") {
+        val questions = List(uniqueQuestion(), uniqueQuestion(), uniqueQuestion())
+
+        val expectedList = questions.map(repository.save(_))
+        val retrievedQuestions = repository.findQuestionsWithoutResponses(0)
+        retrievedQuestions should not be(null)
+        retrievedQuestions.isEmpty should be(false)
+
+        retrievedQuestions.corresponds(expectedList){_ == _} should be(true)
+
+    }
 }

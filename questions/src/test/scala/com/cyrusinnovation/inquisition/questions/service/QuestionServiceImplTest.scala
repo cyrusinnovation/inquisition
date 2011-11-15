@@ -188,4 +188,16 @@ class QuestionServiceImplTest extends FunSuite with ShouldMatchers with BeforeAn
         clientList.corresponds(expectedList){_ == _} should be(true)
         clientList should equal(expectedList)
     }
+
+    test("get a limit of 0 of questions without a response") {
+        val questions = List(uniqueQuestion(), uniqueQuestion(), uniqueQuestion())
+
+        val expectedList = questions.map(repository.save(_))
+        val retrievedQuestions = service.findQuestionsWithoutResponses(0)
+        retrievedQuestions should not be(null)
+        retrievedQuestions.isEmpty should be(false)
+
+        retrievedQuestions.corresponds(expectedList){_ == _} should be(true)
+
+    }
 }

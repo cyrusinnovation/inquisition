@@ -72,4 +72,8 @@ class QuestionServiceImpl @Autowired()(repository: MongoQuestionRepository) exte
     def getClientList(startsWith: String, limit: Int): List[String] = {
         repository.getClientList(startsWith, limit)
     }
+
+    def findQuestionsWithoutResponses(limit: Int = 10): List[Question] = {
+        repository.findQuestionsWithoutResponses(limit)
+    }
 }

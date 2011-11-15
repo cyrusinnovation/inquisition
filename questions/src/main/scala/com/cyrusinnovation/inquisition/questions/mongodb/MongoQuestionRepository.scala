@@ -6,11 +6,12 @@ import com.novus.salat._
 import com.novus.salat.global._
 import org.springframework.stereotype.Repository
 import com.mongodb.casbah.Imports._
-import com.cyrusinnovation.inquisition.response.Response
 
 
 @Repository
 class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionRepository {
+
+
     val questions = db("questions")
     questions.ensureIndex(MongoDBObject("responses.id" -> 1))
     questions.ensureIndex(MongoDBObject("tags.name" -> 1))
@@ -72,5 +73,9 @@ class MongoQuestionRepository @Autowired()(db: MongoDB) extends QuestionReposito
                 .map(db2question(_))
                 .toList
                 .headOption
+    }
+
+    def findQuestionsWithoutResponses(limit: Int): List[Question] = {
+        questions.find("responses" $size 0).limit(limit).map(db2question).toList
     }
 }

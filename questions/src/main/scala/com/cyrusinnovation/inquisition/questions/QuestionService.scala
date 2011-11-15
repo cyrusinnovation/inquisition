@@ -16,4 +16,6 @@ trait QuestionService {
     def createQuestion(question: Question): Question
 
     def getClientList(startsWith: String = "", limit: Int = 10): List[String]
+
+    def findQuestionsWithoutResponses(limit: Int = 10): List[Question]
 }

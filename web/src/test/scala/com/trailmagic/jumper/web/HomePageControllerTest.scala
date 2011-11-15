@@ -1,6 +1,5 @@
 package com.trailmagic.jumper.web
 
-import com.cyrusinnovation.inquisition.questions.QuestionRepository
 import model.QuestionFormData
 import org.mockito.MockitoAnnotations.Mock
 import org.mockito.{MockitoAnnotations}
@@ -13,12 +12,12 @@ import org.joda.time.DateTime
 import com.cyrusinnovation.inquisition.tags.TagRepository
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import com.cyrusinnovation.inquisition.questions.{QuestionService, QuestionRepository}
 
 @RunWith(classOf[JUnitRunner])
 class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAndAfterEach {
     val currentUser = new SavedUser("userId", new User("a@example.com", "userName", "firstName", "lastName", "password", "salt", Set(), None))
-    @Mock var timeSource: TimeSource = _
-    @Mock var questionRepository: QuestionRepository = _
+    @Mock var questionService: QuestionService = _
     @Mock var tagRepository: TagRepository = _
 
     var controller: HomePageController = _
@@ -26,7 +25,7 @@ class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     override def beforeEach() {
 
         MockitoAnnotations.initMocks(this)
-        controller = new HomePageController(questionRepository, timeSource, tagRepository);
+        controller = new HomePageController(questionService, tagRepository);
         SecurityHelper.setAuthenticatedUser(Some(currentUser))
 
         val tags = Map[String, Double]()
@@ -47,8 +46,7 @@ class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     }
 
     test("Canary") {
-        timeSource should not be (null)
-        questionRepository should not be (null)
+        questionService should not be (null)
         controller should not be (null)
     }
 
@@ -59,7 +57,7 @@ class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
 
     test("Verify homepage view model has correct number of model items") {
         val mav = controller.showIndex()
-        mav.getModelMap should have size (3)
+        mav.getModelMap should have size (4)
     }
 
     test("Verify view model has user property") {
@@ -102,14 +100,23 @@ class HomePageControllerTest extends FunSuite with ShouldMatchers with BeforeAnd
     test("Verify view model has questions property") {
         val question = uniqueQuestionFormData().toQuestion(currentUser.username)
         val questions = List(question)
-        val now = new DateTime()
-        when(timeSource.now).thenReturn(now)
-        when(questionRepository.findRecent()).thenReturn(questions)
+        when(questionService.findRecent()).thenReturn(questions)
         val mav = controller.showIndex()
         val model = mav.getModel
         model.containsKey("questions") should be(true)
         model.get("questions") should not be (null)
         model.get("questions") should equal(questions)
+    }
+
+    test("Verify view model has unanswered questions property") {
+        val question = uniqueQuestionFormData().toQuestion(currentUser.username)
+        val questions = List(question)
+        when(questionService.findQuestionsWithoutResponses(10)).thenReturn(questions)
+        val mav = controller.showIndex()
+        val model = mav.getModel
+        model.containsKey("unanswered") should be(true)
+        model.get("unanswered") should not be (null)
+        model.get("unanswered") should equal(questions)
     }
 }
 
