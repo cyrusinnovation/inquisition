@@ -332,7 +332,7 @@
             <dependency>
                 <groupId>org.fusesource.scalate</groupId>
                 <artifactId>scalate-page</artifactId>
-                <version>1.5.2</version>
+                <version>1.5.3</version>
             </dependency>
             <dependency>
                 <groupId>org.fusesource.scalamd</groupId>
@@ -343,7 +343,7 @@
             <dependency>
                 <groupId>org.fusesource.scalate</groupId>
                 <artifactId>scalate-spring-mvc</artifactId>
-                <version>1.5.2</version>
+                <version>1.5.3</version>
             </dependency>
             <dependency>
                 <groupId>com.novus</groupId>

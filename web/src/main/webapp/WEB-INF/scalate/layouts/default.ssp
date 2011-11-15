@@ -6,6 +6,7 @@
 <html lang="en">
 <head>
     <title>${title}</title>
+    <link rel="icon" type="image/ico" href="${contextPath}/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="${contextPath}/style/bootstrap-1.2.0.css">
     <link rel="stylesheet" type="text/css" href="${contextPath}/style/custom.css">
     <link rel="stylesheet" type="text/css" href="${contextPath}/style/ui-lightness/jquery-ui-1.8.16.custom.css">
