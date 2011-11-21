@@ -3,14 +3,12 @@ package com.trailmagic.jumper.web
 import util.SecurityHelper
 import org.springframework.stereotype.Controller
 import org.springframework.beans.factory.annotation.Autowired
-import com.trailmagic.jumper.core.TimeSource
 import scala.collection.JavaConverters._
+
 import org.springframework.web.bind.annotation._
 import org.springframework.web.servlet.ModelAndView
-import org.slf4j._
 import com.cyrusinnovation.inquisition.tags.TagRepository
-import com.cyrusinnovation.inquisition.questions.service.QuestionServiceImpl
-import com.cyrusinnovation.inquisition.questions.{QuestionService, QuestionRepository}
+import com.cyrusinnovation.inquisition.questions.QuestionService
 
 @Controller
 class HomePageController @Autowired()(questionService: QuestionService,

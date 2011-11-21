@@ -6,3 +6,4 @@ case class Question(id: Option[String], title: String, creatorUsername: String, 
                     tags: List[String] = List(), responses: List[Response] = List(), client: String = "") {
 }
 
+
