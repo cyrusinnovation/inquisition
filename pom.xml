@@ -325,11 +325,6 @@
                 <version>2.5.0</version>
             </dependency>
             <dependency>
-                <groupId>com.github.sps.mustache</groupId>
-                <artifactId>mustache-spring-view</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
                 <groupId>org.fusesource.scalate</groupId>
                 <artifactId>scalate-page</artifactId>
                 <version>1.5.3</version>
